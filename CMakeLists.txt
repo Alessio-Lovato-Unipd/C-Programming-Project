@@ -16,11 +16,13 @@ endif()
 
 set(TARGET_GROUP test CACHE STRING "Group to build") 
 
+add_subdirectory(lib/csv_reader)
+
 if(TARGET_GROUP STREQUAL production)
 	add_subdirectory(app)
 elseif(TARGET_GROUP STREQUAL test)
 	include(CTest)
-
+	
 	add_subdirectory(external/Unity)
 	add_subdirectory(test/test_csv)
 else()
