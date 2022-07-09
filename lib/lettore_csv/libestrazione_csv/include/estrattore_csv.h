@@ -18,4 +18,7 @@
     // creazione nuovo elemento lista turbina
     struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char **fields);
 
+    //funzione per liberare la memoria heap allocata con la lista
+    void svuota_lista_turbine_data(struct turbina *head_turbina);
+
 #endif

@@ -1,6 +1,11 @@
 #include "../include/estrattore_csv.h"
 
 
+/*****************************************************************************************************
+************************    GESTIONE FILE TURBINE_DATA.CSV      **************************************
+******************************************************************************************************/
+
+
 struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data)
 {
     struct csv file;
@@ -46,4 +51,19 @@ struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char** fields)
     //salvo posizione elemento precedente
     nuova->next = elemento_attuale;
     return nuova;
+   
+}
+
+//funzione per liberare la memoria heap allocata con la lista
+void svuota_lista_turbine_data(struct turbina *head_turbina)
+{
+    struct turbina *temporaneo;
+
+    do
+    {
+        temporaneo = head_turbina->next;
+        free(head_turbina);
+        head_turbina = temporaneo;
+
+    }while(temporaneo!=NULL);
 }
