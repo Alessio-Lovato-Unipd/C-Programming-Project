@@ -7,11 +7,10 @@
 int main()
 {
     struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
-    char *turbine_data;
-    struct turbina *temporaneo=NULL;
-    bool penultimo=false;
-    bool ultimo=false;
-    turbine_data=PERCORSO_TURBINE_DATA;
+    char *turbine_data = PERCORSO_TURBINE_DATA; //definizione stringa con percorso del file
+    struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
+    bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
+    bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
 
     //generazione lista con lettura da file
     head_turbina = estrazione_dati_turbine(head_turbina, turbine_data);
@@ -20,8 +19,9 @@ int main()
         printf("Errore nella lettura dei dati da file turbine_data.csv\n");
         return(EXIT_FAILURE);
     }
+    // fine generazione lista
 
-    //esempio stampa lista per verifica dturbine_data.csv
+    //esempio stampa lista per verifica dturbine_data.csv          <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
     temporaneo=head_turbina;
     while (!ultimo) {
         printf(" Modello turbina: %s\n", temporaneo->nome);
@@ -40,10 +40,10 @@ int main()
             ultimo=true;
         }
     }
-    //fine esempio di stampa
+    //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
 
-    //deallocazione memoria heap
-    svuota_lista_turbine_data(head_turbina);
+
+    svuota_lista_turbine_data(head_turbina); //deallocazione memoria heap
 
     return 0;
 }
