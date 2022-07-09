@@ -41,7 +41,7 @@ struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char** fields)
 
     //salvataggio dati
     nuova->nome = (fields[0]);
-    nuova->potenza_nominale = atof(fields[1]); // conversione del dato da stringa a float tramite funzione atof()
+    nuova->potenza_nominale = atoi(fields[1]); // conversione del dato da stringa a intero tramite funzione atoi()
     
     //salvo posizione elemento precedente
     nuova->next = elemento_attuale;

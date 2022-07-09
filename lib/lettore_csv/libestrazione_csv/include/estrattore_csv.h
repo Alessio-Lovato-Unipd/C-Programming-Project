@@ -8,7 +8,7 @@
 
     struct turbina {
         char *nome;
-        float potenza_nominale;
+        int potenza_nominale;
         struct turbina *next;
     };
 

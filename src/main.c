@@ -19,7 +19,7 @@ int main()
     //stampa lista per verifica dturbine_data.csv
     while (!ultimo) {
         printf(" Modello turbina: %s\n", head_turbina->nome);
-        printf(" Potenza nominale: %.5f\n", head_turbina->potenza_nominale);
+        printf(" Potenza nominale: %d\n", head_turbina->potenza_nominale);
         printf("----\n\n");
         head_turbina = head_turbina->next;
         
