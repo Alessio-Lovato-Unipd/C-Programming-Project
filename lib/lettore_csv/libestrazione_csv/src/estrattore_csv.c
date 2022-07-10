@@ -17,7 +17,10 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 	csv_read_record(&file, &fields); //salto l'intestazione del file csv
 
 	while ((ret = csv_read_record(&file, &fields)) == CSV_OK) {
-        puntatore = nuovo_elemento(puntatore, fields);
+        if (cerca_dati_turbina(fields[0],puntatore)==NULL) // verifico che non esista un elemento con lo stesso identificativo "turbine_type"
+        {
+            puntatore = nuovo_elemento(puntatore, fields);
+        }
     }
 
     if (ret == CSV_END) {
@@ -67,3 +70,17 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
 
     }while(temporaneo!=NULL);
 }
+
+//funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
+struct turbina *cerca_dati_turbina(char *nome_modello_turbina, struct turbina *const head_turbina)
+    {
+        struct turbina *temporaneo;
+        temporaneo = head_turbina;
+        
+        while((temporaneo != NULL) && (strcmp(temporaneo->nome, nome_modello_turbina)!= 0))
+        {
+            temporaneo = temporaneo->next;
+        }
+
+        return temporaneo;
+    }

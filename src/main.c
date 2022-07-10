@@ -7,13 +7,12 @@
 int main()
 {
     struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
-    char *turbine_data = PERCORSO_TURBINE_DATA; //definizione stringa con percorso del file
     struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
     bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
 
     //generazione lista con lettura da file
-    head_turbina = estrazione_dati_turbine(head_turbina, turbine_data);
+    head_turbina = estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA);
     if (head_turbina==NULL)
     {
         printf("Errore nella lettura dei dati da file turbine_data.csv\n");
@@ -21,8 +20,20 @@ int main()
     }
     // fine generazione lista
 
-    //esempio stampa lista per verifica dturbine_data.csv          <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
+    //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
+    temporaneo = cerca_dati_turbina("DUMMY 1", head_turbina);
+    if (temporaneo == NULL)
+    {
+        printf("Modello turbina non trovato!\n\n\n");
+    }else{
+        printf("Ricerca modello: %s\n", temporaneo->nome);
+        printf("Potenza nominale: %d\n\n\n", temporaneo->potenza_nominale);
+    }
+    //fine stampa elemento lista
+
+    //esempio stampa lista per verifica dturbine_data.csv         
     temporaneo=head_turbina;
+    printf("*****   Stampa elementi lista   *****\n\n");
     while (!ultimo) {
         printf(" Modello turbina: %s\n", temporaneo->nome);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
