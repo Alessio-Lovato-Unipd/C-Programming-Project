@@ -5,12 +5,11 @@ project( test_lib_csv
 	DESCRIPTION "Test libreria csv"
 	)
 
-add_executable( test_csv src/test_csv.c )
+add_executable( test2 src/test2.c )
 
-target_link_libraries( test_csv
+target_link_libraries( test2
 	PRIVATE
 	lib::csv
-	TTS::Unity
 )
 
 
