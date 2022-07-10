@@ -23,7 +23,6 @@ if(TARGET_GROUP STREQUAL production)
 elseif(TARGET_GROUP STREQUAL test)
 	include(CTest)
 	
-	add_subdirectory(external/unity)
 	add_subdirectory(test/test_csv)
 else()
 	message(FATAL_ERROR "Given TARGET_GROUP unknown")
