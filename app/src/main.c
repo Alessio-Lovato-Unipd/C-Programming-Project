@@ -11,16 +11,15 @@ int main()
     int errore=0;
 
     //generazione lista con lettura da file
-    errore=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA);
-    if (errore==-1)
+    head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
+    if (errore==CSV_E_IO)
     {
-        printf("Errore nella lettura dei dati da file turbine_data.csv\n");
         return(EXIT_FAILURE);
     }
     // fine generazione lista
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_turbina("DUMMY 1", head_turbina);
+    temporaneo = cerca_dati_turbina("DUMMY 2", head_turbina);
     if (temporaneo == NULL)
     {
         printf("Modello turbina non trovato!\n\n\n");
@@ -38,7 +37,7 @@ int main()
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
         printf("----\n\n");
 
-        temporaneo=temporaneo->next;
+        temporaneo=temporaneo->prev;
 
         if (temporaneo == NULL)
         {

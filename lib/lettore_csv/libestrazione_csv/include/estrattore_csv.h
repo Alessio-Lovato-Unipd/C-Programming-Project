@@ -9,13 +9,14 @@
     struct turbina {
         char *nome;
         int potenza_nominale;
-        struct turbina *next;
+        struct turbina *prev;
     };
 
 
     //funzione per estrarre i dati dal file turbine_data.csv
-    /* Se funziona correttamente ritorna 1, altrimenti restituisce errori secondo definizione della libreria csv */ 
-    int estrazione_dati_turbine(struct turbina *puntatore, char *const percorso_file_turbine_data);
+    /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
+       fare riferimento alla libreria csv per risolvere tali errori */
+    struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *const percorso_file_turbine_data, int *errore);
 
     // creazione nuovo elemento lista turbina
     struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char **fields);
