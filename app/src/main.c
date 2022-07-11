@@ -1,8 +1,6 @@
 #include "../include/main.h"
 
 
-#define PERCORSO_TURBINE_DATA "../data/turbine_data.csv"
-
 
 int main()
 {
@@ -10,10 +8,11 @@ int main()
     struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
     bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
+    int errore=0;
 
     //generazione lista con lettura da file
-    head_turbina = estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA);
-    if (head_turbina==NULL)
+    errore=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA);
+    if (errore==-1)
     {
         printf("Errore nella lettura dei dati da file turbine_data.csv\n");
         return(EXIT_FAILURE);

@@ -12,8 +12,10 @@
         struct turbina *next;
     };
 
+
     //funzione per estrarre i dati dal file turbine_data.csv
-    struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *const percorso_file_turbine_data);
+    /* Se funziona correttamente ritorna 1, altrimenti restituisce errori secondo definizione della libreria csv */ 
+    int estrazione_dati_turbine(struct turbina *puntatore, char *const percorso_file_turbine_data);
 
     // creazione nuovo elemento lista turbina
     struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char **fields);

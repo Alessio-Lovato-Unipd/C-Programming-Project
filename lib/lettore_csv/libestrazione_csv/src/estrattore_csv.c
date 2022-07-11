@@ -1,37 +1,43 @@
 #include "../include/estrattore_csv.h"
 
-
+#define CSV_NON_PRESENTE -1
 /*****************************************************************************************************
 ************************    GESTIONE FILE TURBINE_DATA.CSV      **************************************
 ******************************************************************************************************/
 
 
-struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data)
+int estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data)
 {
     struct csv file;
 	char** fields;
     char* error;
-	int ret;
+	int return_code;
 
-    csv_open(&file, percorso_file_turbine_data, ',', 2);
+    return_code = csv_open(&file, percorso_file_turbine_data, ',', 2);
+    if (return_code == 5)
+    {
+        printf("\n ATTENZIONE!\nLa cartella contenente il file \"turbine_data.csv\" non si ");
+        printf("trova nel percorso \"../data/turbine_data.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
+        return(return_code);
+    }
 	csv_read_record(&file, &fields); //salto l'intestazione del file csv
 
-	while ((ret = csv_read_record(&file, &fields)) == CSV_OK) {
+	while ((return_code = csv_read_record(&file, &fields)) == CSV_OK) {
         if (cerca_dati_turbina(fields[0],puntatore)==NULL) // verifico che non esista un elemento con lo stesso identificativo "turbine_type"
         {
             puntatore = nuovo_elemento(puntatore, fields);
         }
     }
 
-    if (ret == CSV_END) {
+    if (return_code == CSV_END) {
 		csv_close(&file);
-		return puntatore;
+		return return_code;
 	}
 
-    csv_error_string(ret, &error);
+    csv_error_string(return_code, &error);
 	printf("ERROR: %s\n", error);
 	csv_close(&file);
-	return NULL;
+	return return_code;
 
 }
 
