@@ -70,8 +70,13 @@ struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char** fields)
 
 void svuota_lista_turbine_data(struct turbina *head_turbina)
 {
-    struct turbina *temporaneo;
-
+    struct turbina *temporaneo = head_turbina;
+	
+	if(head_turbina == NULL){
+		printf("i dati delle turbine sono già stati cancellati\n");
+		return;
+	}
+	
     do
     {
         temporaneo = head_turbina->prev;
@@ -82,15 +87,14 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
 }
 
 
-struct turbina *cerca_dati_turbina(char *nome_modello_turbina, struct turbina *const head_turbina)
-    {
-        struct turbina *temporaneo;
-        temporaneo = head_turbina;
+struct turbina *cerca_dati_turbina(char *nome_modello_turbina, const struct turbina *head_turbina)
+{
+	const struct turbina *temporaneo = head_turbina;
         
-        while((temporaneo != NULL) && (strcmp(temporaneo->nome, nome_modello_turbina)!= 0))
-        {
-            temporaneo = temporaneo->prev;
-        }
+	while((temporaneo != NULL) && (strcmp(temporaneo->nome, nome_modello_turbina)!= 0))
+	{
+		temporaneo = temporaneo->prev;
+	}
 
-        return temporaneo;
-    }
+	return (struct turbina *)temporaneo;
+}
