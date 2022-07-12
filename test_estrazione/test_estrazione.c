@@ -28,6 +28,7 @@ void verifica_ricerca_nome_turbina(void)
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	struct turbina *elemento_cercato = cerca_dati_turbina("DUMMY 2", puntatore);
 	TEST_ASSERT_EQUAL_STRING("DUMMY 2", elemento_cercato->nome);
+	TEST_ASSERT_EQUAL_INT(4200000, elemento_cercato->potenza_nominale);
 }
 
 void verifica_ricerca_nome_turbina_estremi(void)
