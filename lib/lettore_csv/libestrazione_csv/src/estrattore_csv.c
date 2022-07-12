@@ -68,13 +68,13 @@ struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char** fields)
 }
 
 
-void svuota_lista_turbine_data(struct turbina *head_turbina)
+struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina)
 {
     struct turbina *temporaneo = head_turbina;
 	
 	if(head_turbina == NULL){
 		printf("i dati delle turbine sono già stati cancellati\n");
-		return;
+		return head_turbina;
 	}
 	
     do
@@ -84,6 +84,7 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
         head_turbina = temporaneo;
 
     }while(temporaneo!=NULL);
+	return head_turbina;
 }
 
 

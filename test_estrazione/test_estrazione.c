@@ -55,7 +55,7 @@ void verifica_funzione_svuotamento_lista(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 

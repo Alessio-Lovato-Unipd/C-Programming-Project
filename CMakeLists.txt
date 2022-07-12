@@ -14,7 +14,7 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-set(TARGET_GROUP stable CACHE STRING "Gruppo di sorgenti da compilare")
+set(TARGET_GROUP test CACHE STRING "Gruppo di sorgenti da compilare")
 
 add_subdirectory(lib)
 
