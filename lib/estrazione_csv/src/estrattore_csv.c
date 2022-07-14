@@ -73,7 +73,6 @@ struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina)
     struct turbina *temporaneo = head_turbina;
 	
 	if(head_turbina == NULL){
-		printf("i dati delle turbine sono già stati cancellati\n");
 		return head_turbina;
 	}
 	
