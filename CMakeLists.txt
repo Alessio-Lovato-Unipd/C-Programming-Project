@@ -17,13 +17,15 @@ endif()
 set(TARGET_GROUP test CACHE STRING "Gruppo di sorgenti da compilare")
 
 add_subdirectory(lib)
+add_subdirectory(external/csv)
 
 if(TARGET_GROUP STREQUAL stable)
 	add_subdirectory(app)
 elseif(TARGET_GROUP STREQUAL test)
 	include(CTest)
 
-	add_subdirectory(test_estrazione)
+	add_subdirectory(test)
+	add_subdirectory(external/Unity)
 else()
 	message(FATAL_ERROR " TARGET_GROUP sconosciuto")
 endif() 

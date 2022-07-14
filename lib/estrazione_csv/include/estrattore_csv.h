@@ -4,7 +4,7 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include <string.h>
-    #include "../../libcsv/src/csv.h"
+    #include "../../../external/csv/src/csv.h"
 
     struct turbina {
         char *nome;
