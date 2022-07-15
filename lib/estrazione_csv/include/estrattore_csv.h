@@ -21,7 +21,7 @@
         float temperatura2;
         float velocità_vento2;
         struct weather *prev;
-    }
+    };
 
 
     //funzione per estrarre i dati dal file turbine_data.csv
