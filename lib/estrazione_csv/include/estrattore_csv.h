@@ -12,6 +12,17 @@
         struct turbina *prev;
     };
 
+    struct weather {
+        char *nome;
+        float pressione;
+        float temperatura1;
+        float velocità_vento1;
+        float rugosità;
+        float temperatura2;
+        float velocità_vento2;
+        struct weather *prev;
+    }
+
 
     //funzione per estrarre i dati dal file turbine_data.csv
     /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
@@ -26,5 +37,8 @@
 
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
+
+    struct weather *estrazione_dati_weather(struct weather *puntatore, char *const percorso_file_weather, int *errore);
+
 
 #endif
