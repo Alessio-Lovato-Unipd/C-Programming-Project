@@ -6,11 +6,4 @@ project( Testing
 	 DESCRIPTION "Inserimento makefile testing"
 	 )
 
-add_executable(test_estrazione test_estrazione.c)
-
-target_link_libraries( test_estrazione
-	PRIVATE 
-	lib::csv
-	lib::estrazione_csv
-	TTS::Unity
-)
+add_subdirectory(test_estrazione)
