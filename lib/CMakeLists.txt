@@ -7,3 +7,5 @@ project( Librerie
 	 )
 
 add_subdirectory(estrazione_csv)
+
+add_subdirectory(formule)
