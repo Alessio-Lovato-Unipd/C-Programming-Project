@@ -7,3 +7,9 @@ project( Testing
 	 )
 
 add_executable(test_formule test_formule.c)
+
+target_link_libraries( test_formule
+	PRIVATE 
+	lib::formule
+	TTS::Unity
+)
