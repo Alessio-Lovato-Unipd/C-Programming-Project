@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION 3.16.3 )
 
 project( Librerie
-	 VERSION 
+	 VERSION 3.0
 	 LANGUAGES C
 	 DESCRIPTION "Creazione makefile per riunire i makefile delle librerie"
 	 )
