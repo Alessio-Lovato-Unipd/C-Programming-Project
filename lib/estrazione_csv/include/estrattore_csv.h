@@ -30,7 +30,7 @@
         float h_rugosita;
         float h_t2;
         float h_vel2;
-    }
+    };
 
     //funzione per estrarre i dati dal file turbine_data.csv
     /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
