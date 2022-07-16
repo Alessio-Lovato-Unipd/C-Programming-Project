@@ -2,6 +2,7 @@ cmake_minimum_required( VERSION 3.16.3 )
 
 project( Applicazione_principale
          VERSION 0.1
+         LANGUAGES C
          DESCRIPTION "creazione makefile per il file sorgente principale" )
 
 add_executable(main src/main.c)

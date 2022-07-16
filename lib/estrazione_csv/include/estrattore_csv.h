@@ -13,16 +13,24 @@
     };
 
     struct weather {
-        char *nome;
+        int ordine;
         float pressione;
-        float temperatura1;
-        float velocità_vento1;
-        float rugosità;
-        float temperatura2;
-        float velocità_vento2;
+        float temperatura1; //ad altezza=2m
+        float velocita_vento1; //ad altezza=10m
+        float rugosita;
+        float temperatura2; //ad altezza=10m
+        float velocita_vento2; //ad altezza=80m
         struct weather *prev;
     };
 
+    struct altezze {
+        float h_pressione;
+        float h_t1;
+        float h_vel1;
+        float h_rugosita;
+        float h_t2;
+        float h_vel2;
+    };
 
     //funzione per estrarre i dati dal file turbine_data.csv
     /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
@@ -30,7 +38,7 @@
     struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *const percorso_file_turbine_data, int *errore);
 
     // creazione nuovo elemento lista turbina
-    struct turbina *nuovo_elemento(struct turbina *elemento_attuale, char **fields);
+    struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields);
 
     //funzione per liberare la memoria heap allocata con la lista
     struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina);
@@ -38,7 +46,13 @@
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
 
-    struct weather *estrazione_dati_weather(struct weather *puntatore, char *const percorso_file_weather, int *errore);
+    struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezze *valori_altezze,  char *const percorso_file_weather, int *errore);
+
+    struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count);
+
+    struct weather *svuota_lista_weather(struct weather *head_weather, struct altezze *valori_altezze);
+
+    struct weather *cerca_dati_weather(int ordine_lista, const struct weather *head_weather);
 
 
 #endif
