@@ -5,7 +5,7 @@
         float velocita_vento;
         float temperatura_aria;
         float densita_aria;
-        struct parametro *prev;
+        struct parametro *next;
     }
 
     void calcolo_parametri(const struct weather *in, const struct altezze  *h, float altezza_mozzo, struct parametro *out);
