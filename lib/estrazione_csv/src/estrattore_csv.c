@@ -104,7 +104,7 @@ struct turbina *cerca_dati_turbina(char *nome_modello_turbina, const struct turb
 ******************************************************************************************************/
 
 
-struct weather *estrazione_dati_weather(struct weather *puntatore, char *percorso_file_weather, int *errore)
+struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezze *valori_altezze, char *percorso_file_weather, int *errore)
 {
     struct csv file;
     char** fields;
@@ -119,8 +119,16 @@ struct weather *estrazione_dati_weather(struct weather *puntatore, char *percors
     }
     csv_read_record(&file, &fields); //salto l'intestazione del file csv
 
+	csv_read_record(&file, &fields); //salvo la struttura con le informazioni di altezza
+	valori_altezze->h_pressione = atoi(fields[1]);
+	valori_altezze->h_t1 = atoi(fields[2]);
+	valori_altezze->h_vel1 = atoi(fields[3]);
+	valori_altezze->h_rugosita = atoi(fields[4]);
+	valori_altezze->h_t2 = atoi(fields[5]);
+	valori_altezze->h_vel2 = atoi(fields[6]);
+	
     while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        if (cerca_dati_weather(fields[0],puntatore)==NULL) // verifico che non esista un elemento con lo stesso identificativo "turbine_type"
+        if (cerca_dati_weather(fields[0],puntatore)==NULL) // verifico che non esista un elemento con stessa data e ora
         {
             puntatore = nuovo_elemento_weather(puntatore, fields);
         }

@@ -7,3 +7,4 @@ project( Testing
 	 )
 
 add_subdirectory(test_estrazione)
+add_subdirectory(test_csv)

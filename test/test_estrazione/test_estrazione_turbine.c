@@ -1,7 +1,7 @@
-#include "../external/Unity/src/unity.h"
-#include "../lib/estrazione_csv/include/estrattore_csv.h"
+#include "unity.h"
+#include "estrattore_csv.h"
 
-#define PERCORSO_TURBINE_DATA_CORRETTO "../../data/turbine_data.csv"
+#define PERCORSO_TURBINE_DATA_CORRETTO "../../../data/turbine_data.csv"
 #define PERCORSO_TURBINE_DATA_ERRATO "./data/turbine_data.csv"
 
 

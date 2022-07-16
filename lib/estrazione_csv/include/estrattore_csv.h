@@ -46,7 +46,7 @@
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
 
-    struct weather *estrazione_dati_weather(struct weather *puntatore, char *const percorso_file_weather, int *errore);
+    struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezze *valori_altezze,  char *const percorso_file_weather, int *errore);
 
     struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields);
 
