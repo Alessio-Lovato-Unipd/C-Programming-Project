@@ -1,7 +1,11 @@
 cmake_minimum_required( VERSION 3.16.3 )
 
 project( Calcolo_potenza_turbine
+<<<<<<< HEAD
 	 VERSION 3.0
+=======
+	 VERSION 0.1
+>>>>>>> main
 	 LANGUAGES C
 	 DESCRIPTION "Assegnamento di informatica 2021-2022"
 	 )

@@ -1,7 +1,11 @@
 cmake_minimum_required( VERSION 3.16.3 )
 
 project( Librerie_csv 
+<<<<<<< HEAD
 	 VERSION 3.0
+=======
+	 VERSION 0.1
+>>>>>>> main
 	 LANGUAGES C
 	 DESCRIPTION "Librerie esterna per poter estrarre i dati dai file csv"
 	 )

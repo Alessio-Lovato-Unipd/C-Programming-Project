@@ -7,5 +7,9 @@ project( Testing
 	 )
 
 add_subdirectory(test_estrazione)
+<<<<<<< HEAD
 
 add_subdirectory(test_formule)
+=======
+add_subdirectory(test_csv)
+>>>>>>> main
