@@ -78,12 +78,12 @@ int main()
     }
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_weather("2010-01-01 06:00:00+01:00", head_weather);
+    temporaneo = cerca_dati_weather(7000, head_weather);
     if (temporaneo == NULL)
     {
         printf("Giorno e ora non trovati!\n\n\n");
     }else{
-        printf("Giorno e ora: %s\n", temporaneo->nome);
+        printf("Ordine temporale del dato: %d\n", temporaneo->ordine);
         printf("Pressione: %f\n", temporaneo->pressione);
         printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
         printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
@@ -97,7 +97,7 @@ int main()
     temporaneo=head_weather;
     printf("*****   Stampa elementi lista   *****\n\n");
     while (!ultimo) {
-        printf("Giorno e ora: %s\n", temporaneo->nome);
+        printf("Ordine temporale del dato: %d\n", temporaneo->ordine);
         printf("Pressione: %f\n", temporaneo->pressione);
         printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
         printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
@@ -120,7 +120,7 @@ int main()
     }
     //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
 
-    svuota_lista_weather(head_weather); //deallocazione memoria heap
+    svuota_lista_weather(head_weather, valori_alt); //deallocazione memoria heap
 
     return 0;
 
