@@ -119,7 +119,14 @@ struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezz
     }
     csv_read_record(&file, &fields); //salto l'intestazione del file csv
 
-	csv_read_record(&file, &fields); //salvo la struttura con le informazioni di altezza
+	csv_read_record(&file, &fields);	//salvo la struttura con le informazioni di altezza
+	valori_altezze = malloc(sizeof(struct weather));
+	//verifico riuscita allocazione
+    if (valori_altezze == NULL)
+    {
+        printf("Error: malloc() failed in estrazione_dati_weather\n");
+        exit(EXIT_FAILURE);
+    }
 	valori_altezze->h_pressione = atoi(fields[1]);
 	valori_altezze->h_t1 = atoi(fields[2]);
 	valori_altezze->h_vel1 = atoi(fields[3]);

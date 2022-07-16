@@ -66,11 +66,12 @@ int main()
 
     struct weather *head_weather=NULL; //definisco lista per il salvataggio dei dati meteo
     struct weather *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-    bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
+    struct altezze *valori_alt = NULL;
+	bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
     int errore=0;
 
-    head_weather=estrazione_dati_weather(head_weather, PERCORSO_WEATHER, &errore);
+    head_weather=estrazione_dati_weather(head_weather,valori_alt, PERCORSO_WEATHER, &errore);
     if (errore==CSV_E_IO)
     {
         return(EXIT_FAILURE);
