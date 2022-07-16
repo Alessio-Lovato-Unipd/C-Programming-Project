@@ -62,13 +62,14 @@ void calcolo_parametri(const struct weather *in, const struct altezze  *h, float
 
     //Calcolo tutti i parametri a partire dai dati weather
     for(p = in; p != NULL; p = p->prev) {
+
         //calcolo i 3 parametri
-        vento = calcolo_vel_vento(0, h->h_vel1, in->velocità_vento1, h->h_vel2, in->velocità_vento2, in->rugosità, altezza_mozzo);
+        vento = calcolo_vel_vento(0, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_mozzo);
         temperatura = calcolo_temperatura_aria(h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
         densita = calcolo_densita_aria();  
         
         //salvo i 3 parametri calcolati nell'elemento corrente
-        aggiungi_elemento(out, vento, temperatura, densita);
+        out = aggiungi_elemento(out, vento, temperatura, densita);
     }
     
 }
