@@ -17,9 +17,9 @@ float calcolo_densita_aria(float altezza1, float pressione1, float altezza2, flo
     return interpolazione_lineare(altezza1, pressione1, altezza2, pressione2, altezza_x);
 }
 
-void calcolo_parametri(const struct weather *in, float altezza_mozzo, struct parametro *out)
+void calcolo_parametri(const struct weather *in, const struct altezze  *h, float altezza_mozzo, struct parametro *out)
 {
-    out->velocita_vento = calcolo_vel_vento(, in->velocità_vento1, , in->velocità_vento2, in->rugosità, altezza_mozzo);
-    out->temperatura_aria = calcolo_temperatura_aria();
+    out->velocita_vento = calcolo_vel_vento(h->h_vel1, in->velocità_vento1, h->h_vel2, in->velocità_vento2, in->rugosità, altezza_mozzo);
+    out->temperatura_aria = calcolo_temperatura_aria(h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
     out->densita_aria = calcolo_densita_aria();
 }
