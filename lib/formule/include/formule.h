@@ -19,4 +19,6 @@
 
     float barometrico(float h1, float p1, float T0, float T_x, float h_x);
 
+    float gas_ideale(float h1, float p1, float T_x, float h_x);
+
 #endif
