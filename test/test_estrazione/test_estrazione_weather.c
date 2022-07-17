@@ -5,6 +5,7 @@
 #define PERCORSO_WEATHER_DATA_ERRATO "./data/weather.csv"
 #define PERCORSO_WEATHER_PROVA "../../../data/prova_weather.csv"
 
+
 void verifica_presenza_file_csv_percorso_corretto(void)
 {
     struct weather *puntatore = NULL;
@@ -16,7 +17,7 @@ void verifica_presenza_file_csv_percorso_corretto(void)
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 
-/*void verifica_presenza_file_csv_percorso_errato(void)
+void verifica_presenza_file_csv_percorso_errato(void)
 {
     struct weather *puntatore_errato = NULL;
 	struct altezze *valori_alt = NULL;
@@ -37,7 +38,7 @@ void verifica_ricerca_data_ora_weather(void)
 	TEST_ASSERT_EQUAL_INT(2, elemento_cercato->ordine);
 	svuota_lista_weather(puntatore, valori_alt);
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
-}*/
+}
 
 int main (void)
 {

@@ -136,7 +136,7 @@ struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezz
 	valori_altezze->h_vel2 = atoi(fields[6]);
 	
     while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        if (cerca_dati_weather(count, puntatore) == NULL) // verifico che non esista un elemento con stessa data e ora
+        if (cerca_dati_weather(count, puntatore) == NULL) // verifico che non esista un elemento con stesso identificativo
         {
             puntatore = nuovo_elemento_weather(puntatore, fields, count);
 			count++;
