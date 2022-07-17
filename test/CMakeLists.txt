@@ -8,8 +8,14 @@ project( Testing
 
 add_subdirectory(test_estrazione)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 add_subdirectory(test_formule)
 =======
 add_subdirectory(test_csv)
 >>>>>>> main
+=======
+
+add_subdirectory(test_formule)
+add_subdirectory(test_csv)
+>>>>>>> testing_formule

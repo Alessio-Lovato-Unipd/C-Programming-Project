@@ -155,7 +155,10 @@ struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezz
 
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> testing_formule
 
 struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count)
 {
@@ -216,4 +219,7 @@ struct weather *cerca_dati_weather(int ordine_lista, const struct weather *head_
 
 	return (struct weather *)temporaneo_weather;
 }
+<<<<<<< HEAD
 >>>>>>> main
+=======
+>>>>>>> testing_formule

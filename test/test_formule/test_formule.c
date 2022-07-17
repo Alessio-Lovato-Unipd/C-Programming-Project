@@ -1,5 +1,5 @@
-#include "../external/Unity/src/unity.h"
-#include "../lib/formule/include/formule.h"
+#include "unity.h"
+#include "formule.h"
 
 
 void test_interpolazione_lineare()
