@@ -104,7 +104,7 @@ struct turbina *cerca_dati_turbina(char *nome_modello_turbina, const struct turb
 ******************************************************************************************************/
 
 
-struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezze *valori_altezze, char *percorso_file_weather, int *errore)
+struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
 {
     struct csv file;
     char** fields;
@@ -121,31 +121,31 @@ struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezz
     csv_read_record(&file, &fields); //salto l'intestazione del file csv
 
 	csv_read_record(&file, &fields);	//salvo la struttura con le informazioni di altezza
-	valori_altezze = malloc(sizeof(struct weather));
+	puntatore_dati_weather = malloc(sizeof(struct dati_weather));
 	//verifico riuscita allocazione
-    if (valori_altezze == NULL)
+    if (puntatore_dati_weather == NULL)
     {
         printf("Error: malloc() failed in estrazione_dati_weather\n");
         exit(EXIT_FAILURE);
     }
-	valori_altezze->h_pressione = atoi(fields[1]);
-	valori_altezze->h_t1 = atoi(fields[2]);
-	valori_altezze->h_vel1 = atoi(fields[3]);
-	valori_altezze->h_rugosita = atoi(fields[4]);
-	valori_altezze->h_t2 = atoi(fields[5]);
-	valori_altezze->h_vel2 = atoi(fields[6]);
+	puntatore_dati_weather->h_pressione = atoi(fields[1]);
+	puntatore_dati_weather->h_t1 = atoi(fields[2]);
+	puntatore_dati_weather->h_vel1 = atoi(fields[3]);
+	puntatore_dati_weather->h_rugosita = atoi(fields[4]);
+	puntatore_dati_weather->h_t2 = atoi(fields[5]);
+	puntatore_dati_weather->h_vel2 = atoi(fields[6]);
 	
     while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        if (cerca_dati_weather(count, puntatore) == NULL) // verifico che non esista un elemento con stesso identificativo
+        if (cerca_dati_weather(count, puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
         {
-            puntatore = nuovo_elemento_weather(puntatore, fields, count);
+            puntatore_dati_weather->head_weather = nuovo_elemento_weather(puntatore_dati_weather->head_weather, fields, count);
 			count++;
         }
     }
 
     if (*errore == CSV_END) {
         csv_close(&file);
-        return puntatore;
+        return puntatore_dati_weather;
     }
 
     csv_error_string(*errore, &error);
@@ -183,24 +183,24 @@ struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather,
    
 }
 
-struct weather *svuota_lista_weather(struct weather *head_weather, struct altezze *valori_altezze)
+struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather)
 {
-    struct weather *temporaneo_weather = head_weather;
-	
-	free(valori_altezze);
-	
-	if(head_weather == NULL){
-		return head_weather;
+    struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
+		
+	if(puntatore_dati_weather == NULL){
+		return puntatore_dati_weather;
 	}
 	
     do
     {
-        temporaneo_weather = head_weather->prev;
-        free(head_weather);
-        head_weather = temporaneo_weather;
+        temporaneo_weather = puntatore_dati_weather->head_weather->prev;
+        free(puntatore_dati_weather->head_weather);
+        puntatore_dati_weather->head_weather = temporaneo_weather;
 
     }while(temporaneo_weather!=NULL);
-	return head_weather;
+    //free(temporaneo_weather);
+    free(puntatore_dati_weather);
+	return NULL;
 }
 
 struct weather *cerca_dati_weather(int ordine_lista, const struct weather *head_weather)
@@ -214,3 +214,4 @@ struct weather *cerca_dati_weather(int ordine_lista, const struct weather *head_
 
 	return (struct weather *)temporaneo_weather;
 }
+   
