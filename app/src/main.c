@@ -57,9 +57,6 @@ int main()
     svuota_lista_turbine_data(head_turbina); //deallocazione memoria heap
 
     return 0;
-<<<<<<< HEAD
-}
-=======
 
     #endif
 
@@ -129,4 +126,3 @@ int main()
 
     #endif
 }
->>>>>>> main
