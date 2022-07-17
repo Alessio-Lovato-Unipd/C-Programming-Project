@@ -13,7 +13,7 @@ void verifica_presenza_file_csv_percorso_corretto(void)
     int errore = 0;
     puntatore = estrazione_dati_weather(puntatore, valori_alt, PERCORSO_WEATHER_PROVA, &errore);
     TEST_ASSERT_EQUAL_INT(CSV_END, errore);
-	svuota_lista_weather(puntatore, valori_alt);
+	puntatore = svuota_lista_weather(puntatore, valori_alt);
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 
