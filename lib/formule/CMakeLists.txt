@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.16.3 )
 
-project( Librerie_csv 
+project( Librerie_formule 
 	 VERSION 3.0
 	 LANGUAGES C
 	 DESCRIPTION "Librererie con formule per calcolare i parametri del Vento"

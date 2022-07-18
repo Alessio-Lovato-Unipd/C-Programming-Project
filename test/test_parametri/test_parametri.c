@@ -4,7 +4,7 @@
 
 void test_calcolo_vento()
 {
-    float i = calcolo_vel_vento(INTERPOLAZIONE_LINEARE, 10, 5.32697, 80, 7.80697, 0, 0, 30);
+    float i = calcolo_vel_vento(INTERPOLAZIONE_LINEARE_V, 10, 5.32697, 80, 7.80697, 0, 0, 30);
     TEST_ASSERT_EQUAL_FLOAT(34, i);
 }
 
