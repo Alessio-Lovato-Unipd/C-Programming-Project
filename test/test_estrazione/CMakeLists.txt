@@ -24,3 +24,12 @@ target_link_libraries( test_estrazione_weather
 	TTS::Unity
 )
 
+add_executable(test_estrazione_power_coefficient_curves test_estrazione_power_coefficient_curves.c)
+
+target_link_libraries( test_estrazione_power_coefficient_curves
+	PRIVATE 
+	lib::csv
+	lib::estrazione_csv
+	TTS::Unity
+)
+
