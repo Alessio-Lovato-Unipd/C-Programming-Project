@@ -43,6 +43,7 @@ float calcolo_temperatura_aria(enum tipo_calcolo_temperatura metodo, float altez
     case GRADIENTE_LINEARE:
         return gradiente_lineare(altezza1, temperatura1, altezza_x);
         break;
+
     default:
         return interpolazione_lineare(altezza1, temperatura1, altezza2, temperatura2, altezza_x);
         break;
@@ -77,9 +78,9 @@ struct parametro calcolo_parametri(const struct weather *in, const struct altezz
     float altezza_ostacolo;
 
     //calcolo i 3 parametri
-    out.vento_mozzo = calcolo_vel_vento(metodo->vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
+    out.vento = calcolo_vel_vento(metodo->vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
     temperatura = calcolo_temperatura_aria(metodo->temperatura, h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
-    out.densita_aria_mozzo = calcolo_densita_aria(metodo->densita, h->h_pressione, in->pressione, temperatura,altezza_mozzo);  
+    out.densita_aria = calcolo_densita_aria(metodo->densita, h->h_pressione, in->pressione, temperatura,altezza_mozzo);  
     
     return out;
 }
