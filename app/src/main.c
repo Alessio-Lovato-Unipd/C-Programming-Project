@@ -65,11 +65,11 @@ int main()
     #if(tipo_dati_stampa==1)
 
     //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-	struct csv *file = malloc(sizeof(struct csv));
+	struct csv file;
     struct dati_weather *dati = NULL;
     int errore=0;
 
-    dati = apertura_file_weather(file, dati, PERCORSO_WEATHER, &errore);
+    dati = apertura_file_weather(&file, dati, PERCORSO_WEATHER, &errore);
     if (errore==CSV_E_IO)
     {
         return(EXIT_FAILURE);
@@ -85,7 +85,7 @@ int main()
 	printf("%f\t", dati->h_t2);
 	printf("%f\n", dati->h_vel2);
 	
-	chiusura_file_weather(file, dati);
+	chiusura_file_weather(&file, dati);
 	
     return 0;
 

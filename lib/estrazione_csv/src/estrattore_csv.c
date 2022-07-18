@@ -115,11 +115,14 @@ struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather
         printf("\n ATTENZIONE!\nLa cartella contenente il file \"weather.csv\" non si ");
         printf("trova nel percorso \"../../data/weather.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
     }
-	if(*errore != CSV_OK)
+	if(*errore != CSV_OK){
 		controllo_csv(errore);
+		return NULL;
+	}
 	
     *errore = csv_read_record(file, &fields); //salto l'intestazione del file csv
-	controllo_csv(errore);
+	if(*errore != CSV_OK)
+		controllo_csv(errore);
 	
 	csv_read_record(file, &fields);	//salvo la struttura con le informazioni di altezza
 	puntatore_dati_weather = malloc(sizeof(struct dati_weather));
@@ -149,7 +152,6 @@ void controllo_csv(int *errore)
 void chiusura_file_weather(struct csv *file, struct dati_weather *altezze)
 {
 	csv_close(file);
-	free(file);
 	free(altezze);
 }
 
