@@ -24,5 +24,4 @@
 
     struct parametro calcolo_parametri(const struct weather *in, const struct altezze  *h, const struct tipo_metodo *metodo, float altezza_mozzo);
 
-
 #endif
