@@ -10,6 +10,7 @@
         char *nome;
         int potenza_nominale;
         float power_coefficients[54];
+        int power_curves[54];
         struct turbina *prev;
     };
 
@@ -57,4 +58,9 @@
     struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, char *percorso_file_power_coefficient_curves, int *errore);
 
     struct turbina *salvataggio_coefficienti(struct turbina *elemento_attuale_turbina, char** fields);
+
+    struct turbina *estrazione_dati_power_curves(struct turbina *puntatore, char *percorso_file_power_curves, int *errore);
+
+    struct turbina *salvataggio_potenze(struct turbina *elemento_attuale_turbina, char** fields);
+    
 #endif
