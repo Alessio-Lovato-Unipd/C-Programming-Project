@@ -71,7 +71,7 @@ float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pr
 
 
 /******************CALCOLO DEI PARAMETRI******************/
-struct parametro calcolo_parametri(const struct weather *in, const struct altezze  *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo)
+struct parametro calcolo_parametri(const struct weather *in, const struct dati_weather  *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo)
 {
     struct parametro out;    
     float temperatura;
