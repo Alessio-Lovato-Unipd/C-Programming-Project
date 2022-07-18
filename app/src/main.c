@@ -64,26 +64,25 @@ int main()
     
     #if(tipo_dati_stampa==1)
 
-    struct weather *head_weather=NULL; //definisco lista per il salvataggio dei dati meteo
     struct weather *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-    struct altezze *valori_alt = NULL;
+    struct dati_weather *dati = NULL;
 	bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
     int errore=0;
 
-    head_weather=estrazione_dati_weather(head_weather,valori_alt, PERCORSO_WEATHER, &errore);
+    dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
     if (errore==CSV_E_IO)
     {
         return(EXIT_FAILURE);
     }
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_weather(7000, head_weather);
+    temporaneo = cerca_dati_weather("2010-01-01 09:00:00+01:00",dati->head_weather);
     if (temporaneo == NULL)
     {
         printf("Giorno e ora non trovati!\n\n\n");
     }else{
-        printf("Ordine temporale del dato: %d\n", temporaneo->ordine);
+        printf("Ordine temporale del dato: %s\n", temporaneo->orario);
         printf("Pressione: %f\n", temporaneo->pressione);
         printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
         printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
@@ -94,10 +93,10 @@ int main()
     //fine stampa elemento lista
 
     //esempio stampa lista per verifica turbine_data.csv         
-    temporaneo=head_weather;
+    temporaneo=dati->head_weather;
     printf("*****   Stampa elementi lista   *****\n\n");
     while (!ultimo) {
-        printf("Ordine temporale del dato: %d\n", temporaneo->ordine);
+        printf("Ordine temporale del dato: %s\n", temporaneo->orario);
         printf("Pressione: %f\n", temporaneo->pressione);
         printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
         printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
@@ -120,7 +119,7 @@ int main()
     }
     //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
 
-    svuota_lista_weather(head_weather, valori_alt); //deallocazione memoria heap
+    svuota_dati_weather(dati); //deallocazione memoria heap
 
     return 0;
 

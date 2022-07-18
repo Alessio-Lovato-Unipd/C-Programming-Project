@@ -39,6 +39,7 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
     csv_error_string(*errore, &error);
 	printf("ERROR: %s\n", error);
 	csv_close(&file);
+    svuota_lista_turbine_data(puntatore);
 	return NULL;
 
 }
@@ -109,7 +110,6 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
     struct csv file;
     char** fields;
     char* error;
-	int count = 1;
 
     *errore = csv_open(&file, percorso_file_weather, SEPARATORE, NUMERO_COLONNE_WEATHER);
     if (*errore == CSV_E_IO)
@@ -136,10 +136,9 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
 	puntatore_dati_weather->h_vel2 = atoi(fields[6]);
 	
     while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        if (cerca_dati_weather(count, puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
+        if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
         {
-            puntatore_dati_weather->head_weather = nuovo_elemento_weather(puntatore_dati_weather->head_weather, fields, count);
-			count++;
+            puntatore_dati_weather->head_weather = nuovo_elemento_weather(puntatore_dati_weather->head_weather, fields);
         }
     }
 
@@ -151,11 +150,12 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
     csv_error_string(*errore, &error);
     printf("ERROR: %s\n", error);
     csv_close(&file);
+    svuota_dati_weather(puntatore_dati_weather);
     return NULL;
 
 }
 
-struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count)
+struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields)
 {
     struct weather *nuova;
     nuova = malloc(sizeof(struct weather));
@@ -169,7 +169,7 @@ struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather,
     }
 
     //salvataggio dati
-    nuova->ordine = count;
+    nuova->orario = fields[0];
     nuova->pressione = atof(fields[1]); // conversione del dato da stringa a float tramite funzione atof()
     nuova->temperatura1 = atof(fields[2]);
     nuova->velocita_vento1 = atof(fields[3]);
@@ -185,29 +185,26 @@ struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather,
 
 struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather)
 {
-    struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
-		
-	if(puntatore_dati_weather == NULL){
+    if(puntatore_dati_weather == NULL){
 		return puntatore_dati_weather;
 	}
-	
-    do
-    {
+    struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
+		
+	do{
         temporaneo_weather = puntatore_dati_weather->head_weather->prev;
         free(puntatore_dati_weather->head_weather);
         puntatore_dati_weather->head_weather = temporaneo_weather;
 
     }while(temporaneo_weather!=NULL);
-    //free(temporaneo_weather);
     free(puntatore_dati_weather);
 	return NULL;
 }
 
-struct weather *cerca_dati_weather(int ordine_lista, const struct weather *head_weather)
+struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather)
 {
 	const struct weather *temporaneo_weather = head_weather;
         
-	while((temporaneo_weather != NULL) && (temporaneo_weather->ordine != ordine_lista))
+	while((temporaneo_weather != NULL) && (strcmp(temporaneo_weather->orario, orario)!=0))
 	{
 		temporaneo_weather = temporaneo_weather->prev;
 	}

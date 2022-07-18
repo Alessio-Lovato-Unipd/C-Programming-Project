@@ -38,8 +38,8 @@ void verifica_ricerca_data_ora_weather(void)
 	int errore = 0;
 	struct dati_weather *puntatore = NULL;
 	puntatore = estrazione_dati_weather(puntatore, PERCORSO_WEATHER_PROVA, &errore);
-	struct weather *elemento_cercato = cerca_dati_weather(2, puntatore->head_weather);
-	TEST_ASSERT_EQUAL_INT(2, elemento_cercato->ordine);
+	struct weather *elemento_cercato = cerca_dati_weather("2010-01-01 09:00:00+01:00", puntatore->head_weather);
+	TEST_ASSERT_EQUAL_STRING("2010-01-01 09:00:00+01:00", elemento_cercato->orario);
 	TEST_ASSERT_EQUAL_INT(0,puntatore->h_pressione);
 	puntatore = svuota_dati_weather(puntatore);
 }

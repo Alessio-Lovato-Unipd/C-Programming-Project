@@ -13,7 +13,7 @@
     };
 
     struct weather {
-        int ordine;
+        char *orario;
         float pressione;
         float temperatura1; //ad altezza=2m
         float velocita_vento1; //ad altezza=10m
@@ -49,10 +49,10 @@
 
     struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
 
-    struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count);
+    struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields);
 
     struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_head_weather);
 
-    struct weather *cerca_dati_weather(int ordine_lista, const struct weather *puntatore_head_weather);
+    struct weather *cerca_dati_weather(char *orario, const struct weather *puntatore_head_weather);
 
 #endif
