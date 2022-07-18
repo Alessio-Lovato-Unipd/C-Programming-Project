@@ -90,29 +90,31 @@ float calcolo_densita_aria(enum tipo_calcolo_densita metodo, float altezza1, flo
 }
 
 
+/********************INTERROGAZIONE DELL'UTENTE***********************/
+void interroga_utente(struct tipo_metodo *m, float *ostacolo)
+{
 
+}
 
 
 /******************CALCOLO DEI PARAMETRI******************/
 void calcolo_parametri(const struct weather *in, const struct altezze  *h, float altezza_mozzo, struct parametro *out)
 {
     struct weather *p;    
-    enum tipo_calcolo_vento metodo_calcolo_vento;
-    enum tipo_calcolo_temperatura metodo_calcolo_temperatura;
-    enum tipo_calcolo_densita metodo_calcolo_densita;
+    struct tipo_metodo metodo;
     float vento, temperatura, pressione, densita;
     float altezza_ostacolo;
 
     //Chiedo quali metodi di calcolo vuole utilizzare per ognuno dei 3 valori da calcolare
-    interroga_utente(metodo_calcolo_vento, metodo_calcolo_temperatura, metodo_calcolo_densita, altezza_ostacolo);
+    interroga_utente(&metodo, &altezza_ostacolo);
 
     //Calcolo tutti i parametri a partire dai dati weather
     for(p = in; p != NULL; p = p->prev) {
 
         //calcolo i 3 parametri
-        vento = calcolo_vel_vento(metodo_calcolo_vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
-        temperatura = calcolo_temperatura_aria(metodo_calcolo_temperatura, h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
-        densita = calcolo_densita_aria(metodo_calcolo_densita, h->h_pressione, in->pressione, , temperatura,altezza_mozzo);  
+        vento = calcolo_vel_vento(metodo.vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
+        temperatura = calcolo_temperatura_aria(metodo.temperatura, h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
+        densita = calcolo_densita_aria(metodo.densita, h->h_pressione, in->pressione, , temperatura,altezza_mozzo);  
         
         //salvo i 3 parametri calcolati nell'elemento corrente
         out = aggiungi_elemento(out, vento, temperatura, densita);
