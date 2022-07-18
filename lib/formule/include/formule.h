@@ -4,6 +4,9 @@
     
     #define GRADIENTE_TEMPERATURA 0.0065
     #define GRADIENTE_PRESSIONE 0.125
+    #define PRESSIONE_AMBIENTE_STANDARD_PA 101325 
+    #define DENSITA_AMBIENTE_STANDARD 1.292
+    #define TEMPERATURA_ABIENTE_STANDARD 273.15
     #define COSTANTE_GAS_IDEALE 287.058
 
     //interpolazione lineare tra due punti
@@ -17,7 +20,7 @@
 
     float gradiente_lineare(float x1, float y1, float x);
 
-    float barometrico(float h1, float p1, float T0, float T_x, float h_x);
+    float barometrico(float h1, float p1, float T_x, float h_x);
 
     float gas_ideale(float h1, float p1, float T_x, float h_x);
 

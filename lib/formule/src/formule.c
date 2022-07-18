@@ -37,9 +37,9 @@ float p_x(float p1, float h1, float h_x)//calcola la pressione a livello di x
     return 100 * ((p1 / 100) - (GRADIENTE_PRESSIONE * (h_x - h1)));
 }
 
-float barometrico(float h1, float p1, float T0, float T_x, float h_x)//T_x (mozzo) la passo per paramtri perchè non posso sapere quale metodo di calcolo va usato
+float barometrico(float h1, float p1, float T_x, float h_x)//T_x (mozzo) la passo per paramtri perchè non posso sapere quale metodo di calcolo va usato
 {
-    return p_x(p1, h1, h_x) * ((densita0 * T0 * 100) / (pressione0 * T_x)); //T0 quale è??
+    return p_x(p1, h1, h_x) * ((DENSITA_AMBIENTE_STANDARD * TEMPERATURA_ABIENTE_STANDARD * 100) / (PRESSIONE_AMBIENTE_STANDARD_PA * T_x)); 
 }
 
 float gas_ideale(float h1, float p1, float T_x, float h_x)
