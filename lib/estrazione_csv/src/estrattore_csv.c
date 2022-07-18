@@ -1,7 +1,8 @@
 #include "../include/estrattore_csv.h"
 
 #define NUMERO_COLONNE_TURBINA 2
-#define NUMERO_COLONNE_WEATHER 7 //da rivedere
+#define NUMERO_COLONNE_WEATHER 7 
+#define NUMERO_COLONNE_POWER_COEFFICIENT 54
 #define SEPARATORE ','
 
 /*****************************************************************************************************
@@ -167,3 +168,66 @@ void chiusura_file_weather(struct csv *file, struct dati_weather *altezze)
 	return (struct weather *)temporaneo_weather;
 }*/
    
+
+/*****************************************************************************************************
+************************    GESTIONE FILE power_coefficient_curves.csv      **************************************
+******************************************************************************************************/
+
+struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, char *percorso_file_power_coefficient_curves, int *errore)
+{
+    struct csv file;
+	char** fields;
+    char* error;
+
+    *errore = csv_open(&file, percorso_file_power_coefficient_curves, SEPARATORE, NUMERO_COLONNE_POWER_COEFFICIENT);
+    if (*errore == CSV_E_IO)
+    {
+        printf("\n ATTENZIONE!\nLa cartella contenente il file \"power_coefficient_curves.csv\" non si ");
+        printf("trova nel percorso \"../../data/power_coefficient_curves.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
+        return(NULL);
+    }
+	csv_read_record(&file, &fields); //salto l'intestazione del file csv
+
+	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
+        
+            puntatore = salvataggio_coefficienti(puntatore, fields);
+        
+    }
+
+    if (*errore == CSV_END) {
+		csv_close(&file);
+		return puntatore;
+	}
+
+    csv_error_string(*errore, &error);
+	printf("ERROR: %s\n", error);
+	csv_close(&file);
+    svuota_lista_turbine_data(puntatore);
+	return NULL;
+
+}
+
+struct turbina *salvataggio_coefficienti(struct turbina *elemento_attuale_turbina, char** fields)
+{
+    struct turbina *nuova;
+    int i=0;
+    nuova = malloc(sizeof(struct turbina));
+
+    //verifico riuscita allocazione
+    if (nuova == NULL)
+    {
+        printf("Error: malloc() failed in nuovo_elemento\n");
+        svuota_lista_turbine_data(elemento_attuale_turbina);
+        exit(EXIT_FAILURE);
+    }
+
+    //salvataggio dati
+    nuova->nome = (fields[0]);
+    for(i=1; i<NUMERO_COLONNE_POWER_COEFFICIENT; i++)
+        nuova->power_coefficients[i] = atof(fields[i]); 
+    
+    //salvo posizione elemento precedente
+    nuova->prev = elemento_attuale_turbina;
+    return nuova;
+   
+}

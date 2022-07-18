@@ -1,6 +1,8 @@
 cmake_minimum_required( VERSION 3.16.3 )
 
 project( unity_lib
+	VERSION 0.1
+	LANGUAGES C
 	DESCRIPTION "Unity come libreria"
 	)
 

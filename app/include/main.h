@@ -9,5 +9,6 @@
 
     #define PERCORSO_TURBINE_DATA "../../data/turbine_data.csv"
     #define PERCORSO_WEATHER "../../data/weather.csv"
+    #define PERCORSO_POWER_COEFFICIENT "../../data/power_coefficient_curves.csv"
 
 #endif
