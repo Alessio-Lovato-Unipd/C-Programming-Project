@@ -13,17 +13,16 @@
     };
 
     struct weather {
-        int ordine;
+        char *orario;
         float pressione;
         float temperatura1; //ad altezza=2m
         float velocita_vento1; //ad altezza=10m
         float rugosita;
         float temperatura2; //ad altezza=10m
         float velocita_vento2; //ad altezza=80m
-        struct weather *prev;
     };
 
-    struct altezze {
+    struct dati_weather {
         float h_pressione;
         float h_t1;
         float h_vel1;
@@ -46,13 +45,12 @@
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
 
-    struct weather *estrazione_dati_weather(struct weather *puntatore, struct altezze *valori_altezze,  char *const percorso_file_weather, int *errore);
+    struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
+	
+	void controllo_csv(int *errore);
 
-    struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count);
+	void chiusura_file_weather(struct csv *file, struct dati_weather *altezze);
 
-    struct weather *svuota_lista_weather(struct weather *head_weather, struct altezze *valori_altezze);
-
-    struct weather *cerca_dati_weather(int ordine_lista, const struct weather *head_weather);
-
+    /*struct weather *cerca_dati_weather(char *orario, const struct weather *puntatore_head_weather);*/
 
 #endif
