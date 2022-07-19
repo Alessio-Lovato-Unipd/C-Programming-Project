@@ -2,6 +2,7 @@ cmake_minimum_required( VERSION 3.10.2 )
 
 project( test_lib_csv
 	VERSION 0.2
+	LANGUAGES C
 	DESCRIPTION "Test libreria csv"
 	)
 
