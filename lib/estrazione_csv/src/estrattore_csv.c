@@ -121,10 +121,16 @@ struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather
 	}
 	
     *errore = csv_read_record(file, &fields); //salto l'intestazione del file csv
-	if(*errore != CSV_OK)
+	if(*errore != CSV_OK){
 		controllo_csv(errore);
+		return NULL;
+	}
 	
-	csv_read_record(file, &fields);	//salvo la struttura con le informazioni di altezza
+	*errore = csv_read_record(file, &fields);	//salvo la struttura con le informazioni di altezza
+	if(*errore != CSV_OK){
+		controllo_csv(errore);
+		return NULL;
+	}
 	puntatore_dati_weather = malloc(sizeof(struct dati_weather));
 	//verifico riuscita allocazione
     if (puntatore_dati_weather == NULL)
@@ -155,15 +161,4 @@ void chiusura_file_weather(struct csv *file, struct dati_weather *altezze)
 	free(altezze);
 }
 
-/*struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather)
-{
-	const struct weather *temporaneo_weather = head_weather;
-        
-	while((temporaneo_weather != NULL) && (strcmp(temporaneo_weather->orario, orario)!=0))
-	{
-		temporaneo_weather = temporaneo_weather->prev;
-	}
-
-	return (struct weather *)temporaneo_weather;
-}*/
    
