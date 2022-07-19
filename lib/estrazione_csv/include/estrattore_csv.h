@@ -1,7 +1,6 @@
 #ifndef CSV_EXTRACTOR_H
 
     #define CSV_EXTRACTOR_H
-    #define N 54
     #include <stdlib.h>
     #include <stdio.h>
     #include <string.h>
@@ -10,8 +9,9 @@
     struct turbina {
         char *nome;
         int potenza_nominale;
-        float power_coefficients[N];
-        int power_curves[N];
+		float *wind_speed;
+        float *power_coefficients;
+        int *power_curves;
         struct turbina *prev;
     };
 
@@ -58,10 +58,10 @@
 
     struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, char *percorso_file_power_coefficient_curves, int *errore);
 
-    struct turbina *salvataggio_coefficienti(struct turbina *elemento_attuale_turbina, char** fields);
+    void inserimento_power_coefficients(float *array_dati, char **fields);
 
     struct turbina *estrazione_dati_power_curves(struct turbina *puntatore, char *percorso_file_power_curves, int *errore);
 
-    struct turbina *salvataggio_potenze(struct turbina *elemento_attuale_turbina, char** fields);
+    void inserimento_power_curves(int *array_dati, char **fields);
     
 #endif

@@ -4,6 +4,8 @@
 #define NUMERO_COLONNE_WEATHER 7 
 #define NUMERO_COLONNE_POWER_COEFFICIENT 54 //è uguale a NUMERO_COLONNE_POWER_CURVES
 #define SEPARATORE ','
+#define PERCORSO_POWER_COEFFICIENT "../../../data/power_coefficient_curves.csv"
+#define PERCORSO_POWER_CURVES "../../../data/power_curves.csv"
 
 /*****************************************************************************************************
 ************************    GESTIONE FILE turbine_data.csv      **************************************
@@ -29,6 +31,8 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
         if (cerca_dati_turbina(fields[0],puntatore)==NULL) // verifico che non esista un elemento con lo stesso identificativo "turbine_type"
         {
             puntatore = nuovo_elemento_turbina(puntatore, fields);
+			estrazione_dati_power_coefficient(puntatore, PERCORSO_POWER_COEFFICIENT, errore);
+			estrazione_dati_power_curves(puntatore, PERCORSO_POWER_CURVES, errore);
         }
     }
 
@@ -181,12 +185,19 @@ struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, cha
         printf("trova nel percorso \"../../data/power_coefficient_curves.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
         return(NULL);
     }
-	csv_read_record(&file, &fields); //salto l'intestazione del file csv
-
+	csv_read_record(&file, &fields); //salvo le velocità del vento per avere corrispondenza con i coefficienti
+	for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT; i++)
+		puntatore->wind_speed[i - 1] = atof(fields[i]);
+	
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        
-            puntatore = salvataggio_coefficienti(puntatore, fields);
-        
+        if(puntatore->nome == fields[0]){
+			puntatore->power_coefficients = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_COEFFICIENT - 1));
+			if (puntatore->power_coefficients == NULL){
+				printf("Error: malloc() failed in estrazione_dati_weather\n");
+				exit(EXIT_FAILURE);
+			}
+			inserimento_power_coefficients(puntatore->power_coefficients, fields);
+		}
     }
 
     if (*errore == CSV_END) {
@@ -199,40 +210,18 @@ struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, cha
 	csv_close(&file);
     svuota_lista_turbine_data(puntatore);
 	return NULL;
-
 }
 
-struct turbina *salvataggio_coefficienti(struct turbina *elemento_attuale_turbina, char** fields)
+void inserimento_power_coefficients(float *array_dati, char **fields)
 {
-    struct turbina *nuova;
-    int i=0;
-    nuova = malloc(sizeof(struct turbina));
-
-    //verifico riuscita allocazione
-    if (nuova == NULL)
-    {
-        printf("Error: malloc() failed in nuovo_elemento\n");
-        svuota_lista_turbine_data(elemento_attuale_turbina);
-        exit(EXIT_FAILURE);
-    }
-
-    //salvataggio dati
-    nuova->nome = (fields[0]);
-    for(i=1; i<NUMERO_COLONNE_POWER_COEFFICIENT; i++)
-        if (strcmp(fields[i], "")!= 0)
-        {
-            nuova->power_coefficients[i] = atof(fields[i]); 
-        }
-        else
-        {
-            nuova->power_coefficients[i] = -1;
-        };
-    
-    //salvo posizione elemento precedente
-    nuova->prev = elemento_attuale_turbina;
-    return nuova;
-   
+	for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT; i++){
+		if (strcmp(fields[i], "")!= 0)
+				array_dati[i - 1] = atof(fields[i]); 
+			else
+				array_dati[i - 1] = -1;
+	}
 }
+
 
 /*****************************************************************************************************
 ************************    GESTIONE FILE power_curves.csv      **************************************
@@ -251,12 +240,19 @@ struct turbina *estrazione_dati_power_curves(struct turbina *puntatore, char *pe
         printf("trova nel percorso \"../../data/power_curves.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
         return(NULL);
     }
-	csv_read_record(&file, &fields); //salto l'intestazione del file csv
-
+	csv_read_record(&file, &fields); //salvo le velocità del vento per avere corrispondenza con le potenze
+	for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT; i++)
+		puntatore->wind_speed[i - 1] = atof(fields[i]);
+	
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        
-            puntatore = salvataggio_potenze(puntatore, fields);
-        
+        if(puntatore->nome == fields[0]){
+			puntatore->power_curves = malloc(sizeof(int) * (NUMERO_COLONNE_POWER_COEFFICIENT - 1));
+			if (puntatore->power_curves == NULL){
+				printf("Error: malloc() failed in estrazione_dati_weather\n");
+				exit(EXIT_FAILURE);
+			}
+			inserimento_power_curves(puntatore->power_curves, fields);
+		}
     }
 
     if (*errore == CSV_END) {
@@ -269,37 +265,15 @@ struct turbina *estrazione_dati_power_curves(struct turbina *puntatore, char *pe
 	csv_close(&file);
     svuota_lista_turbine_data(puntatore);
 	return NULL;
-
 }
 
-struct turbina *salvataggio_potenze(struct turbina *elemento_attuale_turbina, char** fields)
+void inserimento_power_curves(int *array_dati, char **fields)
 {
-    struct turbina *nuova;
-    int i=0;
-    nuova = malloc(sizeof(struct turbina));
-
-    //verifico riuscita allocazione
-    if (nuova == NULL)
-    {
-        printf("Error: malloc() failed in nuovo_elemento\n");
-        svuota_lista_turbine_data(elemento_attuale_turbina);
-        exit(EXIT_FAILURE);
-    }
-
-    //salvataggio dati
-    nuova->nome = (fields[0]);
-    for(i=1; i<NUMERO_COLONNE_POWER_COEFFICIENT; i++)
-        if (strcmp(fields[i], "")!= 0)
-        {
-            nuova->power_curves[i] = atoi(fields[i]); 
-        }
-        else
-        {
-            nuova->power_curves[i] = -1;
-        }; 
-    
-    //salvo posizione elemento precedente
-    nuova->prev = elemento_attuale_turbina;
-    return nuova;
-   
+	for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT; i++){
+		if (strcmp(fields[i], "")!= 0)
+				array_dati[i - 1] = atoi(fields[i]); 
+			else
+				array_dati[i - 1] = -1;
+	}
 }
+
