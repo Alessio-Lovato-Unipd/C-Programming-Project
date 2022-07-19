@@ -224,7 +224,14 @@ struct turbina *salvataggio_coefficienti(struct turbina *elemento_attuale_turbin
     //salvataggio dati
     nuova->nome = (fields[0]);
     for(i=1; i<NUMERO_COLONNE_POWER_COEFFICIENT; i++)
-        nuova->power_coefficients[i] = atof(fields[i]); 
+        if (strcmp(fields[i], "")!= 0)
+        {
+            nuova->power_coefficients[i] = atof(fields[i]); 
+        }
+        else
+        {
+            nuova->power_coefficients[i] = -1;
+        };
     
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;
@@ -287,7 +294,14 @@ struct turbina *salvataggio_potenze(struct turbina *elemento_attuale_turbina, ch
     //salvataggio dati
     nuova->nome = (fields[0]);
     for(i=1; i<NUMERO_COLONNE_POWER_COEFFICIENT; i++)
-        nuova->power_curves[i] = atof(fields[i]); 
+        if (strcmp(fields[i], "")!= 0)
+        {
+            nuova->power_curves[i] = atoi(fields[i]); 
+        }
+        else
+        {
+            nuova->power_curves[i] = -1;
+        }; 
     
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;
