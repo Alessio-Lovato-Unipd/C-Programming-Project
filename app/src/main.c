@@ -1,5 +1,5 @@
 #include "../include/main.h"
-#define tipo_dati_stampa 1 //serve per eseguire solo il codice relativo alla turbina oopure quello relativo al meteo, se pari a 0 esegue le turbine, se pari a 1 esegue il meteo, se pari a 2 esegue i power_coefficients, se pari a 3 esegue le power_curves
+#define tipo_dati_stampa 3 //serve per eseguire solo il codice relativo alla turbina oopure quello relativo al meteo, se pari a 0 esegue le turbine, se pari a 1 esegue il meteo, se pari a 2 esegue i power_coefficients, se pari a 3 esegue le power_curves
 
 
 int main()

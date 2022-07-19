@@ -60,7 +60,7 @@ void verifica_funzione_svuotamento_lista(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	puntatore = svuota_lista_turbine_data(puntatore);
+	svuota_lista_turbine_data(puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 

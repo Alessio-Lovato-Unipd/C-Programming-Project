@@ -45,7 +45,7 @@
     struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields);
 
     //funzione per liberare la memoria heap allocata con la lista
-    struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina);
+    void svuota_lista_turbine_data(struct turbina *head_turbina);
 
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
@@ -60,7 +60,7 @@
 
     struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather);
 
-    struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
+    void svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
 	
 	void controllo_csv(int *errore);
 
