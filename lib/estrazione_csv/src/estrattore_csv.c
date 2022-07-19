@@ -106,9 +106,8 @@ struct turbina *cerca_dati_turbina(char *nome_modello_turbina, const struct turb
 ******************************************************************************************************/
 
 
-struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
+struct dati_weather *apertura_file_weather(struct csv *file, char** fields, struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
 {
-    char** fields;
 
     *errore = csv_open(file, percorso_file_weather, SEPARATORE, NUMERO_COLONNE_WEATHER);
     if (*errore == CSV_E_IO)
@@ -149,6 +148,95 @@ struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather
 	return puntatore_dati_weather;
 }
 
+
+
+struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
+{
+    struct csv file;
+    char** fields=NULL;
+
+   puntatore_dati_weather=apertura_file_weather(&file, fields, puntatore_dati_weather, percorso_file_weather, errore);
+	
+    while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
+        if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
+        {
+            puntatore_dati_weather->head_weather = nuovo_elemento_weather(fields, puntatore_dati_weather);
+        }
+    }
+
+    if (*errore == CSV_END) {
+        csv_close(&file);
+        return puntatore_dati_weather;
+    }
+
+    controllo_csv(errore);
+    svuota_dati_weather(puntatore_dati_weather);
+    return NULL;
+
+}
+
+
+struct weather *nuovo_elemento_weather(char** fields, struct dati_weather *puntatore_dati_weather)
+{
+    struct weather *nuova;
+    nuova = malloc(sizeof(struct weather));
+
+    //verifico riuscita allocazione
+    if (nuova == NULL)
+    {
+        printf("Error: malloc() failed in nuovo_elemento\n");
+        svuota_dati_weather(puntatore_dati_weather);
+        exit(EXIT_FAILURE);
+    }
+
+    //salvataggio dati
+    nuova->orario = fields[0];
+    nuova->pressione = atof(fields[1]); // conversione del dato da stringa a float tramite funzione atof()
+    nuova->temperatura1 = atof(fields[2]);
+    nuova->velocita_vento1 = atof(fields[3]);
+    nuova->rugosita = atof(fields[4]);
+    nuova->temperatura2 = atof(fields[5]);
+    nuova->velocita_vento2 = atof(fields[6]);
+    
+    //salvo posizione elemento precedente
+    nuova->prev = puntatore_dati_weather->head_weather;
+    return nuova;
+}
+
+
+struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather)
+{
+    if(puntatore_dati_weather == NULL){
+		return puntatore_dati_weather;
+	}
+    struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
+		
+	do{
+        temporaneo_weather = puntatore_dati_weather->head_weather->prev;
+        free(puntatore_dati_weather->head_weather);
+        puntatore_dati_weather->head_weather = temporaneo_weather;
+
+    }while(temporaneo_weather!=NULL);
+    free(puntatore_dati_weather);
+	return NULL;
+}
+
+
+
+struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather)
+{
+	const struct weather *temporaneo_weather = head_weather;
+        
+	while((temporaneo_weather != NULL) && (strcmp(temporaneo_weather->orario, orario)!=0))
+	{
+		temporaneo_weather = temporaneo_weather->prev;
+	}
+
+	return (struct weather *)temporaneo_weather;
+}
+
+
+
 void controllo_csv(int *errore)
 {
 	char *error;
@@ -156,11 +244,15 @@ void controllo_csv(int *errore)
     printf("ERROR: %s\n", error);
 }
 
-void chiusura_file_weather(struct csv *file, struct dati_weather *altezze)
+
+
+void chiusura_file_weather(struct csv *file, struct dati_weather *puntatore_dati_weather)
 {
 	csv_close(file);
-	free(altezze);
+    svuota_dati_weather(puntatore_dati_weather);
 }
+
+   
 
    
 

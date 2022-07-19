@@ -23,6 +23,7 @@
         float rugosita;
         float temperatura2; //ad altezza = 10m
         float velocita_vento2; //ad altezza = 80m
+        struct weather *prev;
     };
 
     struct dati_weather {
@@ -32,6 +33,7 @@
         float h_rugosita;
         float h_t2;
         float h_vel2;
+        struct weather *head_weather;
     };
 
     //funzione per estrarre i dati dal file turbine_data.csv
@@ -48,13 +50,23 @@
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
 
-    struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
+    /* GESTIONE DATI WEATHER */
+
+    struct dati_weather *apertura_file_weather(struct csv *file, char** fields, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
+
+    struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore);
+
+    struct weather *nuovo_elemento_weather(char** fields, struct dati_weather *puntatore_dati_weather);
+
+    struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather);
+
+    struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
 	
 	void controllo_csv(int *errore);
 
-	void chiusura_file_weather(struct csv *file, struct dati_weather *altezze);
+	void chiusura_file_weather(struct csv *file, struct dati_weather *puntatore_head_weather);
 
-    /*struct weather *cerca_dati_weather(char *orario, const struct weather *puntatore_head_weather);*/
+    /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
     struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, char *percorso_file_power_coefficient_curves, int *errore);
 
