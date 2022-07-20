@@ -92,14 +92,13 @@ float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pr
 
 
 /******************CALCOLO DEI PARAMETRI******************/
-void calcolo_parametri(const struct weather *in, const struct dati_weather  *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo)
+void calcolo_parametri(const struct weather *in, const struct dati_weather *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo, struct parametro *out)
 {
-    struct parametro out;    
     float vento, temperatura, densita;
 
 
     //Calcolo tutti i parametri a partire dai dati weather
-    for(p = in; p != NULL; p = p->prev) {
+    for(struct weather *p = in; p != NULL; p = p->prev) {
 
         //calcolo i 3 parametri
         vento = calcolo_vel_vento(metodo->vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
@@ -107,6 +106,6 @@ void calcolo_parametri(const struct weather *in, const struct dati_weather  *h, 
         densita = calcolo_densita_aria(metodo->densita, h->h_pressione, in->pressione, temperatura,altezza_mozzo);  
     
         //salvo i 3 parametri calcolati nell'elemento corrente
-        aggiungi_elemento(out, vento, densita);
+        out = aggiungi_elemento(out, vento, densita);
     }
 }
