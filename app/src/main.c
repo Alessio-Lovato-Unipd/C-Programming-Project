@@ -83,43 +83,70 @@ int main()
 
     
     
-    #if(tipo_dati_stampa==1)
+#if(tipo_dati_stampa==1)
 
-    //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-	struct csv file;
+    struct weather *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
     struct dati_weather *dati = NULL;
     int errore=0;
 
     dati = apertura_file_weather(&file, dati, PERCORSO_WEATHER, &errore);
+	
+	bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
+    bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
+
+    dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
     if (errore==CSV_E_IO)
     {
         return(EXIT_FAILURE);
     }
 	controllo_csv(&errore);
-    //lettura weather in una funzione secondaria
-	
-	//lettura struttura altezzehead_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
-    if (errore==CSV_E_IO)
-    {
-        return(EXIT_FAILURE);
-    }
-    // fine generazione lista
 
-	printf("%f\t", dati->h_pressione);
-    printf("%f\t", dati->h_t1);
-	printf("%f\t", dati->h_vel1);
-	printf("%f\t", dati->h_rugosita);
-	printf("%f\t", dati->h_t2);
-	printf("%f\n", dati->h_vel2);
-	
-	chiusura_file_weather(&file, dati);
-	
+    //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
+    temporaneo = cerca_dati_weather("2010-01-01 09:00:00+01:00",dati->head_weather);
+    if (temporaneo == NULL)
+    {
+        printf("Giorno e ora non trovati!\n\n\n");
+    }else{
+        printf("Ordine temporale del dato: %s\n", temporaneo->orario);
+        printf("Pressione: %f\n", temporaneo->pressione);
+        printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
+        printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
+        printf("Rugosita': %f\n", temporaneo->rugosita);
+        printf("Temperatura ad altezza2: %f\n", temporaneo->temperatura2);
+        printf("Velocita' del vento ad altezza2: %f\n", temporaneo->velocita_vento2);
+    }
+    //fine stampa elemento lista
+
+    //esempio stampa lista per verifica turbine_data.csv         
+    temporaneo=dati->head_weather;
+    printf("*****   Stampa elementi lista   *****\n\n");
+    while (!ultimo) {
+        printf("Ordine temporale del dato: %s\n", temporaneo->orario);
+        printf("Pressione: %f\n", temporaneo->pressione);
+        printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
+        printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
+        printf("Rugosita': %f\n", temporaneo->rugosita);
+        printf("Temperatura ad altezza2: %f\n", temporaneo->temperatura2);
+        printf("Velocita' del vento ad altezza2: %f\n", temporaneo->velocita_vento2);
+        printf("----\n\n");
+
+        temporaneo=temporaneo->prev;
+
+        if (temporaneo == NULL)
+        {
+            penultimo=true;
+        }
+
+        if (penultimo)
+        {
+            ultimo=true;
+        }
+    }
+    //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
+
+    svuota_dati_weather(dati); //deallocazione memoria heap
+
     return 0;
 
     #endif
-
-
-
-   
-
 }
