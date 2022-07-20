@@ -96,7 +96,7 @@ struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina)
 }
 
 
-struct turbina *cerca_dati_turbina(char *nome_modello_turbina, const struct turbina *head_turbina)
+struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, const struct turbina *head_turbina)
 {
 	const struct turbina *temporaneo_turbina = head_turbina;
         
@@ -206,7 +206,7 @@ void reading_file_power_coefficient(struct csv *file, struct turbina *const punt
 	
 	temp = puntatore;
 	while ((*errore = csv_read_record(file, &fields)) == CSV_OK) {
-		while(temp != NULL){
+		while(temp != NULL){//faccio scorrere la lista per inserire in ogni turbina i dati delle curve
 			if(strcmp(temp->nome, fields[0]) == 0){
 				temp->power_coefficients = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_COEFFICIENT - 1));
 				if (temp->power_coefficients == NULL){
@@ -270,7 +270,7 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
 	
 	temp = puntatore;
 	while ((*errore = csv_read_record(file, &fields)) == CSV_OK) {
-		while(temp != NULL){
+		while(temp != NULL){ //faccio scorrere la lista per inserire in ogni turbina i dati delle curve
 			if(strcmp(temp->nome, fields[0]) == 0){
 				temp->power_curves = malloc(sizeof(int) * (NUMERO_COLONNE_POWER_COEFFICIENT - 1));
 				if (temp->power_curves == NULL){

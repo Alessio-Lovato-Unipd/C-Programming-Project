@@ -50,7 +50,7 @@
     struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina);
 
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
-    struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
+    struct turbina *cerca_dati_turbina(const char *nome_modello_turbina,  const struct turbina *head_turbina);
 
     struct dati_weather *apertura_file_weather(struct csv *file, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
 	
