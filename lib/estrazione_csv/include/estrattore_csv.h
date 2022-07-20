@@ -41,7 +41,7 @@
     //funzione per estrarre i dati dal file turbine_data.csv
     /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
        fare riferimento alla libreria csv per risolvere tali errori */
-    struct turbina *estrazione_dati_turbine(struct csv *file_coefficient, struct csv *file_power, struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
+    struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
 
     // creazione nuovo elemento lista turbina
     struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields);
@@ -60,15 +60,11 @@
 
     /*struct weather *cerca_dati_weather(char *orario, const struct weather *puntatore_head_weather);*/
 
-    void apertura_file_power_coefficient(struct csv *file, char *percorso_file_power_coefficient_curves, int *errore);
-	
-	int salvataggio_power_coefficient(struct csv *file, struct turbina *puntatore, int *errore);
+    void reading_file_power_coefficient(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
 	
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
-	void apertura_file_power_curves(struct csv *file, char *percorso_file_power_curves, int *errore);
-	
-	int salvataggio_power_curves(struct csv *file, struct turbina *puntatore, int *errore);
+	void reading_file_power_curves(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
 	
 	void inserimento_power_curves(int *array_dati, char **fields);
     

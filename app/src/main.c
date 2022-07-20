@@ -14,14 +14,14 @@ int main()
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
     int errore=0;
 	
-	apertura_file_power_coefficient(&file_coefficient, PERCORSO_POWER_COEFFICIENT, &errore);
-	apertura_file_power_curves(&file_coefficient, PERCORSO_POWER_CURVES, &errore);
     //generazione lista con lettura da file
-    head_turbina=estrazione_dati_turbine(&file_coefficient, &file_power, head_turbina, PERCORSO_TURBINE_DATA, &errore);
+    head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
     if (errore==CSV_E_IO)
     {
         return(EXIT_FAILURE);
     }
+	reading_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
+	reading_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
     // fine generazione lista
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
@@ -42,17 +42,20 @@ int main()
     while (!ultimo) {
         printf(" Modello turbina: %s\n", temporaneo->nome);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
+		printf("Velocità vento: \n");
 		for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
-			printf(" Velocità vento: %f\t", temporaneo->wind_speed[i]);
+			printf("%f\t", temporaneo->wind_speed[i]);
 		printf("\n");
+		printf("Coefficienti di potenza: \n");
 		if(temporaneo->power_coefficients != NULL){
 			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
-				printf(" Coefficienti di potenza: %f\t", temporaneo->power_coefficients[i]);
+				printf("%f\t", temporaneo->power_coefficients[i]);
 		}
 		printf("\n");
+		printf("Curva di potenza: \n");
 		if(temporaneo->power_curves != NULL){
 			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
-				printf(" Potenze: %d\t", temporaneo->power_curves[i]);
+				printf("%d\t", temporaneo->power_curves[i]);
 		}
 		printf("\n");
         printf("----\n\n");
