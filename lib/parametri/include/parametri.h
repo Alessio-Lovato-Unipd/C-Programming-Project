@@ -11,6 +11,7 @@
     struct parametro{
         float vento;
         float densita_aria;
+        struct parametro *next;
     };
     
     struct tipo_metodo{
@@ -25,6 +26,5 @@
 
     float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pressione1,float temperatura_x,float altezza_x);
 
-    struct parametro calcolo_parametri(const struct weather *in, const struct altezze  *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo);
-
+    
 #endif

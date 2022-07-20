@@ -9,17 +9,20 @@
     struct turbina {
         char *nome;
         int potenza_nominale;
+		float *wind_speed;
+        float *power_coefficients;
+        int *power_curves;
         struct turbina *prev;
     };
 
     struct weather {
         char *orario;
         float pressione;
-        float temperatura1; //ad altezza=2m
-        float velocita_vento1; //ad altezza=10m
+        float temperatura1; //ad altezza = 2m
+        float velocita_vento1; //ad altezza = 10m
         float rugosita;
-        float temperatura2; //ad altezza=10m
-        float velocita_vento2; //ad altezza=80m
+        float temperatura2; //ad altezza = 10m
+        float velocita_vento2; //ad altezza = 80m
     };
 
     struct dati_weather {
@@ -53,4 +56,12 @@
 
     /*struct weather *cerca_dati_weather(char *orario, const struct weather *puntatore_head_weather);*/
 
+    struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, char *percorso_file_power_coefficient_curves, int *errore);
+
+    void inserimento_power_coefficients(float *array_dati, char **fields);
+
+    struct turbina *estrazione_dati_power_curves(struct turbina *puntatore, char *percorso_file_power_curves, int *errore);
+
+    void inserimento_power_curves(int *array_dati, char **fields);
+    
 #endif

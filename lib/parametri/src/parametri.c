@@ -3,6 +3,27 @@
 #include "formule.h"
 #include "estrattore_csv.h"
 
+/************************GESTIONE STRUTTURA PARAMETRI********************/
+
+struct parametro *aggiungi_elemento(const struct parametro *elemento_attuale, float val_vento, float val_densita)
+{
+    struct parametro *nuovo_elemento;
+
+    nuovo_elemento = malloc(sizeof(struct parametro));
+    if (nuovo_elemento == NULL) {
+        printf("Error: malloc() failed in insert()\n");
+		exit(EXIT_FAILURE);
+    }
+
+    //salvo i dati
+    nuovo_elemento->vento = val_vento;
+    nuovo_elemento->densita_aria = val_densita;
+    //salvo posizione 
+    nuovo_elemento->next = elemento_attuale; 
+
+    return nuovo_elemento;
+}
+
 
 /**************************GESTIONE DEI CALCOLI*****************/
 float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo,float altezza_x)
@@ -71,15 +92,21 @@ float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pr
 
 
 /******************CALCOLO DEI PARAMETRI******************/
-struct parametro calcolo_parametri(const struct weather *in, const struct dati_weather  *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo)
+void calcolo_parametri(const struct weather *in, const struct dati_weather  *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo)
 {
     struct parametro out;    
-    float temperatura;
+    float vento, temperatura, densita;
 
-    //calcolo i 3 parametri
-    out.vento = calcolo_vel_vento(metodo->vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
-    temperatura = calcolo_temperatura_aria(metodo->temperatura, h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
-    out.densita_aria = calcolo_densita_aria(metodo->densita, h->h_pressione, in->pressione, temperatura,altezza_mozzo);  
+
+    //Calcolo tutti i parametri a partire dai dati weather
+    for(p = in; p != NULL; p = p->prev) {
+
+        //calcolo i 3 parametri
+        vento = calcolo_vel_vento(metodo->vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
+        temperatura = calcolo_temperatura_aria(metodo->temperatura, h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
+        densita = calcolo_densita_aria(metodo->densita, h->h_pressione, in->pressione, temperatura,altezza_mozzo);  
     
-    return out;
+        //salvo i 3 parametri calcolati nell'elemento corrente
+        aggiungi_elemento(out, vento, densita);
+    }
 }
