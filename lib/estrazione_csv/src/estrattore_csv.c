@@ -215,6 +215,7 @@ void reading_file_power_coefficient(struct csv *file, struct turbina *const punt
 			}
 			temp = scorri_lista_turbina(temp);
 		}
+		temp = puntatore;
 	}
 	if (*errore != CSV_END) {
 		exit(EXIT_FAILURE);
@@ -267,6 +268,7 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
 			temp->wind_speed[i - 1] = atof(fields[i]);
 	}while((temp = scorri_lista_turbina(temp)) != NULL);
 	
+	temp = puntatore;
 	while ((*errore = csv_read_record(file, &fields)) == CSV_OK) {
 		while(temp != NULL){
 			if(strcmp(temp->nome, fields[0]) == 0){
@@ -279,6 +281,7 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
 			}
 			temp = scorri_lista_turbina(temp);
 		}
+		temp = puntatore;
     }
 
     if (*errore == CSV_END) {
