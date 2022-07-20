@@ -1,17 +1,21 @@
 #ifndef CSV_EXTRACTOR_H
 
     #define CSV_EXTRACTOR_H
-    #define N 54
     #include <stdlib.h>
     #include <stdio.h>
     #include <string.h>
     #include "../../../external/csv/src/csv.h"
+	#define NUMERO_COLONNE_TURBINA 2
+	#define NUMERO_COLONNE_WEATHER 7 
+	#define NUMERO_COLONNE_POWER_COEFFICIENT 54 //è uguale a NUMERO_COLONNE_POWER_CURVES
+	#define SEPARATORE ','
 
     struct turbina {
         char *nome;
         int potenza_nominale;
-        float power_coefficients[N];
-        int power_curves[N];
+		float *wind_speed;
+        float *power_coefficients;
+        int *power_curves;
         struct turbina *prev;
     };
 
@@ -49,6 +53,8 @@
 
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(char *nome_modello_turbina,  const struct turbina *head_turbina);
+	
+	struct turbina *scorri_lista_turbina(struct turbina *puntatore);
 
     /* GESTIONE DATI WEATHER */
 
@@ -68,12 +74,12 @@
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
-    struct turbina *estrazione_dati_power_coefficient(struct turbina *puntatore, char *percorso_file_power_coefficient_curves, int *errore);
-
-    struct turbina *salvataggio_coefficienti(struct turbina *elemento_attuale_turbina, char** fields);
-
-    struct turbina *estrazione_dati_power_curves(struct turbina *puntatore, char *percorso_file_power_curves, int *errore);
-
-    struct turbina *salvataggio_potenze(struct turbina *elemento_attuale_turbina, char** fields);
+    void reading_file_power_coefficient(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
+	
+	void inserimento_power_coefficients(float *array_dati, char **fields);
+	
+	void reading_file_power_curves(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
+	
+	void inserimento_power_curves(int *array_dati, char **fields);
     
 #endif

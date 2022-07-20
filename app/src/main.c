@@ -1,5 +1,5 @@
 #include "../include/main.h"
-#define tipo_dati_stampa 3 //serve per eseguire solo il codice relativo alla turbina oopure quello relativo al meteo, se pari a 0 esegue le turbine, se pari a 1 esegue il meteo, se pari a 2 esegue i power_coefficients, se pari a 3 esegue le power_curves
+#define tipo_dati_stampa 0 //serve per eseguire solo il codice relativo alla turbina oopure quello relativo al meteo, se pari a 0 esegue le turbine, se pari a 1 esegue il meteo, se pari a 2 esegue i power_coefficients, se pari a 3 esegue le power_curves
 
 
 int main()
@@ -8,6 +8,8 @@ int main()
 
     struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
     struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
+	struct csv file_coefficient;
+	struct csv file_power;
     bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
     int errore=0;
@@ -18,6 +20,8 @@ int main()
     {
         return(EXIT_FAILURE);
     }
+	reading_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
+	reading_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
     // fine generazione lista
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
@@ -37,6 +41,22 @@ int main()
     while (!ultimo) {
         printf(" Modello turbina: %s\n", temporaneo->nome);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
+		printf("Velocità vento: \n");
+		for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
+			printf("%f\t", temporaneo->wind_speed[i]);
+		printf("\n");
+		printf("Coefficienti di potenza: \n");
+		if(temporaneo->power_coefficients != NULL){
+			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
+				printf("%f\t", temporaneo->power_coefficients[i]);
+		}
+		printf("\n");
+		printf("Curva di potenza: \n");
+		if(temporaneo->power_curves != NULL){
+			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
+				printf("%d\t", temporaneo->power_curves[i]);
+		}
+		printf("\n");
         printf("----\n\n");
 
         temporaneo=temporaneo->prev;
@@ -124,130 +144,4 @@ int main()
     return 0;
 
     #endif
-
-
-
-    #if(tipo_dati_stampa==2)
-
-    struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
-    struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-    bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
-    bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
-    int errore=0;
-    int i=0;
-
-    head_turbina=estrazione_dati_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
-    if (errore==CSV_E_IO)
-    {
-        return(EXIT_FAILURE);
-    }
-    // fine generazione lista
-
-     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_turbina("DUMMY 2", head_turbina);
-    if (temporaneo == NULL)
-    {
-        printf("Modello turbina non trovato!\n\n\n");
-    }else{
-        printf("Ricerca modello: %s\n", temporaneo->nome);
-        for(i=1; i<54; i++)
-            printf(" Coefficienti: %f\n", temporaneo->power_coefficients[i]);
-        printf("----\n\n");
-    }
-    //fine stampa elemento lista
-
-    temporaneo=head_turbina;
-    printf("*****   Stampa elementi lista   *****\n\n");
-    while (!ultimo) {
-        printf(" Modello turbina: %s\n", temporaneo->nome);
-
-        for(i=1; i<54; i++)
-            printf(" Coefficienti: %f\n", temporaneo->power_coefficients[i]);
-
-        printf("----\n\n");
-
-        temporaneo=temporaneo->prev;
-
-        if (temporaneo == NULL)
-        {
-            penultimo=true;
-        }
-
-        if (penultimo)
-        {
-            ultimo=true;
-        }
-    }
-    //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
-
-
-    svuota_lista_turbine_data(head_turbina); //deallocazione memoria heap
-
-    return 0;
-
-    #endif
-
-
-
-    #if(tipo_dati_stampa==3)
-
-    struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
-    struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-    bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
-    bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
-    int errore=0;
-    int i=0;
-
-    head_turbina=estrazione_dati_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore);
-    if (errore==CSV_E_IO)
-    {
-        return(EXIT_FAILURE);
-    }
-    // fine generazione lista
-
-     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_turbina("DUMMY 3", head_turbina);
-    if (temporaneo == NULL)
-    {
-        printf("Modello turbina non trovato!\n\n\n");
-    }else{
-        printf("Ricerca modello: %s\n", temporaneo->nome);
-        for(i=1; i<54; i++)
-            printf(" Potenza: %d\n", temporaneo->power_curves[i]);
-        printf("----\n\n");
-    }
-    //fine stampa elemento lista
-
-    temporaneo=head_turbina;
-    printf("*****   Stampa elementi lista   *****\n\n");
-    while (!ultimo) {
-        printf(" Modello turbina: %s\n", temporaneo->nome);
-
-        for(i=1; i<54; i++)
-            printf(" Coefficienti: %d\n", temporaneo->power_curves[i]);
-
-        printf("----\n\n");
-
-        temporaneo=temporaneo->prev;
-
-        if (temporaneo == NULL)
-        {
-            penultimo=true;
-        }
-
-        if (penultimo)
-        {
-            ultimo=true;
-        }
-    }
-    //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
-
-
-    svuota_lista_turbine_data(head_turbina); //deallocazione memoria heap
-
-    return 0;
-
-    #endif
-
-
 }
