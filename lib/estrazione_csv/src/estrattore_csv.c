@@ -217,9 +217,6 @@ void reading_file_power_coefficient(struct csv *file, struct turbina *const punt
 		}
 		temp = puntatore;
 	}
-	if (*errore != CSV_END) {
-		exit(EXIT_FAILURE);
-	}
 	
     if (*errore == CSV_END) {
 		csv_close(file);
