@@ -58,11 +58,12 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     nuova->nome = (fields[0]);
     nuova->potenza_nominale = atoi(fields[1]); // conversione del dato da stringa a intero tramite funzione atoi()
 	nuova->wind_speed = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_COEFFICIENT - 1));
+	if(nuova->wind_speed == NULL){
+		printf("Malloc error\n");
+		exit(EXIT_FAILURE);
+	}
 	nuova->power_coefficients = NULL;
 	nuova->power_curves = NULL;
-    
-	if(nuova->wind_speed == NULL)
-		exit(EXIT_FAILURE);
 	
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;
@@ -189,9 +190,10 @@ void reading_file_power_coefficient(struct csv *file, struct turbina *const punt
     {
         printf("\n ATTENZIONE!\nLa cartella contenente il file \"power_coefficient_curves.csv\" non si ");
         printf("trova nel percorso \"../../data/power_coefficient_curves.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
-    }
-	csv_error_string(*errore, &error);
-	printf("ERROR: %s\n", error);
+		csv_error_string(*errore, &error);
+		printf("ERROR: %s\n", error);
+		return;
+	}
 	
 	char **fields = NULL;
 	
@@ -253,9 +255,10 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
     {
         printf("\n ATTENZIONE!\nLa cartella contenente il file \"power_coefficient_curves.csv\" non si ");
         printf("trova nel percorso \"../../data/power_curves.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
+		csv_error_string(*errore, &error);
+		printf("ERROR: %s\n", error);
+		return;
     }
-	csv_error_string(*errore, &error);
-	printf("ERROR: %s\n", error);
 	
 	char **fields = NULL;
 	
