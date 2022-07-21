@@ -8,5 +8,6 @@ project( Testing
 
 add_subdirectory(test_estrazione)
 
-add_subdirectory(test_formule)
 add_subdirectory(test_csv)
+
+add_subdirectory(test_formule)
