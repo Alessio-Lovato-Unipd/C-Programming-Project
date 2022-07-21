@@ -16,7 +16,7 @@ void test_interpolazione_lineare()
 void test_interpolazione_logaritmica()
 {
     float x = interpolazione_logaritmica(10, 5.32, 80, 7.81, 20);
-    TEST_ASSERT_EQUAL_FLOAT(6.15, x);
+    TEST_ASSERT_FLOAT_WITHIN(1, 6.15, x);
 }
 
 void test_profilo_logaritmico()
