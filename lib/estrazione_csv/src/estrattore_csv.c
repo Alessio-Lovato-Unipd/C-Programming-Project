@@ -297,7 +297,6 @@ void reading_file_power_coefficient(struct csv *file, struct turbina *const punt
 	
 	char **fields = NULL;
 	
-	
 	csv_read_record(file, &fields); //salvo le velocità del vento per avere corrispondenza con i coefficienti
 	do{
 		for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT; i++)
