@@ -15,37 +15,44 @@ void test_interpolazione_lineare()
 
 void test_interpolazione_logaritmica()
 {
-    float x = interpolazione_logaritmica()
+    float x = interpolazione_logaritmica(10, 5.32, 80, 7.81, 20);
+    TEST_ASSERT_EQUAL_FLOAT(6.15, x);
 }
 
 void test_profilo_logaritmico()
 {
-
+    float x = profilo_logaritmico(10, 5.32, 0.15, 5, 20);
+    TEST_ASSERT_EQUAL_FLOAT(6.63, x);
 }
 
 void test_hellman()
 {
-
+    float x = hellman(10, 5.32, 0.15, 20);
+    TEST_ASSERT_EQUAL_FLOAT(6.129, x);
 }
 
 void test_gradiente_lineare()
 {
-
+    float x = gradiente_lineare(2, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(267.483, x);
 }
 
 void test_calcolo_pressione()
 {
-
+    float x = p_x(98405.7 , 0, 20);
+    TEST_ASSERT_EQUAL_FLOAT(98155.7, x);
 }
 
 void test_barometrico()
 {
-
+    float x = barometrico(0, 98405.7, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(1.2775, x);
 }
 
 void test_gas_ideale()
 {
-
+    float x = gas_ideale(0, 98405.7, 6.15, 20);
+    TEST_ASSERT_EQUAL_FLOAT(1.2777, x);
 }
 
 
