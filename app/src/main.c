@@ -43,20 +43,20 @@ int main()
         printf(" Modello turbina: %s\n", temporaneo->nome);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
 		printf("Velocità vento: \n");
-		for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
-			printf("%f\t", temporaneo->wind_speed[i]);
+		/*for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
+			printf("%f\t", temporaneo->wind_speed[i]);*/
 		printf("\n");
 		printf("Coefficienti di potenza: \n");
-		if(temporaneo->power_coefficients != NULL){
-			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
+		/*if(temporaneo->power_coefficients != NULL){
+			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1); i++)
 				printf("%f\t", temporaneo->power_coefficients[i]);
-		}
+		}*/
 		printf("\n");
 		printf("Curva di potenza: \n");
-		if(temporaneo->power_curves != NULL){
-			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT - 1); i++)
+		/*if(temporaneo->power_curves != NULL){
+			for(int i = 0; i < (NUMERO_COLONNE_POWER_CURVES - 1); i++)
 				printf("%d\t", temporaneo->power_curves[i]);
-		}
+		}*/
 		printf("\n");
         printf("----\n\n");
 

@@ -5,14 +5,18 @@
     #include <stdio.h>
     #include <string.h>
     #include "../../../external/csv/src/csv.h"
-	#define NUMERO_COLONNE_TURBINA 2
+	#define NUMERO_COLONNE_TURBINA 19
 	#define NUMERO_COLONNE_WEATHER 7 
-	#define NUMERO_COLONNE_POWER_COEFFICIENT 54 //è uguale a NUMERO_COLONNE_POWER_CURVES
+    #define NUMERO_COLONNE_POWER_COEFFICIENT_CURVES 60
+	#define NUMERO_COLONNE_POWER_CURVES 79 
 	#define SEPARATORE ','
 
     struct turbina {
         char *nome;
+        int id;
         int potenza_nominale;
+        int diametro_rotore;
+        float altezza_mozzo;
 		float *wind_speed;
         float *power_coefficients;
         int *power_curves;
