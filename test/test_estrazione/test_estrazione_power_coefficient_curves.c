@@ -90,6 +90,25 @@ void verifica_valori_su_curve_diverse(void)
 	svuota_lista_turbine_data(head);
 }
 
+void verifica_lettura_vel_vento(void)
+{
+	int errore = 0;
+	struct turbina *head = NULL;
+	struct turbina *temp = NULL;
+	struct csv file_coefficienti;
+	struct csv file_potenza;
+	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	temp = head;
+	while(temp != NULL){
+		TEST_ASSERT_EQUAL_FLOAT(0, temp->wind_speed[0]);
+		TEST_ASSERT_EQUAL_FLOAT(0.5, temp->wind_speed[1]);
+		TEST_ASSERT_EQUAL_FLOAT(26, temp->wind_speed[NUMERO_COLONNE_POWER_COEFFICIENT - 2]);
+		temp = scorri_lista_turbina(temp);
+	}
+	svuota_lista_turbine_data(head);
+}
 
 int main()
 {
@@ -100,6 +119,7 @@ int main()
 	RUN_TEST(verifica_ricerca_nome_turbina_e_alcuni_coefficienti);
 	RUN_TEST(verifica_ricerca_nome_turbina_vero_ma_no_curva_coefficienti);
 	RUN_TEST(verifica_valori_su_curve_diverse);
+	RUN_TEST(verifica_lettura_vel_vento);
 	
     return UNITY_END();
 }
