@@ -20,6 +20,8 @@
 
     float gradiente_lineare(float x1, float y1, float x);
 
+    float p_x(float p1, float h1, float h_x);
+
     float barometrico(float h1, float p1, float T_x, float h_x);
 
     float gas_ideale(float h1, float p1, float T_x, float h_x);
