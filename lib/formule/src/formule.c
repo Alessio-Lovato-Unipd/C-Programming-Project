@@ -8,7 +8,7 @@ float interpolazione_lineare(float x1, float y1, float x2, float y2, float x)
 float interpolazione_logaritmica(float x1, float y1, float x2, float y2, float x)
 {
     float numeratore = (log(x) * (y2 - y1)) - y2 * log(x1) + y1 * log(x2);
-    return numeratore / (log(x2) * log(x1)); 
+    return numeratore / (log(x2) - log(x1)); 
 }
 
 float profilo_logaritmico(float x1, float y1, float z0, float hOstacolo, float x)
