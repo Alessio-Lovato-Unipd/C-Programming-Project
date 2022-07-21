@@ -41,7 +41,10 @@ int main()
     printf("*****   Stampa elementi lista   *****\n\n");
     while (!ultimo) {
         printf(" Modello turbina: %s\n", temporaneo->nome);
+        printf(" ID: %d\n", temporaneo->id);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
+        printf(" Diametro del rotore: %d\n", temporaneo->diametro_rotore);
+        printf(" Altezza del mozzo: %f\n", temporaneo->altezza_mozzo);
 		printf("Velocità vento: \n");
 		/*for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
 			printf("%f\t", temporaneo->wind_speed[i]);*/
