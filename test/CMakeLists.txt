@@ -10,10 +10,6 @@ add_subdirectory(test_estrazione)
 
 add_subdirectory(test_csv)
 
-<<<<<<< HEAD
 add_subdirectory(test_formule)
 
 add_subdirectory(test_parametri)
-=======
-add_subdirectory(test_formule)
->>>>>>> testing_formule

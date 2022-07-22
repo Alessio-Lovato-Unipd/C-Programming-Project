@@ -163,12 +163,8 @@ struct dati_weather *apertura_file_weather(struct csv *file, char** fields, stru
 	return puntatore_dati_weather;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count)
-=======
-=======
 
 
 struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
