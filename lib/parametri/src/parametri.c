@@ -5,7 +5,7 @@
 
 /************************GESTIONE STRUTTURA PARAMETRI********************/
 
-struct parametro *aggiungi_elemento(const struct parametro *elemento_attuale, float val_vento, float val_densita)
+struct parametro *aggiungi_elemento(struct parametro *elemento_attuale, float val_vento, float val_densita)
 {
     struct parametro *nuovo_elemento;
 
@@ -18,6 +18,7 @@ struct parametro *aggiungi_elemento(const struct parametro *elemento_attuale, fl
     //salvo i dati
     nuovo_elemento->vento = val_vento;
     nuovo_elemento->densita_aria = val_densita;
+
     //salvo posizione 
     nuovo_elemento->next = elemento_attuale; 
 
@@ -26,12 +27,12 @@ struct parametro *aggiungi_elemento(const struct parametro *elemento_attuale, fl
 
 
 /**************************GESTIONE DEI CALCOLI*****************/
-float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo,float altezza_x)
+float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo, float altezza_x)
 {
     switch (metodo)
     {
     case INTERPOLAZIONE_LINEARE_V:
-        return interpolazione_lineare(altezza1, velocita1, altezza2, velocita1, altezza_x);
+        return interpolazione_lineare(altezza1, velocita1, altezza2, velocita2, altezza_x);
         break;
     
     case INTERPOLAZIONE_LOGARITMICA:
@@ -92,20 +93,23 @@ float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pr
 
 
 /******************CALCOLO DEI PARAMETRI******************/
-void calcolo_parametri(const struct weather *in, const struct dati_weather *h, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo, struct parametro *out)
+struct parametro *calcolo_parametri(const struct dati_weather *dati, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo, struct parametro *head)
 {
     float vento, temperatura, densita;
-
+    struct parametro *out = head;
 
     //Calcolo tutti i parametri a partire dai dati weather
-    for(struct weather *p = in; p != NULL; p = p->prev) {
+    for(struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
 
         //calcolo i 3 parametri
-        vento = calcolo_vel_vento(metodo->vento, h->h_vel1, in->velocita_vento1, h->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
-        temperatura = calcolo_temperatura_aria(metodo->temperatura, h->h_t1, in->temperatura1, h->h_t2, in->temperatura2, altezza_mozzo);
-        densita = calcolo_densita_aria(metodo->densita, h->h_pressione, in->pressione, temperatura,altezza_mozzo);  
+        vento = calcolo_vel_vento(metodo->vento, dati->h_vel1, in->velocita_vento1, dati->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
+        temperatura = calcolo_temperatura_aria(metodo->temperatura, dati->h_t1, in->temperatura1, dati->h_t2, in->temperatura2, altezza_mozzo);
+        densita = calcolo_densita_aria(metodo->densita, dati->h_pressione, in->pressione, temperatura, altezza_mozzo);  
     
         //salvo i 3 parametri calcolati nell'elemento corrente
         out = aggiungi_elemento(out, vento, densita);
     }
+
+    return out;
+    
 }
