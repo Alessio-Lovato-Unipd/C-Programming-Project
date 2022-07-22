@@ -8,8 +8,8 @@ int main()
 
     struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
     struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-	struct csv file_coefficient;
-	struct csv file_power;
+	//struct csv file_coefficient;
+	//struct csv file_power;
     bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
     int errore=0;
@@ -20,12 +20,12 @@ int main()
     {
         return(EXIT_FAILURE);
     }
-	reading_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
-	reading_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
+	//reading_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
+	//reading_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
     // fine generazione lista
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_turbina("DUMMY 2", head_turbina);
+    temporaneo = cerca_dati_turbina("AD116/5000", head_turbina);
     if (temporaneo == NULL)
     {
         printf("Modello turbina non trovato!\n\n\n");
@@ -44,22 +44,22 @@ int main()
         printf(" ID: %d\n", temporaneo->id);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
         printf(" Diametro del rotore: %d\n", temporaneo->diametro_rotore);
-        printf(" Altezza del mozzo: %f\n", temporaneo->altezza_mozzo);
+        //printf(" Altezza del mozzo: %f\n", temporaneo->altezza_mozzo);
 		printf("Velocità vento: \n");
 		/*for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
 			printf("%f\t", temporaneo->wind_speed[i]);*/
 		printf("\n");
 		printf("Coefficienti di potenza: \n");
-		/*if(temporaneo->power_coefficients != NULL){
+		if(temporaneo->power_coefficients != NULL){
 			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1); i++)
 				printf("%f\t", temporaneo->power_coefficients[i]);
-		}*/
+		}
 		printf("\n");
 		printf("Curva di potenza: \n");
-		/*if(temporaneo->power_curves != NULL){
+		if(temporaneo->power_curves != NULL){
 			for(int i = 0; i < (NUMERO_COLONNE_POWER_CURVES - 1); i++)
 				printf("%d\t", temporaneo->power_curves[i]);
-		}*/
+		}
 		printf("\n");
         printf("----\n\n");
 

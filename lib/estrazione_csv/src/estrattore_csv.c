@@ -20,7 +20,20 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
         printf("trova nel percorso \"../../data/turbine_data.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
         return(NULL);
     }
-	csv_read_record(&file, &fields); //salto l'intestazione del file csv
+	*errore=csv_read_record(&file, &fields); //salto l'intestazione del file csv
+	if(*errore != CSV_OK){
+		return NULL;
+	}
+	
+	*errore=csv_read_record(&file, &fields);
+	if(*errore != CSV_OK){
+		return NULL;
+	}
+
+	*errore=csv_read_record(&file, &fields); 
+	if(*errore != CSV_OK){
+		return NULL;
+	}
 
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
         if (cerca_dati_turbina(fields[0],puntatore)==NULL) // verifico che non esista un elemento con lo stesso identificativo "turbine_type"
@@ -61,8 +74,8 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	nuova->id = atoi(fields[1]); // conversione del dato da stringa a intero tramite funzione atoi()
     nuova->potenza_nominale = atoi(fields[5]);
 	nuova->diametro_rotore = atoi(fields[6]);
-	nuova->altezza_mozzo = atof(fields[8]);
-	nuova->wind_speed = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1));
+	//nuova->altezza_mozzo = atof(fields[8]);
+	nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_CURVES - 1));
 	if(nuova->wind_speed == NULL){
 		printf("Malloc error\n");
 		exit(EXIT_FAILURE);

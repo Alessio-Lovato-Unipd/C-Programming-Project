@@ -8,7 +8,9 @@
 	#define NUMERO_COLONNE_TURBINA 19
 	#define NUMERO_COLONNE_WEATHER 7 
     #define NUMERO_COLONNE_POWER_COEFFICIENT_CURVES 60
-	#define NUMERO_COLONNE_POWER_CURVES 79 
+	#define NUMERO_COLONNE_POWER_CURVES 80
+    #define LUNGHEZZA_VETTORE_POWER_COEFFICIENT 58
+    #define LUNGHEZZA_VETTORE_POWER_CURVES 78
 	#define SEPARATORE ','
 
     struct turbina {
@@ -16,7 +18,7 @@
         int id;
         int potenza_nominale;
         int diametro_rotore;
-        float altezza_mozzo;
+        //float altezza_mozzo;
 		float *wind_speed;
         float *power_coefficients;
         int *power_curves;
