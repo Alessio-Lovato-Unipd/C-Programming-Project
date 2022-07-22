@@ -164,9 +164,6 @@ struct dati_weather *apertura_file_weather(struct csv *file, char** fields, stru
 }
 
 
-struct weather *nuovo_elemento_weather(struct weather *elemento_attuale_weather, char** fields, int count)
-
-
 struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
 {
     struct csv file;
@@ -259,10 +256,7 @@ struct weather *cerca_dati_weather(char *orario, const struct weather *head_weat
 }
 
 
-
->>>>>>> e2fd97b5e4ccafac58d9f7c27cbea5e5bb060d2b
 void controllo_csv(int *errore)
->>>>>>> main
 {
 	char *error;
     csv_error_string(*errore, &error);
