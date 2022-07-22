@@ -96,8 +96,6 @@ int main()
     return 0;
 
     #endif
-<<<<<<< HEAD
-=======
 
 
 
@@ -224,5 +222,4 @@ int main()
     #endif
 
 
->>>>>>> 5afb8c2b50cc82d57b7d0f82118f0074e585b3eb
 }
