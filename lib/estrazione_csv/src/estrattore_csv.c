@@ -180,7 +180,6 @@ struct dati_weather *apertura_file_weather(struct csv *file, char** fields, stru
 }
 
 
-
 struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
 {
     struct csv file;
@@ -271,7 +270,6 @@ struct weather *cerca_dati_weather(char *orario, const struct weather *head_weat
 
 	return (struct weather *)temporaneo_weather;
 }
-
 
 
 void controllo_csv(int *errore)
