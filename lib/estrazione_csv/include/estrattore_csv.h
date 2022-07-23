@@ -4,6 +4,7 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include <string.h>
+    #include <stdbool.h>
     #include "../../../external/csv/src/csv.h"
 	#define NUMERO_COLONNE_TURBINA 19
 	#define NUMERO_COLONNE_WEATHER 7 
@@ -18,7 +19,7 @@
         int id;
         int potenza_nominale;
         int diametro_rotore;
-        //float altezza_mozzo;
+        float altezza_mozzo;
 		float *wind_speed;
         float *power_coefficients;
         int *power_curves;
@@ -52,7 +53,7 @@
     struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
 
     // creazione nuovo elemento lista turbina
-    struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields);
+    struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, bool copia, char *punto_virgola);
 
     //funzione per liberare la memoria heap allocata con la lista
     void svuota_lista_turbine_data(struct turbina *head_turbina);

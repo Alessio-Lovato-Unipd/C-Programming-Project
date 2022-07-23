@@ -25,21 +25,14 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 		return NULL;
 	}
 	
-	*errore=csv_read_record(&file, &fields);
+	*errore=csv_read_record(&file, &fields); //salto seconda intestazione
 	if(*errore != CSV_OK){
 		return NULL;
 	}
 
-	*errore=csv_read_record(&file, &fields); 
-	if(*errore != CSV_OK){
-		return NULL;
-	}
 
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        if (cerca_dati_turbina(fields[0],puntatore)==NULL) // verifico che non esista un elemento con lo stesso identificativo "turbine_type"
-        {
-            puntatore = nuovo_elemento_turbina(puntatore, fields);
-        }
+        puntatore = nuovo_elemento_turbina(puntatore, fields, false , strchr(fields[8], ';'));
     }
 
     if (*errore == CSV_END) {
@@ -55,7 +48,7 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 
 }
 
-struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char** fields)
+struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char** fields, bool copia, char *punto_virgola)
 {
     struct turbina *nuova;
     nuova = malloc(sizeof(struct turbina));
@@ -69,12 +62,9 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     }
 
     //salvataggio dati
-    nuova->nome=malloc(sizeof(char) * (strlen(fields[0]) +1 ));
-    strcpy(nuova->nome, fields[0]);
 	nuova->id = atoi(fields[1]); // conversione del dato da stringa a intero tramite funzione atoi()
     nuova->potenza_nominale = atoi(fields[5]);
 	nuova->diametro_rotore = atoi(fields[6]);
-	//nuova->altezza_mozzo = atof(fields[8]);
 	nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_CURVES - 1));
 	if(nuova->wind_speed == NULL){
 		printf("Malloc error\n");
@@ -82,6 +72,54 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	}
 	nuova->power_coefficients = NULL;
 	nuova->power_curves = NULL;
+
+	int n=0;
+	char *punto_virgola_temp = NULL;
+	bool ultima_copia = false;
+	if (!copia)
+	{
+		if (punto_virgola == NULL)
+		{
+			nuova->nome=malloc(sizeof(char) * (strlen(fields[0]) +1 ));
+			strcpy(nuova->nome, fields[0]);
+			nuova->altezza_mozzo = atof(fields[8]);
+		} else {
+			n=(strlen(fields[8])-strlen(punto_virgola));
+		}
+	}else{
+		//creo una copia dell'elemento
+		if (punto_virgola != NULL) //ci sono più copie da fare
+		{
+			punto_virgola++;
+			punto_virgola_temp = strchr(punto_virgola, ';');
+		}
+		if (punto_virgola_temp != NULL){ //non è l'ultimo elemento
+			n=(strlen(punto_virgola)-strlen(punto_virgola_temp));
+		}else{//è l'ultimo elemento
+			n=(strlen(punto_virgola));
+			ultima_copia = true;
+		}
+	}
+
+	if (n != 0)
+	{
+		char *temp = malloc(sizeof(char)*n);
+
+		strncpy(temp, punto_virgola, n);
+		nuova->altezza_mozzo = atof(temp);
+		nuova->nome=malloc(sizeof(char) * (strlen(fields[0]) + n + 2 ));
+		strcpy(nuova->nome, fields[0]);
+		strcat(nuova->nome, "_");
+		strcat(nuova->nome, temp);
+		free(temp);
+		if(!ultima_copia)
+		{
+			if(punto_virgola_temp != NULL)
+				punto_virgola = punto_virgola_temp;
+			elemento_attuale_turbina=nuovo_elemento_turbina(elemento_attuale_turbina, fields, true, punto_virgola);
+		}
+
+	}
 	
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;

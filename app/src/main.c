@@ -44,10 +44,10 @@ int main()
         printf(" ID: %d\n", temporaneo->id);
         printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
         printf(" Diametro del rotore: %d\n", temporaneo->diametro_rotore);
-        //printf(" Altezza del mozzo: %f\n", temporaneo->altezza_mozzo);
-		printf("Velocità vento: \n");
-		/*for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
-			printf("%f\t", temporaneo->wind_speed[i]);*/
+        printf(" Altezza del mozzo: %f\n", temporaneo->altezza_mozzo);
+		printf("Velocità vento: \n\n\n");
+/*	for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
+			printf("%f\t", temporaneo->wind_speed[i]);
 		printf("\n");
 		printf("Coefficienti di potenza: \n");
 		if(temporaneo->power_coefficients != NULL){
@@ -61,7 +61,7 @@ int main()
 				printf("%d\t", temporaneo->power_curves[i]);
 		}
 		printf("\n");
-        printf("----\n\n");
+        printf("----\n\n");  */
 
         temporaneo=temporaneo->prev;
 
@@ -98,7 +98,7 @@ int main()
     bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
 
     dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
-    if (errore==CSV_E_IO)
+    if (errore!=CSV_E_IO)
     {
         return(EXIT_FAILURE);
     }
