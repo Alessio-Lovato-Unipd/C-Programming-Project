@@ -128,7 +128,7 @@ struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, const struc
 	return (struct turbina *)temporaneo_turbina;
 }
 
-struct turbina *scorri_lista_turbina(struct turbina *puntatore)
+struct turbina *scorri_lista_turbina(const struct turbina *puntatore)
 {
 	return puntatore->prev;
 }

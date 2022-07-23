@@ -12,3 +12,5 @@ add_subdirectory(estrazione_csv)
 add_subdirectory(formule)
 
 add_subdirectory(parametri)
+
+add_subdirectory(calcolo_output)

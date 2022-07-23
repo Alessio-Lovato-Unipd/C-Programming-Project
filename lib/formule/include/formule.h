@@ -25,5 +25,7 @@
     float barometrico(float h1, float p1, float T_x, float h_x);
 
     float gas_ideale(float h1, float p1, float T_x, float h_x);
+	
+	float calcolo_potenza_da_coefficienti(float densita_aria, float diametro, float vel_vento, float coefficiente);
 
 #endif

@@ -60,7 +60,7 @@
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
     struct turbina *cerca_dati_turbina(const char *nome_modello_turbina,  const struct turbina *head_turbina);
 	
-	struct turbina *scorri_lista_turbina(struct turbina *puntatore);
+	struct turbina *scorri_lista_turbina(const struct turbina *puntatore);
 
     /* GESTIONE DATI WEATHER */
 
