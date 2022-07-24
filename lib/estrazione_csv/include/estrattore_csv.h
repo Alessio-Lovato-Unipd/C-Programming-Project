@@ -52,7 +52,7 @@
     struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
 
     // creazione nuovo elemento lista turbina
-    struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, bool copia, char *punto_virgola);
+    struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *punto_virgola);
 
     //funzione per liberare la memoria heap allocata con la lista
     void svuota_lista_turbine_data(struct turbina *head_turbina);
@@ -65,7 +65,7 @@
 	
 	struct turbina *scorri_lista_turbina(const struct turbina *puntatore);
 
-    /* GESTIONE DATI WEATHER */
+     /* GESTIONE DATI WEATHER */
 
     struct dati_weather *apertura_file_weather(struct csv *file, char** fields, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
 

@@ -34,7 +34,7 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 	//fine possibile ciclo for
 
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        puntatore = nuovo_elemento_turbina(puntatore, fields, false , strchr(fields[8], ';'));
+        puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
 
 		if(puntatore->altezza_mozzo == 0.0)
 			{
@@ -58,7 +58,7 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 
 }
 
-struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char** fields, bool copia, char *punto_virgola)
+struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char** fields, char *punto_virgola)
 {
     struct turbina *nuova;
     nuova = malloc(sizeof(struct turbina));
@@ -82,70 +82,58 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	nuova->power_curves = NULL;
 
 	int num_caratteri=0;
-	char *punto_virgola_temp = fields[8];
+	char *punto_virgola_temp = NULL;
 	bool ultima_copia = false;
-	char carattere=(char)*punto_virgola_temp;
+	char carattere=(char)*punto_virgola;
 	nuova->altezza_mozzo = 0.0; //inizializzo la variabile, in questo modo se non trovo un'altezza mozzo numerica posso cancellare il nodo
-	if (!copia) //ciclo per il primo elemento preso in esame
-	{
-		if (punto_virgola == NULL)
-		{	
-			//non devo fare copie
-			nuova->id=malloc(sizeof(char) * (strlen(fields[1])  +1 ));
-			strcpy(nuova->id, fields[1]);
-			nuova->altezza_mozzo = atof(fields[8]);
-		} else {
-			//dimensiono il numero di caratteri che contiene l'altezza
-			while(((carattere < '0') || (carattere > '9')) && (punto_virgola_temp != punto_virgola)){	//elimino elementi non numerici prima del valore
-				punto_virgola_temp++;
-				carattere=(char)*punto_virgola_temp;
-			}
-			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
-			
+	
+	//estreggo i valori numerici dell'altezza
+	while(((carattere < '0') || (carattere > '9')) && (carattere != 0)){	//elimino elementi non numerici prima del valore
+			punto_virgola++;
+			carattere=(char)*punto_virgola;
 		}
-	}else{
-		//creo una copia dell'elemento
-		carattere=(char)*punto_virgola;
-		while(((carattere < '0') || (carattere > '9')) && (carattere != 0)){	//elimino elementi non numerici prima del valore
-				punto_virgola++;
-				carattere=(char)*punto_virgola;
-			}
-		punto_virgola_temp = punto_virgola;
-		punto_virgola = strchr(punto_virgola, ';'); //cerco prossimo ;
+	punto_virgola_temp = punto_virgola;
 
-		if (punto_virgola != NULL){ 
-			//non è l'ultimo elemento da creare
-			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
-		}else{
-			//è l'ultimo elemento da creare
-			carattere=(char)*punto_virgola_temp;
-			punto_virgola = punto_virgola_temp;
-			while(((carattere >= '0') && (carattere <= '9') )|| carattere == '.'){	//elimino elementi non numerici dopo del valore
-				punto_virgola++;
-				carattere=(char)*punto_virgola;
-			}
-			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
-			ultima_copia = true;
-		}
+	carattere=(char)*punto_virgola;
+	while(((carattere >= '0') && (carattere <= '9') )|| carattere == '.'){	//elimino elementi non numerici dopo del valore
+		punto_virgola++;
+		carattere=(char)*punto_virgola;
+	}
+	
+	if(carattere == 0)
+	{
+		ultima_copia = true;
+		num_caratteri=(strlen(punto_virgola_temp));
+	}else{
+		num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
 	}
 
+
+	char *temp = calloc((num_caratteri + 1), sizeof(char));
+
+/*	if(strcmp(punto_virgola_temp, "") == 0)
+	{
+		//in fields[8] ho solo valori numerici e nessuna copia da fare
+		punto_virgola_temp = fields[8];
+	}*/
+	strncpy(temp, punto_virgola_temp, num_caratteri);
+	nuova->altezza_mozzo = atof(temp);
 	if (num_caratteri != 0)	//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
 	{
-		char *temp = malloc(sizeof(char)*num_caratteri);
-
-		strncpy(temp, punto_virgola_temp, num_caratteri);
-		nuova->altezza_mozzo = atof(temp);
 		nuova->id=malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2 ));
 		strcpy(nuova->id, fields[1]);
 		strcat(nuova->id, "_");
 		strcat(nuova->id, temp);
-		free(temp);
+	}else{
+		//non creo copie
+		nuova->id=malloc(sizeof(char) * (strlen(fields[1]) + 1 ));
+		strcpy(nuova->id, fields[1]);
+	}
+	free(temp);
 
 		if(!ultima_copia)
 		{
-			if(punto_virgola_temp != NULL)
-				punto_virgola_temp = punto_virgola;
-			elemento_attuale_turbina=nuovo_elemento_turbina(elemento_attuale_turbina, fields, true, punto_virgola);
+			elemento_attuale_turbina=nuovo_elemento_turbina(elemento_attuale_turbina, fields, punto_virgola);
 			if(elemento_attuale_turbina->altezza_mozzo == 0.0)
 			{
 				//un valore di altezza era nullo e ha reso l'id nullo, quindi elimino il nodo della lista
@@ -153,9 +141,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 				elimina_nodo_turbina(elemento_attuale_turbina);
 				elemento_attuale_turbina = elemento_successivo;
 			}
-		}
-	}
-	
+		}	
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;
 
