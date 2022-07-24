@@ -2,31 +2,37 @@
 
 void plot_curva_potenza(const struct turbina *turbina)
 {
-    FILE *file_curva_potenza;
-    FILE *comandi_gnuplot;
+    gnuplot_ctrl *gp = NULL;  
+    gp = gnuplot_init();
 
-    file_curva_potenza = fopen("../../data/curva_potenza.txt", "w");
+    gnuplot_setstyle(gp, "linespoints");
+    gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
+    gnuplot_set_ylabel(gp, "Potenza [kW]");
+    gnuplot_cmd(gp, "set grid back nopolar");
+    gnuplot_cmd(gp, "xtics nomxtics ytics nomytics noztics nomztics nortics nomrtics nox2tics nomx2tics noy2tics nomy2tics nocbtics nomcbtics");
+    gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, "Curva di Potenza");
 
-    for (int i = 0; turbina->wind_speed != NULL; i++)
-    {
-       fprintf(file_curva_potenza, "%f %f\n", turbina->wind_speed[i], turbina->power_curves[i]);
-    }
-    
-    fclose(file_curva_potenza);
-    
-    comandi_gnuplot = fopen("gnuplot.txt", "w");
-    fprintf(comandi_gnuplot, "");
-    fclose(comandi_gnuplot);
-
-    system("gnuplot comando.txt");
-}
-
-void plot_curva_coefficienti()
-{
+    gnuplot_close(gp);
 
 }
 
-void plot_potenza()
+void plot_curva_coefficienti(const struct turbina *turbina)
 {
+    gnuplot_ctrl *gp = NULL;  
+    gp = gnuplot_init();
 
+    gnuplot_setstyle(gp, "linespoints");
+
+    gnuplot_close(gp);
+}
+
+void plot_potenza(const struct turbina *turbina)//scrivo anche un file csv coi dati calcolati
+{
+    gnuplot_ctrl *gp = NULL;  
+    gp = gnuplot_init();
+
+    gnuplot_setstyle(gp, "linespoints");
+    gnuplot_write_xy_csv(, turbina->wind_speed, turbina->potenza_nominale, , );
+
+    gnuplot_close(gp);
 }
