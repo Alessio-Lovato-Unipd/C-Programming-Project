@@ -33,12 +33,17 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 	}
 	//fine possibile ciclo for
 
-	int num_riga = 3;
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
         puntatore = nuovo_elemento_turbina(puntatore, fields, false , strchr(fields[8], ';'));
-		printf("Riga: %d\n",num_riga);
-		num_riga++;
-    }
+
+		if(puntatore->altezza_mozzo == 0.0)
+			{
+				//un valore di altezza nullo quindi elimino il nodo della lista
+				struct turbina *elemento_successivo = puntatore->prev;
+				elimina_nodo_turbina(puntatore);
+				puntatore = elemento_successivo;
+			}
+		}
 
     if (*errore == CSV_END) {
 		csv_close(&file);
@@ -125,29 +130,22 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 		strcat(nuova->id, "_");
 		strcat(nuova->id, temp);
 		free(temp);
+		
 		if(!ultima_copia)
 		{
 			if(punto_virgola_temp != NULL)
 				punto_virgola_temp = punto_virgola;
 			elemento_attuale_turbina=nuovo_elemento_turbina(elemento_attuale_turbina, fields, true, punto_virgola);
-			if(elemento_attuale_turbina->id == NULL)
+			if(elemento_attuale_turbina->altezza_mozzo == 0.0)
 			{
 				//un valore di altezza era nullo e ha reso l'id nullo, quindi elimino il nodo della lista
 				struct turbina *elemento_successivo = elemento_attuale_turbina->prev;
-				free(elemento_attuale_turbina->nome);
-				free(elemento_attuale_turbina->wind_speed);
-				free(elemento_attuale_turbina->id);
-				if(elemento_attuale_turbina->power_coefficients != NULL)
-					free(elemento_attuale_turbina->power_coefficients);
-				if(elemento_attuale_turbina->power_curves != NULL)
-					free(elemento_attuale_turbina->power_curves);
-				free(elemento_attuale_turbina);
+				elimina_nodo_turbina(elemento_attuale_turbina);
 				elemento_attuale_turbina = elemento_successivo;
 			}
 		}
-
 	}
-
+	
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;
 
@@ -167,19 +165,24 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
     do
     {
         temporaneo_turbina = head_turbina->prev;
-        free(head_turbina->nome);
-		free(head_turbina->wind_speed);
-		free(head_turbina->id);
-		if(head_turbina->power_coefficients != NULL)
-			free(head_turbina->power_coefficients);
-		if(head_turbina->power_curves != NULL)
-			free(head_turbina->power_curves);
-        free(head_turbina);
+		elimina_nodo_turbina(head_turbina);
         head_turbina = temporaneo_turbina;
 
     }while(temporaneo_turbina!=NULL);
     head_turbina=NULL;
 	return;
+}
+
+void elimina_nodo_turbina (struct turbina *nodo)
+{
+	free(nodo->nome);
+	free(nodo->wind_speed);
+	free(nodo->id);
+	if(nodo->power_coefficients != NULL)
+		free(nodo->power_coefficients);
+	if(nodo->power_curves != NULL)
+		free(nodo->power_curves);
+	free(nodo);
 }
 
 
