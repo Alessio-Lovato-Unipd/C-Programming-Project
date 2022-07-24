@@ -111,11 +111,6 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	char *temp = calloc((num_caratteri + 1), sizeof(char));
 
-/*	if(strcmp(punto_virgola_temp, "") == 0)
-	{
-		//in fields[8] ho solo valori numerici e nessuna copia da fare
-		punto_virgola_temp = fields[8];
-	}*/
 	strncpy(temp, punto_virgola_temp, num_caratteri);
 	nuova->altezza_mozzo = atof(temp);
 	if (num_caratteri != 0)	//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
