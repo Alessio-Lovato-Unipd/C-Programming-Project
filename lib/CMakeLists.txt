@@ -14,3 +14,5 @@ add_subdirectory(formule)
 add_subdirectory(parametri)
 
 add_subdirectory(calcolo_output)
+
+add_subdirectory(plot)
