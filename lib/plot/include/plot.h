@@ -1,4 +1,4 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "estrattore_csv.h"
-#include "gnuplot_i.h"
+#include "../../external/gnuplot_i/src/gnuplot_i.h"

@@ -1,4 +1,4 @@
-#include <plot.h>
+#include "plot.h"
 
 void plot_curva_potenza(const struct turbina *turbina)
 {
