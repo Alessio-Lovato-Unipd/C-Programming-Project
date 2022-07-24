@@ -118,7 +118,13 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
 		}else{
 			//è l'ultimo elemento da creare
-			num_caratteri=(strlen(punto_virgola_temp));
+			carattere=(char)*punto_virgola_temp;
+			punto_virgola = punto_virgola_temp;
+			while(((carattere >= '0') && (carattere <= '9') )|| carattere == '.'){	//elimino elementi non numerici dopo del valore
+				punto_virgola++;
+				carattere=(char)*punto_virgola;
+			}
+			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
 			ultima_copia = true;
 		}
 	}
