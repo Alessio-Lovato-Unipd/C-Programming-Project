@@ -15,8 +15,7 @@
 	#define SEPARATORE ','
 
     struct turbina {
-        char *nome;
-        int id;
+        char *nome, *id;
         int potenza_nominale;
         int diametro_rotore;
         float altezza_mozzo;

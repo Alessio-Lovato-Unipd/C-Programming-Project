@@ -62,60 +62,68 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     }
 
     //salvataggio dati
-	nuova->id = atoi(fields[1]); // conversione del dato da stringa a intero tramite funzione atoi()
-    nuova->potenza_nominale = atoi(fields[5]);
+	nuova->nome=malloc(sizeof(char) * (strlen(fields[0]) +1 ));
+	strcpy(nuova->nome, fields[0]);
+
+    nuova->potenza_nominale = atoi(fields[5]); // conversione del dato da stringa a intero tramite funzione atoi()
 	nuova->diametro_rotore = atoi(fields[6]);
-	nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_CURVES - 1));
-	if(nuova->wind_speed == NULL){
-		printf("Malloc error\n");
-		exit(EXIT_FAILURE);
-	}
+	nuova->wind_speed = NULL;
 	nuova->power_coefficients = NULL;
 	nuova->power_curves = NULL;
 
-	int n=0;
-	char *punto_virgola_temp = NULL;
+	int num_caratteri=0;
+	char *punto_virgola_temp = fields[8];
 	bool ultima_copia = false;
-	if (!copia)
+	if (!copia) //ciclo per il primo elemento preso in esame
 	{
 		if (punto_virgola == NULL)
-		{
-			nuova->nome=malloc(sizeof(char) * (strlen(fields[0]) +1 ));
-			strcpy(nuova->nome, fields[0]);
+		{	
+			//non devo fare copie
+			nuova->id=malloc(sizeof(char) * (strlen(fields[1])  +1 ));
+			strcpy(nuova->id, fields[1]);
 			nuova->altezza_mozzo = atof(fields[8]);
 		} else {
-			n=(strlen(fields[8])-strlen(punto_virgola));
+			//dimensiono il numero di caratteri che contiene l'altezza
+			while(*punto_virgola_temp == ' '){	//elimino spazi vuoti prima del valore
+				punto_virgola_temp++;
+			}
+			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
+			
 		}
 	}else{
 		//creo una copia dell'elemento
-		if (punto_virgola != NULL) //ci sono più copie da fare
-		{
+		punto_virgola++; //mi sposto avanti per non puntare al ;
+		while(*punto_virgola == ' '){	//elimino spazi vuoti prima del valore
 			punto_virgola++;
-			punto_virgola_temp = strchr(punto_virgola, ';');
 		}
-		if (punto_virgola_temp != NULL){ //non è l'ultimo elemento
-			n=(strlen(punto_virgola)-strlen(punto_virgola_temp));
-		}else{//è l'ultimo elemento
-			n=(strlen(punto_virgola));
+		punto_virgola_temp = punto_virgola;
+		punto_virgola = strchr(punto_virgola, ';'); //cerco prossimo ;
+
+		if (punto_virgola != NULL){ 
+			//non è l'ultimo elemento da creare
+			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
+		}else{
+			//è l'ultimo elemento da creare
+			num_caratteri=(strlen(punto_virgola_temp));
 			ultima_copia = true;
 		}
 	}
 
-	if (n != 0)
+	if (num_caratteri != 0)	//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
 	{
-		char *temp = malloc(sizeof(char)*n);
+		char *temp = malloc(sizeof(char)*num_caratteri);
 
-		strncpy(temp, punto_virgola, n);
+		strncpy(temp, punto_virgola_temp, num_caratteri);
 		nuova->altezza_mozzo = atof(temp);
-		nuova->nome=malloc(sizeof(char) * (strlen(fields[0]) + n + 2 ));
-		strcpy(nuova->nome, fields[0]);
-		strcat(nuova->nome, "_");
-		strcat(nuova->nome, temp);
+		nuova->id=malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2 ));
+		strcpy(nuova->id, fields[1]);
+		strcat(nuova->id, "_");
+		strcat(nuova->id, temp);
 		free(temp);
 		if(!ultima_copia)
 		{
 			if(punto_virgola_temp != NULL)
-				punto_virgola = punto_virgola_temp;
+				punto_virgola_temp = punto_virgola;
 			elemento_attuale_turbina=nuovo_elemento_turbina(elemento_attuale_turbina, fields, true, punto_virgola);
 		}
 
