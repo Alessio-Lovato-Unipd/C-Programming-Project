@@ -55,7 +55,7 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	
 	if(indice == LUNGHEZZA_VETTORE_POWER_COEFFICIENT){
 		if(temp->power_coefficients[indice] == -1)
-			return temp->power_coefficients[indice - 1]; //se manca l'ultimo valore, diamo il penultimo
+			return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice - 1]);; //se manca l'ultimo valore, diamo il penultimo
 		return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
 	}
 	if(temp->power_coefficients[indice] == -1)
