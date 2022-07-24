@@ -84,6 +84,8 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	int num_caratteri=0;
 	char *punto_virgola_temp = fields[8];
 	bool ultima_copia = false;
+	char carattere=(char)*punto_virgola_temp;
+	nuova->altezza_mozzo = 0.0; //inizializzo la variabile, in questo modo se non trovo un'altezza mozzo numerica posso cancellare il nodo
 	if (!copia) //ciclo per il primo elemento preso in esame
 	{
 		if (punto_virgola == NULL)
@@ -94,18 +96,20 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 			nuova->altezza_mozzo = atof(fields[8]);
 		} else {
 			//dimensiono il numero di caratteri che contiene l'altezza
-			while(*punto_virgola_temp == ' '){	//elimino spazi vuoti prima del valore
+			while(((carattere < '0') || (carattere > '9')) && (punto_virgola_temp != punto_virgola)){	//elimino elementi non numerici prima del valore
 				punto_virgola_temp++;
+				carattere=(char)*punto_virgola_temp;
 			}
 			num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
 			
 		}
 	}else{
 		//creo una copia dell'elemento
-		punto_virgola++; //mi sposto avanti per non puntare al ;
-		while(*punto_virgola == ' '){	//elimino spazi vuoti prima del valore
-			punto_virgola++;
-		}
+		carattere=(char)*punto_virgola;
+		while(((carattere < '0') || (carattere > '9')) && (carattere != 0)){	//elimino elementi non numerici prima del valore
+				punto_virgola++;
+				carattere=(char)*punto_virgola;
+			}
 		punto_virgola_temp = punto_virgola;
 		punto_virgola = strchr(punto_virgola, ';'); //cerco prossimo ;
 
@@ -130,7 +134,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 		strcat(nuova->id, "_");
 		strcat(nuova->id, temp);
 		free(temp);
-		
+
 		if(!ultima_copia)
 		{
 			if(punto_virgola_temp != NULL)
