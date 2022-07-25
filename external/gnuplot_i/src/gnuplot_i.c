@@ -660,11 +660,11 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
     static char const * tmp_filename_template = "gnuplot_tmpdatafile_XXXXXX";
     char *              tmp_filename = NULL;
     int                 tmp_filelen = strlen(tmp_filename_template);
-
+/*
 #ifndef WIN32
     int                 unx_fd;
 #endif // #ifndef WIN32
-
+*/
     assert(handle->tmp_filename_tbl[handle->ntmp] == NULL);
 
     /* Open one more temporary file? */
@@ -681,7 +681,7 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
         return NULL;
     }
     strcpy(tmp_filename, tmp_filename_template);
-
+/*
 #ifdef WIN32
     if (_mktemp(tmp_filename) == NULL)
     {
@@ -696,7 +696,7 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
     close(unx_fd);
 
 #endif // #ifdef WIN32
-
+*/
     handle->tmp_filename_tbl[handle->ntmp] = tmp_filename;
     handle->ntmp ++;
     return tmp_filename;
