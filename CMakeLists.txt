@@ -18,6 +18,7 @@ set(TARGET_GROUP stable CACHE STRING "Gruppo di sorgenti da compilare")
 
 add_subdirectory(lib)
 add_subdirectory(external/csv)
+add_subdirectory(external/gnuplot_i)
 
 if(TARGET_GROUP STREQUAL stable)
 	add_subdirectory(app)
