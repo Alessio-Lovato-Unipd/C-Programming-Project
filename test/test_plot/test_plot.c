@@ -8,7 +8,7 @@
 #define PERCORSO_POWER_CURVES_CORRETTO "../../../data/power_curves.csv"
 
 
-void test_plot_curva_potenza()
+void test_plot()
 {
 	struct turbina *head = NULL;
 	head = malloc(sizeof(struct turbina));
@@ -24,8 +24,10 @@ void test_plot_curva_potenza()
     svuota_lista_turbine_data(head);
 }
 
+
+
 int main()
 {
-    test_plot_curva_potenza();
+    test_plot();
 		
 }
