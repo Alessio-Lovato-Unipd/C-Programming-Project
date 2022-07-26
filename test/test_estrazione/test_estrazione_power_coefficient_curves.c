@@ -48,7 +48,7 @@ void verifica_ricerca_nome_turbina_e_alcuni_coefficienti(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.13, elemento_cercato->power_coefficients[8]);
 	TEST_ASSERT_EQUAL_FLOAT(0, elemento_cercato->power_coefficients[0]);
 	TEST_ASSERT_EQUAL_FLOAT(-1, elemento_cercato->power_coefficients[1]);
-	TEST_ASSERT_EQUAL_FLOAT(0, elemento_cercato->power_coefficients[NUMERO_COLONNE_POWER_COEFFICIENT - 2]); //l'ultimo elemento dell'array si trova in posizione 52
+	TEST_ASSERT_EQUAL_FLOAT(0, elemento_cercato->power_coefficients[NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 2]); //l'ultimo elemento dell'array si trova in posizione 52
 	svuota_lista_turbine_data(puntatore);
 }
 
@@ -83,10 +83,10 @@ void verifica_valori_su_curve_diverse(void)
 	TEST_ASSERT_EQUAL_STRING("DUMMY 3", cerca_curva_potenza->nome);
 	TEST_ASSERT_EQUAL_FLOAT(0, cerca_coefficienti->power_coefficients[0]);
 	TEST_ASSERT_EQUAL_FLOAT(0.41, cerca_coefficienti->power_coefficients[11]);
-	TEST_ASSERT_EQUAL_FLOAT(0, cerca_coefficienti->power_coefficients[NUMERO_COLONNE_POWER_COEFFICIENT - 2]);
+	TEST_ASSERT_EQUAL_FLOAT(0, cerca_coefficienti->power_coefficients[NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 2]);
 	TEST_ASSERT_EQUAL_INT(0, cerca_curva_potenza->power_curves[0]);
 	TEST_ASSERT_EQUAL_INT(34000, cerca_curva_potenza->power_curves[8]);
-	TEST_ASSERT_EQUAL_INT(-1, cerca_curva_potenza->power_curves[NUMERO_COLONNE_POWER_COEFFICIENT - 2]);
+	TEST_ASSERT_EQUAL_INT(-1, cerca_curva_potenza->power_curves[NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 2]);
 	svuota_lista_turbine_data(head);
 }
 
@@ -104,7 +104,7 @@ void verifica_lettura_vel_vento(void)
 	while(temp != NULL){
 		TEST_ASSERT_EQUAL_FLOAT(0, temp->wind_speed[0]);
 		TEST_ASSERT_EQUAL_FLOAT(0.5, temp->wind_speed[1]);
-		TEST_ASSERT_EQUAL_FLOAT(26, temp->wind_speed[NUMERO_COLONNE_POWER_COEFFICIENT - 2]);
+		TEST_ASSERT_EQUAL_FLOAT(26, temp->wind_speed[NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 2]);
 		temp = scorri_lista_turbina(temp);
 	}
 	svuota_lista_turbine_data(head);
