@@ -8,6 +8,10 @@ project( Librerie_formule
 	 
 add_library(formule STATIC src/formule.c)
 
+target_link_libraries( formule
+	PUBLIC
+	m #link alla libreria libm.so (math.h)
+)
 target_include_directories( formule
 	PUBLIC include)
 
