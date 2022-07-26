@@ -7,14 +7,16 @@
 void plot_curva_potenza(const struct turbina *turbina)
 {
     gnuplot_ctrl *gp = NULL;  
-    gp = gnuplot_init();
-    gnuplot_cmd(gp, "set terminal png");
-	gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
+    gp = gnuplot_init(); 
     gnuplot_setstyle(gp, "linespoints");
     gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
     gnuplot_set_ylabel(gp, "Potenza [kW]");
+    //comandi diretti a gnuplot
     gnuplot_cmd(gp, "set grid back nopolar");
-    gnuplot_cmd(gp, "xtics nomxtics ytics nomytics noztics nomztics nortics nomrtics nox2tics nomx2tics noy2tics nomy2tics nocbtics nomcbtics");
+    gnuplot_cmd(gp, "set xrange[0:35]");
+    gnuplot_cmd(gp, "set yrange[0:35]");
+    gnuplot_cmd(gp, "set terminal png");
+	gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
     gnuplot_plot_xy(gp, (double*)turbina->wind_speed, (double *)turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, "Curva di Potenza");
 
     //gnuplot_close(gp);

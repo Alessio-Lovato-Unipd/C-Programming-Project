@@ -10,14 +10,14 @@
 
 void test_plot_curva_potenza()
 {
-	int errore = 0;
 	struct turbina *head = NULL;
-	
-	struct csv file_coefficienti;
-	struct csv file_potenza;
-	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	head = malloc(sizeof(struct turbina));
+	head->wind_speed = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_CURVES));
+	head->power_curves = malloc(sizeof(int) * (NUMERO_COLONNE_POWER_CURVES));
+	for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++) {
+		head->wind_speed[i - 1] = i;
+		head->power_curves[i - 1] = i;
+	}
 
     plot_curva_potenza(head);
     
@@ -27,7 +27,5 @@ void test_plot_curva_potenza()
 int main()
 {
     test_plot_curva_potenza();
-
-	
-	
+		
 }
