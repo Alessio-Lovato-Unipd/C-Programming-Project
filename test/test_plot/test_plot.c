@@ -26,9 +26,9 @@ void test_plot_curva_potenza()
 
 int main()
 {
-    UNITY_BEGIN();
+    
 
-
-
+	void test_plot_curva_potenza();
+	UNITY_BEGIN();
     return UNITY_END();
 }
