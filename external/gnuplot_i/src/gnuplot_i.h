@@ -1,4 +1,4 @@
-
+//MODIFICATA PER USARE FLOAT AL POSTO DI float
 /*-------------------------------------------------------------------------*/
 /**
   @file     gnuplot_i.h
@@ -188,27 +188,27 @@ void gnuplot_resetplot(gnuplot_ctrl * h);
 
 /*-------------------------------------------------------------------------*/
 /**
-  @brief    Plots a 2d graph from a list of doubles.
+  @brief    Plots a 2d graph from a list of floats.
   @param    handle  Gnuplot session control handle.
-  @param    d       Array of doubles.
+  @param    d       Array of floats.
   @param    n       Number of values in the passed array.
   @param    title   Title of the plot.
   @return   void
 
-  Plots out a 2d graph from a list of doubles. The x-coordinate is the
-  index of the double in the list, the y coordinate is the double in
+  Plots out a 2d graph from a list of floats. The x-coordinate is the
+  index of the float in the list, the y coordinate is the float in
   the list.
 
   Example:
 
   @code
     gnuplot_ctrl    *h ;
-    double          d[50] ;
+    float          d[50] ;
     int             i ;
 
     h = gnuplot_init() ;
     for (i=0 ; i<50 ; i++) {
-        d[i] = (double)(i*i) ;
+        d[i] = (float)(i*i) ;
     }
     gnuplot_plot_x(h, d, 50, "parabola") ;
     sleep(2) ;
@@ -216,7 +216,7 @@ void gnuplot_resetplot(gnuplot_ctrl * h);
   @endcode
  */
 /*--------------------------------------------------------------------------*/
-void gnuplot_plot_x(gnuplot_ctrl * handle, double * d, int n, char * title);
+void gnuplot_plot_x(gnuplot_ctrl * handle, float * d, int n, char * title);
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -224,7 +224,7 @@ void gnuplot_plot_x(gnuplot_ctrl * handle, double * d, int n, char * title);
   @param    handle      Gnuplot session control handle.
   @param    x           Pointer to a list of x coordinates.
   @param    y           Pointer to a list of y coordinates.
-  @param    n           Number of doubles in x (assumed the same as in y).
+  @param    n           Number of floats in x (assumed the same as in y).
   @param    title       Title of the plot.
   @return   void
 
@@ -234,13 +234,13 @@ void gnuplot_plot_x(gnuplot_ctrl * handle, double * d, int n, char * title);
 
   @code
     gnuplot_ctrl    *h ;
-    double          x[50] ;
-    double          y[50] ;
+    float          x[50] ;
+    float          y[50] ;
     int             i ;
 
     h = gnuplot_init() ;
     for (i=0 ; i<50 ; i++) {
-        x[i] = (double)(i)/10.0 ;
+        x[i] = (float)(i)/10.0 ;
         y[i] = x[i] * x[i] ;
     }
     gnuplot_plot_xy(h, x, y, 50, "parabola") ;
@@ -251,8 +251,8 @@ void gnuplot_plot_x(gnuplot_ctrl * handle, double * d, int n, char * title);
 /*--------------------------------------------------------------------------*/
 void gnuplot_plot_xy(
     gnuplot_ctrl    *   handle,
-    double          *   x,
-    double          *   y,
+    float          *   x,
+    float          *   y,
     int                 n,
     char            *   title
 ) ;
@@ -283,8 +283,8 @@ void gnuplot_plot_once(
     char    *   style,
     char    *   label_x,
     char    *   label_y,
-    double  *   x,
-    double  *   y,
+    float  *   x,
+    float  *   y,
     int         n
 );
 
@@ -304,7 +304,7 @@ void gnuplot_plot_once(
 
   @code
     gnuplot_ctrl    *   h ;
-    double              a, b ;
+    float              a, b ;
 
     h = gnuplot_init() ;
     gnuplot_plot_slope(h, 1.0, 0.0, "unity slope") ;
@@ -315,8 +315,8 @@ void gnuplot_plot_once(
 /*--------------------------------------------------------------------------*/
 void gnuplot_plot_slope(
     gnuplot_ctrl    *   handle,
-    double              a,
-    double              b,
+    float              a,
+    float              b,
     char            *   title
 ) ;
 
@@ -363,7 +363,7 @@ void gnuplot_plot_equation(gnuplot_ctrl * h, char * equation, char * title) ;
  */
 int gnuplot_write_x_csv(
     char const * fileName,
-    double const * d,
+    float const * d,
     int n,
     char const * title);
 
@@ -384,8 +384,8 @@ int gnuplot_write_x_csv(
  */
 int gnuplot_write_xy_csv(
     char const *        fileName,
-    double const    *   x,
-    double const    *   y,
+    float const    *   x,
+    float const    *   y,
     int                 n,
     char const      *   title);
 
@@ -410,7 +410,7 @@ int gnuplot_write_xy_csv(
  */
 int gnuplot_write_multi_csv(
     char const *        fileName,
-    double const    **  xListPtr,
+    float const    **  xListPtr,
     int                 n,
     int                 numColumns,
     char const      *   title);

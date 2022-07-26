@@ -468,7 +468,7 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
 	}
 }
 
-void inserimento_power_curves(int *array_dati, char **fields)
+void inserimento_power_curves(float *array_dati, char **fields)
 {
 	for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++){
 		if (strcmp(fields[i], "")!= 0)
