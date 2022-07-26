@@ -25,7 +25,7 @@ int main()
     // fine generazione lista
 
     //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_turbina("AD116/5000", head_turbina);
+    temporaneo = cerca_dati_turbina("AD116/5000", 0.0, head_turbina);
     if (temporaneo == NULL)
     {
         printf("Modello turbina non trovato!\n\n\n");
