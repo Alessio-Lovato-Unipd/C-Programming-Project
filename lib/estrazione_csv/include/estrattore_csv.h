@@ -5,7 +5,7 @@
     #include <stdio.h>
     #include <string.h>
     #include <stdbool.h>
-    #include "../../../external/csv/src/csv.h"
+    #include "csv.h"
 	#define NUMERO_COLONNE_TURBINA 19
 	#define NUMERO_COLONNE_WEATHER 7 
     #define NUMERO_COLONNE_POWER_COEFFICIENT_CURVES 60
@@ -51,7 +51,8 @@
        fare riferimento alla libreria csv per risolvere tali errori */
     struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
 
-    // creazione nuovo elemento lista turbina
+    // Creazione nuovo elemento lista turbina
+    // Se l'altezza del mozzo può variare, vengono create più copie della stessa turbina con id differenti come segue <id>_<altezza-mozzo.parte-decimale-se-presente>
     struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *punto_virgola);
 
     //funzione per liberare la memoria heap allocata con la lista
@@ -61,7 +62,8 @@
     void elimina_nodo_turbina (struct turbina *nodo);
 
     //funzione per ricercare i dati di una turbina, se non trova un elemento ritorna valore nullo
-    struct turbina *cerca_dati_turbina(const char *nome_modello_turbina,  const struct turbina *head_turbina);
+    // se non si vuole trovare un elemento specifico ma solo la prima occorrenza con il nome del modello, come altezza del mozzo inserire 0.0
+    struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altezza_mozzo, const struct turbina *head_turbina);
 	
 	struct turbina *scorri_lista_turbina(const struct turbina *puntatore);
 

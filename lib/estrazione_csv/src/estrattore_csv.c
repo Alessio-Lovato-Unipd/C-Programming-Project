@@ -83,7 +83,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	int num_caratteri=0;
 	char *punto_virgola_temp = NULL;
-	bool ultima_copia = false;
+	bool ultima_copia = true;
 	char carattere=(char)*punto_virgola;
 	nuova->altezza_mozzo = 0.0; //inizializzo la variabile, in questo modo se non trovo un'altezza mozzo numerica posso cancellare il nodo
 	
@@ -102,10 +102,10 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	
 	if(carattere == 0)
 	{
-		ultima_copia = true;
 		num_caratteri=(strlen(punto_virgola_temp));
 	}else{
 		num_caratteri=(strlen(punto_virgola_temp)-strlen(punto_virgola));
+		ultima_copia = false;
 	}
 
 
@@ -113,17 +113,19 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	strncpy(temp, punto_virgola_temp, num_caratteri);
 	nuova->altezza_mozzo = atof(temp);
-	if (num_caratteri != 0)	//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
+
+	if(ultima_copia && (punto_virgola_temp == fields[8]))
 	{
+		//non creo copie
+		nuova->id=malloc(sizeof(char) * (strlen(fields[1]) + 1 ));
+		strcpy(nuova->id, fields[1]);
+	}else{	//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
 		nuova->id=malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2 ));
 		strcpy(nuova->id, fields[1]);
 		strcat(nuova->id, "_");
 		strcat(nuova->id, temp);
-	}else{
-		//non creo copie
-		nuova->id=malloc(sizeof(char) * (strlen(fields[1]) + 1 ));
-		strcpy(nuova->id, fields[1]);
 	}
+	
 	free(temp);
 
 		if(!ultima_copia)
@@ -177,15 +179,29 @@ void elimina_nodo_turbina (struct turbina *nodo)
 }
 
 
-struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, const struct turbina *head_turbina)
+struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altezza_mozzo, const struct turbina *head_turbina)
 {
 	const struct turbina *temporaneo_turbina = head_turbina;
-        
-	while((temporaneo_turbina != NULL) && (strcmp(temporaneo_turbina->nome, nome_modello_turbina)!= 0))
-	{
-		temporaneo_turbina = temporaneo_turbina->prev;
-	}
+	bool trovato = false;
 
+	if (altezza_mozzo == 0.0)
+	{
+		//viene ricercata la prima occorrenza del modello della turbina
+		while((temporaneo_turbina != NULL) && (strcmp(temporaneo_turbina->nome, nome_modello_turbina)!= 0))
+		{
+			temporaneo_turbina = scorri_lista_turbina(temporaneo_turbina);
+		}
+	}else{
+		//viene ricercata l'occorrenza con l'altezza del mozzo specifica
+		while((temporaneo_turbina != NULL) && (!trovato))
+		{
+			if((strcmp(temporaneo_turbina->nome, nome_modello_turbina)== 0) && (temporaneo_turbina->altezza_mozzo == altezza_mozzo))
+				trovato = true;
+			if(!trovato)
+				temporaneo_turbina = scorri_lista_turbina(temporaneo_turbina);
+		}
+	}
+        
 	return (struct turbina *)temporaneo_turbina;
 }
 
