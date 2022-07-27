@@ -24,7 +24,20 @@ void test_plot()
     svuota_lista_turbine_data(head);
 }
 
+void test_plot_curva_potenza()
+{
+	int errore = 0;
+	struct turbina *head = NULL;
+	struct turbina *temp = NULL;
+	struct csv file_potenza;
+	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	temp = head;
 
+	plot_curva_potenza(temp);
+
+	svuota_lista_turbine_data(temp);
+}
 
 int main()
 {

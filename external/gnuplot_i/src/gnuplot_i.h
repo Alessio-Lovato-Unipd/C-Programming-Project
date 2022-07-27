@@ -29,6 +29,7 @@
                                 Includes
  ---------------------------------------------------------------------------*/
 #include <stdio.h>
+#include <unistd.h>
 
 /** Maximal number of simultaneous temporary files */
 #define GP_MAX_TMP_FILES    64
@@ -59,7 +60,7 @@ typedef struct _GNUPLOT_CTRL_ {
     /** Number of currently active plots */
     int       nplots ;
     /** Current plotting style */
-    char      pstyle[32] ;
+    char      pstyle[64] ;
 
     /** Pointer to table of names of temporary files */
     char*      tmp_filename_tbl[GP_MAX_TMP_FILES] ;
@@ -149,6 +150,8 @@ void gnuplot_cmd(gnuplot_ctrl *  handle, char const *  cmd, ...);
 /*--------------------------------------------------------------------------*/
 void gnuplot_setstyle(gnuplot_ctrl * h, char * plot_style);
 
+
+void gnuplot_set_linecolor(gnuplot_ctrl *h, char *color);
 /*-------------------------------------------------------------------------*/
 /**
   @brief    Sets the x label of a gnuplot session.

@@ -236,6 +236,17 @@ void gnuplot_setstyle(gnuplot_ctrl * h, char * plot_style)
 }
 
 
+void gnuplot_set_linecolor(gnuplot_ctrl *h, char *color)
+{
+    char set_color[10] = "lc \"";
+
+    strcat(set_color, color);
+    strcat(set_color, "\"");
+    strcat(h->pstyle, set_color);
+}
+
+
+
 /*-------------------------------------------------------------------------*/
 /**
   @brief    Sets the x label of a gnuplot session.
@@ -660,11 +671,11 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
     static char const * tmp_filename_template = "gnuplot_tmpdatafile_XXXXXX";
     char *              tmp_filename = NULL;
     int                 tmp_filelen = strlen(tmp_filename_template);
-/*
+
 #ifndef WIN32
-    int                 unx_fd;
+    int unx_fd;
 #endif // #ifndef WIN32
-*/
+
     assert(handle->tmp_filename_tbl[handle->ntmp] == NULL);
 
     /* Open one more temporary file? */
@@ -681,7 +692,7 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
         return NULL;
     }
     strcpy(tmp_filename, tmp_filename_template);
-/*
+
 #ifdef WIN32
     if (_mktemp(tmp_filename) == NULL)
     {
@@ -696,7 +707,7 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
     close(unx_fd);
 
 #endif // #ifdef WIN32
-*/
+
     handle->tmp_filename_tbl[handle->ntmp] = tmp_filename;
     handle->ntmp ++;
     return tmp_filename;
@@ -713,4 +724,5 @@ void gnuplot_plot_atmpfile(gnuplot_ctrl * handle, char const* tmp_filename, char
 }
 
 
-/* vim: set ts=4 et sw=4 tw=75 */
+
+
