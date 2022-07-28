@@ -24,9 +24,9 @@ target_link_libraries( test_estrazione_weather
 	TTS::Unity
 )
 
-add_executable(test_estrazione_power_coefficient_curves test_estrazione_power_coefficient_curves.c)
+add_executable(test_estrazione_curve test_estrazione_curve.c)
 
-target_link_libraries( test_estrazione_power_coefficient_curves
+target_link_libraries( test_estrazione_curve
 	PRIVATE 
 	lib::csv
 	lib::estrazione_csv
