@@ -151,7 +151,10 @@ void gnuplot_cmd(gnuplot_ctrl *  handle, char const *  cmd, ...);
 void gnuplot_setstyle(gnuplot_ctrl * h, char * plot_style);
 
 
-void gnuplot_set_linecolor(gnuplot_ctrl *h, char *color);
+void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, const char *width);
+
+void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size);
+
 /*-------------------------------------------------------------------------*/
 /**
   @brief    Sets the x label of a gnuplot session.
