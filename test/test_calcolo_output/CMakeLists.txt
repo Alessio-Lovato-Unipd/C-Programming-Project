@@ -10,7 +10,9 @@ add_executable( test_calcolo_output test_calcolo_output.c )
 
 target_link_libraries( test_calcolo_output
 	PRIVATE
-	lib::estrattore_csv
+	TTS::Unity
+	lib::calcolo_output
+	lib::estrazione_csv
 	lib::formule
 	lib::parametri
 )

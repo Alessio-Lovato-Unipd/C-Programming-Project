@@ -13,3 +13,5 @@ add_subdirectory(test_csv)
 add_subdirectory(test_formule)
 
 add_subdirectory(test_parametri)
+
+add_subdirectory(test_calcolo_output)
