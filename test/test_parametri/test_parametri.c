@@ -1,6 +1,7 @@
 #include "unity.h"
 #include "parametri.h"
 
+#define PERCORSO_WEATHER "../../../data/weather.csv"
 
 void test_calcolo_vento_int_lin()
 {
@@ -63,7 +64,7 @@ void test_calcolo_parametri()
 	struct dati_weather *puntatore_dati_weather = NULL;
     struct tipo_metodo metodi_calcolo = {INTERPOLAZIONE_LOGARITMICA, INTERPOLAZIONE_LINEARE_T, GAS_IDEALE};
     struct parametro *head_uscita = NULL;
-	puntatore_dati_weather = estrazione_dati_weather(puntatore_dati_weather, "../../../data/weather.csv", &errore);
+	puntatore_dati_weather = estrazione_dati_weather(puntatore_dati_weather, PERCORSO_WEATHER, &errore);
     head_uscita = calcolo_parametri(puntatore_dati_weather, &metodi_calcolo, 5, 20, head_uscita);
 
     TEST_ASSERT_FLOAT_WITHIN(0.01, 6.15, head_uscita->vento);
@@ -74,7 +75,6 @@ int main()
 {
     UNITY_BEGIN();
 
-    //test delle varie possibilità di calcolo dei parametri
     RUN_TEST(test_calcolo_vento_int_lin);
     RUN_TEST(test_calcolo_vento_int_log);
     RUN_TEST(test_calcolo_vento_profilo_logaritmico);
@@ -83,9 +83,7 @@ int main()
     RUN_TEST(test_calcolo_temperatura_gradiente);
     RUN_TEST(test_calcolo_densita_barometrico);
     RUN_TEST(test_calcolo_densita_gas_ideale);
-
     RUN_TEST(test_aggiungi_elemento);  
-
     RUN_TEST(test_calcolo_parametri);  
        
 

@@ -32,8 +32,7 @@ void verifica_funzione_cerca_elemento(void)
 
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	elemento_cercato = puntatore;
-	while(elemento_cercato != NULL)
-	{
+	while(elemento_cercato != NULL){
 		if (strcmp(elemento_cercato->nome, "SWT120/3600") == 0)
 			numero_occorrenze++;
 		elemento_cercato = scorri_lista_turbina(elemento_cercato);
@@ -88,10 +87,10 @@ void verifica_turbina_altezza_mozzo_unica(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("ENO100/2200", 99.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("ENO100/2200", 99, puntatore);
 	TEST_ASSERT_EQUAL_STRING("ENO100/2200", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("128", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(99.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(99, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(100, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2200000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
@@ -104,12 +103,12 @@ void verifica_turbina_altezza_mozzo_multipla(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("GE103/2750", 75.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("GE103/2750", 75, puntatore);
 
 	//PRIMO ELEMENTO
 	TEST_ASSERT_EQUAL_STRING("GE103/2750", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("117_75", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(75.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(75, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(103, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2750000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
@@ -119,7 +118,7 @@ void verifica_turbina_altezza_mozzo_multipla(void)
 	elemento_cercato = cerca_dati_turbina("GE103/2750", 85, puntatore);
 	TEST_ASSERT_EQUAL_STRING("GE103/2750", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("117_85", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(85.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(85, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(103, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2750000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
@@ -153,12 +152,12 @@ void verifica_turbina_altezza_mozzo_multipla_senza_spazi(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("VS109/2500", 95.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("VS109/2500", 95, puntatore);
 	
 	//PRIMO ELEMENTO
 	TEST_ASSERT_EQUAL_STRING("VS109/2500", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("104_95", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(95.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(95, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(109, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2500000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_FALSE(elemento_cercato->curva_potenza);
@@ -187,7 +186,7 @@ void verifica_turbina_spazio_prima_della_seconda_altezza_mozzo(void)
 	//PRIMO ELEMENTO
 	TEST_ASSERT_EQUAL_STRING("V116/2100", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("39_84", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(84.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(84, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(116, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2100000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_FALSE(elemento_cercato->curva_potenza);
@@ -197,7 +196,7 @@ void verifica_turbina_spazio_prima_della_seconda_altezza_mozzo(void)
 	elemento_cercato = cerca_dati_turbina("V116/2100", 94, puntatore);
 	TEST_ASSERT_EQUAL_STRING("V116/2100", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("39_94", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(94.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(94, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(116, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2100000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_FALSE(elemento_cercato->curva_potenza);
@@ -224,24 +223,25 @@ void verifica_turbina_virgolette_altezza_mozzo(void)
 	//TEST_ASSERT_FALSE(elemento_cercato->coefficienti_potenza);
 
 	//SECONDO ELEMENTO
-	elemento_cercato = cerca_dati_turbina("MM92/2050", 80.0, puntatore);
+	elemento_cercato = cerca_dati_turbina("MM92/2050", 80, puntatore);
 	TEST_ASSERT_EQUAL_STRING("MM92/2050", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("97_80.0", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(80.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(80, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(93, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2050000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
 	//TEST_ASSERT_FALSE(elemento_cercato->coefficienti_potenza);
 
 	//TERZO ELEMENTO
-	elemento_cercato = cerca_dati_turbina("MM92/2050", 100.0, puntatore);
+	elemento_cercato = cerca_dati_turbina("MM92/2050", 100, puntatore);
 	TEST_ASSERT_EQUAL_STRING("MM92/2050", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("97_100.0", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(100.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(100, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(93, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2050000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
 	//TEST_ASSERT_FALSE(elemento_cercato->coefficienti_potenza);
+
 	svuota_lista_turbine_data(puntatore);
 }
 
@@ -250,12 +250,12 @@ void verifica_turbina_seconda_altezza_mozzo_nulla(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("SWT120/3600", 90.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("SWT120/3600", 90, puntatore);
 
 	//PRIMO ELEMENTO
 	TEST_ASSERT_EQUAL_STRING("SWT120/3600", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("61_90", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(90.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(90, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(120, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(3600000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
@@ -264,8 +264,7 @@ void verifica_turbina_seconda_altezza_mozzo_nulla(void)
 	//SECONDO ELEMENTO (inesistente)
 	int numero_occorrenze = 0;
 	elemento_cercato = puntatore;
-	while(elemento_cercato != NULL)
-	{
+	while(elemento_cercato != NULL){
 		if (strcmp(elemento_cercato->nome, "SWT120/3600")==0)
 			numero_occorrenze++;
 		elemento_cercato = scorri_lista_turbina(elemento_cercato);
@@ -279,7 +278,7 @@ void verifica_turbina_altezza_mozzo_nulla(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("V112/3000", 0.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("V112/3000", 0, puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, elemento_cercato);
 	svuota_lista_turbine_data(puntatore);
 }
@@ -289,12 +288,12 @@ void verifica_turbina_altezza_mozzo_testuale(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("GE150/6000",100.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("GE150/6000",100, puntatore);
 
 	//PRIMO ELEMENTO
 	TEST_ASSERT_EQUAL_STRING("GE150/6000", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("110_100", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(100.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(100, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(151, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(6000000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_FALSE(elemento_cercato->curva_potenza);
@@ -303,8 +302,7 @@ void verifica_turbina_altezza_mozzo_testuale(void)
 	//SECONDO ELEMENTO (inesistente)
 	int numero_occorrenze = 0;
 	elemento_cercato = puntatore;
-	while(elemento_cercato != NULL)
-	{
+	while(elemento_cercato != NULL){
 		if (strcmp(elemento_cercato->nome, "GE150/6000") == 0)
 			numero_occorrenze++;
 		elemento_cercato = scorri_lista_turbina(elemento_cercato);
@@ -318,22 +316,22 @@ void verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("SWT62/1300", 68.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("SWT62/1300", 68, puntatore);
 	
 	//PRIMO ELEMENTO
 	TEST_ASSERT_EQUAL_STRING("SWT62/1300", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("78_68", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(68.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(68, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(62, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(1300000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_FALSE(elemento_cercato->curva_potenza);
 	//TEST_ASSERT_FALSE(elemento_cercato->coefficienti_potenza);
 
 	//SECONDO ELEMENTO
-	elemento_cercato = cerca_dati_turbina("SWT62/1300", 90.0, puntatore);
+	elemento_cercato = cerca_dati_turbina("SWT62/1300", 90, puntatore);
 	TEST_ASSERT_EQUAL_STRING("SWT62/1300", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("78_90", elemento_cercato->id);
-	TEST_ASSERT_EQUAL_FLOAT(90.0, elemento_cercato->altezza_mozzo);
+	TEST_ASSERT_EQUAL_FLOAT(90, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(62, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(1300000, elemento_cercato->potenza_nominale);
 	//TEST_ASSERT_FALSE(elemento_cercato->curva_potenza);
@@ -396,7 +394,7 @@ void verifica_ricerca_turbina_falso(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	struct turbina *elemento_cercato = cerca_dati_turbina("DUMMY", 0.0, puntatore);
+	struct turbina *elemento_cercato = cerca_dati_turbina("DUMMY", 0, puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, elemento_cercato);
 	svuota_lista_turbine_data(puntatore);
 }
@@ -429,5 +427,6 @@ int main()
 	RUN_TEST(verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola);
 	RUN_TEST(verifica_ricerca_turbina_estremi);
 	RUN_TEST(verifica_ricerca_turbina_falso);
+	
     return UNITY_END();
 }
