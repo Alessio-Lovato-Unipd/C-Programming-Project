@@ -236,16 +236,48 @@ void gnuplot_setstyle(gnuplot_ctrl * h, char * plot_style)
 }
 
 
-void gnuplot_set_linecolor(gnuplot_ctrl *h, char *color)
+void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, const char *width)
 {
-    char set_color[10] = "lc \"";
+    if (type != NULL) {
+        char *set_ltype = malloc(sizeof(char) * (strlen(type) + strlen(" lt ") + 1));
+        strcpy(set_ltype, " lt ");
+        strcat(set_ltype, type);  
+        strcat(h->pstyle, set_ltype);
+    }
 
-    strcat(set_color, color);
-    strcat(set_color, "\"");
-    strcat(h->pstyle, set_color);
+    if (color != NULL) {
+        char *set_color = malloc(sizeof(char) * (strlen(color) + strlen(" lc \"\"") + 1 ));
+        strcpy(set_color, " lc \"");
+        strcat(set_color, color);
+        strcat(set_color, "\" ");
+        strcat(h->pstyle, set_color); 
+    }
+
+    if (width != NULL) {
+        char *set_width = malloc(sizeof(char) * (strlen(width) + strlen(" lw ") + 1 ));
+        strcpy(set_width, " lw ");
+        strcat(set_width, width);
+        strcat(h->pstyle, set_width); 
+    }
 }
 
-
+void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size)// da 1 a 75 tipi di punto
+{
+    if (type != NULL) {
+        char *set_ptype = malloc(sizeof(char) * (strlen(type) + strlen(" pt ") + 1));  
+        strcpy(set_ptype, " pt ");
+        strcat(set_ptype, type);  
+        strcat(h->pstyle, set_ptype);
+    }
+    
+    if (size != NULL) {
+        char *set_psize = malloc(sizeof(char) * (strlen(size) + strlen(" ps ") + 1));
+        strcpy(set_psize, " ps ");
+        strcat(set_psize, size);
+        strcat(h->pstyle, set_psize);
+    }
+    
+}
 
 /*-------------------------------------------------------------------------*/
 /**
