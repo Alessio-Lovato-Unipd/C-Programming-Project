@@ -153,6 +153,7 @@ void gnuplot_setstyle(gnuplot_ctrl * h, char * plot_style);
 
 void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, const char *width);
 
+
 void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size);
 
 /*-------------------------------------------------------------------------*/
@@ -394,6 +395,12 @@ int gnuplot_write_xy_csv(
     float const    *   y,
     int                 n,
     char const      *   title);
+
+
+/*
+Write a file csv with x axis as time
+*/
+int gnuplot_write_xtime_y_csv(const char *file_name, const char *time, const float *y, int n_dati, const char *title);
 
 /**
  * Writes a multi column CSV file for use with gnuplot commands later.  Allows files to also be

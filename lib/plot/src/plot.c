@@ -142,36 +142,61 @@ void plot_curva_coefficienti(const struct turbina *turbina)
 {
     gnuplot_ctrl *gp = NULL;  
     gp = gnuplot_init();
+
     gnuplot_setstyle(gp, "linespoints");
     gnuplot_set_line(gp, "3", "red", "8");
     gnuplot_set_point(gp, "1", NULL);
-
-    gnuplot_cmd(gp, "set terminal png");
-	gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
-    gnuplot_setstyle(gp, "linespoints");
     gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
     gnuplot_set_ylabel(gp, "Coefficienti di potenza");
+    
+    gnuplot_cmd(gp, "set grid back nopolar");//set griglia
+    gnuplot_cmd(gp, "set terminal png");
+	gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
+
     gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, "Curva coefficienti di potenza");
 
     gnuplot_close(gp);
 }
 
-/*
-void plot_potenza(const struct turbina *turbina, const struct weather *meteo, int lunghezza_vettore)//scrivo anche un file csv coi dati calcolati
+
+void plot_potenza(const struct turbina *turbina, const struct weather *meteo,int giorni)//quanti giorni voglio visualizzare?
 {
-    float tempo[lunghezza_vettore];
-    gnuplot_ctrl *gp = NULL; 
+    if (giorni > 0){
+        int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
 
-    for(int i = 0; i < lunghezza_vettore; i++){
-        tempo[i] = i;
+        gnuplot_ctrl *gp = NULL;
+        gp = gnuplot_init();
+
+        gnuplot_setstyle(gp, "lines");
+        gnuplot_set_line(gp, "1", "orange", "1");
+        gnuplot_set_point(gp, NULL, NULL);
+
+        gnuplot_set_xlabel(gp, "Tempo [h]");
+        gnuplot_set_ylabel(gp, "Potenza [kW]");
+
+        gnuplot_cmd(gp, "set xdata time");
+        gnuplot_cmd(gp, "set timefmt \"%y-%m-%d %H\" ");
+
+        if (giorni = 1) {
+            gnuplot_cmd(gp, "set format x \"%H\" ");//ore
+        }
+        else if (giorni <= 7){
+            gnuplot_cmd(gp, "set format x \"%a %d\"");//giorno settimana/giorno mese
+        }
+        else if (giorni ) {
+            gnuplot_cmd(gp, "set format x \"%m/%d\"");//mese/giorno
+        }
+        else if (giorni > 90) {
+            gnuplot_cmd(gp, "set format x \"%m\"");//mese
+        }
+        
+
+
+        gnuplot_write_xtime_y_csv("potenza.csv", meteo->orario , turbina->potenza_nominale, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n tempo, potenza[kW]");//genero file csv di uscita
+        gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
+
+        gnuplot_close(gp);  
     }
-
-    gp = gnuplot_init();
-
-    gnuplot_setstyle(gp, "linespoints");
-    gnuplot_write_xy_csv("potenza.csv", tempo, turbina->potenza_nominale, lunghezza_vettore, "#Potenza elettrica generata dalla turbina nel tempo");
-    gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
-
-    gnuplot_close(gp);
+    
 }
-*/
+

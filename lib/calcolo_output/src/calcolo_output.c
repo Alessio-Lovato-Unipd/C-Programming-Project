@@ -114,3 +114,5 @@ float interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo
 		return interpolazione_lineare(puntatore->wind_speed[i - 1], puntatore->power_coefficients[i - 1], puntatore->wind_speed[i + 1], puntatore->power_coefficients[i + 1], puntatore->wind_speed[i]);
 	}
 }
+
+
