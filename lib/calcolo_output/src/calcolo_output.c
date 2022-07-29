@@ -20,7 +20,7 @@ struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float
     return nuovo_elemento;
 }
 
-struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, const struct turbina *head, struct parametro *in, struct potenza_out *hp)
+struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, struct parametro *in, struct potenza_out *hp)
 {
 	float potenza;
 	struct potenza_out *out = hp;
@@ -28,14 +28,14 @@ struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo
 	switch (curva){
 	case CURVA_POTENZA:
 		for (struct parametro *p = in; p != NULL; p = p->next) {
-			potenza= calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, p->vento);
+			potenza= calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento);
 			out = aggiungi_potenza(out, potenza);
 		}
 		break;
 	
 	case CURVA_COEFFICIENTI_POTENZA:
 		for (struct parametro *p = in; p != NULL; p = p->next) {
-			potenza = calcolo_potenza_curve_coefficienti(metodo_interpolazione, nome_turbina, head, p->vento, p->densita_aria);
+			potenza = calcolo_potenza_curve_coefficienti(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, p->densita_aria);
 			out = aggiungi_potenza(out, potenza);
 		}
 		break;
@@ -45,30 +45,23 @@ struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo
 }
 
 /*******************CALCOLO DELLA POTENZA ISTANTANEA*************/
-float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, const struct turbina *head, float vel_vento)
+float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento)
 {
-	const struct turbina *temp = head;
+	struct turbina *temp = head;
 	float vel_min = 0;
 	float vel_max = 0;
 	int indice = 0;
-	while(strcmp(nome_turbina, temp->nome) != 0){
-		temp = scorri_lista_turbina(temp);
-		if(temp == NULL){
-			printf("turbina non trovata, inserire nuovo nome\n");
-			exit(EXIT_FAILURE);
-		}
-	}
-	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, temp, LUNGHEZZA_VETTORE_POWER_CURVES);
+	temp = cerca_dati_turbina(nome_turbina, altezza_mozzo, head);
 	
+	//interpolazione della curva
+	interpolazione_potenza_per_valori_mancanti(metodo, temp);
+	
+	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, temp, LUNGHEZZA_VETTORE_POWER_CURVES);
 	if(indice == LUNGHEZZA_VETTORE_POWER_CURVES){
-		if(temp->power_curves[indice] == -1)
-			return temp->power_curves[indice - 1]; //se manca l'ultimo valore, diamo il penultimo
 		return temp->power_curves[indice];
 	}
-	if(temp->power_curves[indice] == -1)
-		temp->power_curves[indice] = interpolazione_potenza_per_valori_mancanti(metodo, temp, indice);
-	if(temp->power_curves[indice - 1] == -1)
-		temp->power_curves[indice - 1] = interpolazione_potenza_per_valori_mancanti(metodo, temp, (indice - 1));
+	if(temp->wind_speed[indice] == vel_vento)
+		return temp->power_curves[indice];
 	
 	//richiamo funzioni interpolazione con ingresso le due potenze corrispondenti alle vel_max e vel_min
 	switch(metodo){
@@ -81,32 +74,25 @@ float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *n
 	}
 }
 
-float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, const struct turbina *head, float vel_vento, float densita_aria)
+float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float densita_aria)
 {
-	const struct turbina *temp = head;
+	struct turbina *temp = head;
 	float vel_min = 0;
 	float vel_max = 0;
 	int indice = 0;
 	float pot_min = 0;
 	float pot_max = 0;
-	while(strcmp(nome_turbina, temp->nome) != 0){
-		temp = scorri_lista_turbina(temp);
-		if(temp == NULL){
-			printf("turbina non trovata, inserire nuovo nome\n");
-			exit(EXIT_FAILURE);
-		}
-	}
-	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, temp, LUNGHEZZA_VETTORE_POWER_COEFFICIENT);
+	temp = cerca_dati_turbina(nome_turbina, altezza_mozzo, head);
 	
+	//interpolazione della curva
+	interpolazione_coefficienti_per_valori_mancanti(metodo, temp);
+	
+	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, temp, LUNGHEZZA_VETTORE_POWER_COEFFICIENT);
 	if(indice == LUNGHEZZA_VETTORE_POWER_COEFFICIENT){
-		if(temp->power_coefficients[indice] == -1)
-			return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice - 1]);; //se manca l'ultimo valore, diamo il penultimo
 		return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
 	}
-	if(temp->power_coefficients[indice] == -1)
-		temp->power_coefficients[indice] = interpolazione_coefficienti_per_valori_mancanti(metodo, temp, indice);
-	if(temp->power_coefficients[indice - 1] == -1)
-		temp->power_coefficients[indice - 1] = interpolazione_coefficienti_per_valori_mancanti(metodo, temp, (indice - 1));
+	if(temp->wind_speed[indice] == vel_vento)
+		return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
 	
 	//calcolo le potenze corrispondenti ai coefficienti
 	pot_min = calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_min, temp->power_coefficients[indice - 1]);
@@ -136,28 +122,63 @@ int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel
 	return i;
 }
 
-//nel caso di valori mancanti nella curva di potenza faccio interpolazione
-float interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, const struct turbina *puntatore, int i)
+//per ogni curva di interesse svolgerò un controllo dei valori mancanti e farò interpolazione
+void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt)
 {
-	switch(metodo){
-	case INTERPOLAZIONE_LINEARE_O:
-		return interpolazione_lineare(puntatore->wind_speed[i - 1], puntatore->power_curves[i - 1], puntatore->wind_speed[i + 1], puntatore->power_curves[i + 1], puntatore->wind_speed[i]);
-	case INTERPOLAZIONE_LOGARITMICA_O:
-		return interpolazione_logaritmica(puntatore->wind_speed[i - 1], puntatore->power_curves[i - 1], puntatore->wind_speed[i + 1], puntatore->power_curves[i + 1], puntatore->wind_speed[i]);
-	default:
-		return interpolazione_lineare(puntatore->wind_speed[i - 1], puntatore->power_curves[i - 1], puntatore->wind_speed[i + 1], puntatore->power_curves[i + 1], puntatore->wind_speed[i]);
+	int i, j;
+	punt->power_curves[0] = 0.0;
+	for(i = 1; i <= LUNGHEZZA_VETTORE_POWER_CURVES; i++){
+		if(punt->power_curves[i] == -1){ //devo fare interpolazione tra il valore precedente e il successivo non nullo
+			for(j = i + 1; j <= LUNGHEZZA_VETTORE_POWER_CURVES; j++){
+				if(punt->power_curves[j] != -1)
+					break;
+			}
+			if(j > LUNGHEZZA_VETTORE_POWER_CURVES){
+				punt->power_curves[i] = 0.0; //ho superato la velocità del vento massimo per la turbina
+			}else{
+				switch(metodo){
+				case INTERPOLAZIONE_LINEARE_O:
+					punt->power_curves[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
+					break;
+				case INTERPOLAZIONE_LOGARITMICA_O:
+					punt->power_curves[i] = interpolazione_logaritmica(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
+					break;
+				default:
+					punt->power_curves[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
+					break;
+				}
+			}
+		}
 	}
+
 }
 
-float interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, const struct turbina *puntatore, int i)
+void interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt)
 {
-	switch(metodo){
-	case INTERPOLAZIONE_LINEARE_O:
-		return interpolazione_lineare(puntatore->wind_speed[i - 1], puntatore->power_coefficients[i - 1], puntatore->wind_speed[i + 1], puntatore->power_coefficients[i + 1], puntatore->wind_speed[i]);
-	case INTERPOLAZIONE_LOGARITMICA_O:
-		return interpolazione_logaritmica(puntatore->wind_speed[i - 1], puntatore->power_coefficients[i - 1], puntatore->wind_speed[i + 1], puntatore->power_coefficients[i + 1], puntatore->wind_speed[i]);
-	default:
-		return interpolazione_lineare(puntatore->wind_speed[i - 1], puntatore->power_coefficients[i - 1], puntatore->wind_speed[i + 1], puntatore->power_coefficients[i + 1], puntatore->wind_speed[i]);
+	int i, j;
+	punt->power_coefficients[0] = 0.0;
+	for(i = 1; i <= LUNGHEZZA_VETTORE_POWER_COEFFICIENT; i++){
+		if(punt->power_coefficients[i] == -1){ //devo fare interpolazione tra il valore precedente e il successivo non nullo
+			for(j = i; j <= LUNGHEZZA_VETTORE_POWER_COEFFICIENT; j++){
+				if(punt->power_coefficients[j] != -1)
+					break;
+			}
+			if(j > LUNGHEZZA_VETTORE_POWER_COEFFICIENT){
+				punt->power_coefficients[i] = 0.0; //superato il limite massimo del vento
+			}else{
+				switch(metodo){
+				case INTERPOLAZIONE_LINEARE_O:
+					punt->power_coefficients[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
+					break;
+				case INTERPOLAZIONE_LOGARITMICA_O:
+					punt->power_coefficients[i] = interpolazione_logaritmica(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
+					break;
+				default:
+					punt->power_coefficients[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
+					break;
+				}
+			}
+		}
 	}
 }
 

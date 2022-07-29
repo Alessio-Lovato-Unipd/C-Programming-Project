@@ -18,16 +18,16 @@
 
 	struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p);
 
-	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, const struct turbina *head, struct parametro *in, struct potenza_out *hp);
+	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, struct parametro *in, struct potenza_out *hp);
+
+	float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento);
 	
-	float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, const struct turbina *head, float vel_vento);
-	
-	float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, const struct turbina *head, float vel_vento, float densita_aria);
+	float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float densita_aria);
 	
 	int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel_vento, const struct turbina *target, int lunghezza_vettore);
 	
-	float interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, const struct turbina *puntatore, int i);
+	void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt);
 	
-	float interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, const struct turbina *puntatore, int i);
+	void interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt);
 	
 #endif
