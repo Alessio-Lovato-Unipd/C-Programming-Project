@@ -131,6 +131,27 @@ void prova_calcolo_potenza_interpolazione_logaritmica(void)
 	svuota_lista_turbine_data(head);
 }
 
+void prova_calcolo_valori_ai_limiti(void)
+{
+	struct turbina *head = NULL;
+	struct csv file_coefficienti;
+	struct csv file_potenza;
+	float potenza;
+	int errore = 0;
+	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "VS112/2500", head, 0.0, 35.0);
+	TEST_ASSERT_EQUAL_FLOAT(0.0, potenza);
+	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "VS112/2500", head, 0.0, 36.0);
+	TEST_ASSERT_EQUAL_FLOAT(0.0, potenza);
+	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "V112/3300", head, 0.0, 26.0, 1.225);
+	TEST_ASSERT_EQUAL_FLOAT(0.0, potenza);
+	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "V112/3300", head, 0.0, 35.0, 1.225);
+	TEST_ASSERT_EQUAL_FLOAT(0.0, potenza);
+	svuota_lista_turbine_data(head);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
