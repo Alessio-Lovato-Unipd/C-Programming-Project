@@ -6,8 +6,19 @@
 	#include "estrattore_csv.h"
 	#include "formule.h"
 	#include "parametri.h"
+
+	struct potenza_out{
+		float potenza;
+		struct potenza_out *next;
+	};
 	
+	typedef enum {CURVA_POTENZA, CURVA_COEFFICIENTI_POTENZA} tipo_curva;
+
 	typedef enum {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O} tipo_calcolo_output;
+
+	struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p);
+
+	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, const struct turbina *head, struct parametro *in, struct potenza_out *hp);
 	
 	float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, const struct turbina *head, float vel_vento);
 	

@@ -1,5 +1,50 @@
 #include "calcolo_output.h"
 
+/************************GESTIONE LISTA POTENZA********************/
+
+struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p)
+{
+    struct potenza_out *nuovo_elemento;
+
+    nuovo_elemento = malloc(sizeof(struct potenza_out));
+    if (nuovo_elemento == NULL) {
+        printf("Error: malloc() failed in insert()\n");
+		exit(EXIT_FAILURE);
+    }
+
+    //salvo il dato
+    nuovo_elemento->potenza = p;
+    //salvo posizione 
+    nuovo_elemento->next = elemento_attuale; 
+
+    return nuovo_elemento;
+}
+
+struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, const struct turbina *head, struct parametro *in, struct potenza_out *hp)
+{
+	float potenza;
+	struct potenza_out *out = hp;
+
+	switch (curva){
+	case CURVA_POTENZA:
+		for (struct parametro *p = in; p != NULL; p = p->next) {
+			potenza= calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, p->vento);
+			out = aggiungi_potenza(out, potenza);
+		}
+		break;
+	
+	case CURVA_COEFFICIENTI_POTENZA:
+		for (struct parametro *p = in; p != NULL; p = p->next) {
+			potenza = calcolo_potenza_curve_coefficienti(metodo_interpolazione, nome_turbina, head, p->vento, p->densita_aria);
+			out = aggiungi_potenza(out, potenza);
+		}
+		break;
+	}
+
+	return out;
+}
+
+/*******************CALCOLO DELLA POTENZA ISTANTANEA*************/
 float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, const struct turbina *head, float vel_vento)
 {
 	const struct turbina *temp = head;
@@ -77,6 +122,7 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	}
 }
 
+/*******************************ELABORAZIONE CURVE********************/
 int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel_vento, const struct turbina *target, int lunghezza_vettore) //ritorna il valore in cui vel_vento = vel_max
 {
 	int i;
