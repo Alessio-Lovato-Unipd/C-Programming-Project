@@ -11,6 +11,8 @@
 
     void plot_curva_coefficienti(const struct turbina *turbina);
 
-    void plot_potenza(const struct turbina *turbina, const struct weather *meteo,int giorni);
+    void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const struct potenza_out *y, int n_dati, const char *title);
+
+    void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza, int giorni);
     
 #endif

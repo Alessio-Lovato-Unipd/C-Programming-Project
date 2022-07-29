@@ -117,7 +117,7 @@
 
 
 
-
+/************** PLOT  DELLE CURVE ****/
 void plot_curva_potenza(const struct turbina *turbina)
 {
     gnuplot_ctrl *gp = NULL;  
@@ -158,8 +158,32 @@ void plot_curva_coefficienti(const struct turbina *turbina)
     gnuplot_close(gp);
 }
 
+/*********************** FUNZIONE COSTRUITA SULLE LISTA CONCATENATE CREATE NELLE ALTRE LIBRERIE *******************/
+void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const struct potenza_out *y, int n_dati, const char *title)
+{
+    FILE *data_file;
 
-void plot_potenza(const struct turbina *turbina, const struct weather *meteo,int giorni)//quanti giorni voglio visualizzare?
+    data_file = fopen(file_name, "w+");
+    if (data_file != NULL){
+        // scrivi il titolo come commento
+        if (title != NULL) {
+            fprintf(data_file, "# %s\n", title);
+        }
+
+        //scrivi i dati
+        for (int i = 0; i < n_dati; i++){
+            fprintf(data_file, "%s, %f\n", time->orario, y->potenza);
+            time = time->prev;
+            y = y->next;
+        }
+
+        fclose(data_file);
+    }
+    
+}
+
+
+void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza, int giorni)//quanti giorni voglio visualizzare?
 {
     if (giorni > 0){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
@@ -177,26 +201,29 @@ void plot_potenza(const struct turbina *turbina, const struct weather *meteo,int
         gnuplot_cmd(gp, "set xdata time");
         gnuplot_cmd(gp, "set timefmt \"%y-%m-%d %H\" ");
 
-        if (giorni = 1) {
+        if (giorni == 1) {
             gnuplot_cmd(gp, "set format x \"%H\" ");//ore
         }
         else if (giorni <= 7){
             gnuplot_cmd(gp, "set format x \"%a %d\"");//giorno settimana/giorno mese
         }
-        else if (giorni ) {
+        else if (giorni < 90 ) {
             gnuplot_cmd(gp, "set format x \"%m/%d\"");//mese/giorno
         }
-        else if (giorni > 90) {
+        else if (giorni >= 90) {
             gnuplot_cmd(gp, "set format x \"%m\"");//mese
         }
         
 
 
-        gnuplot_write_xtime_y_csv("potenza.csv", meteo->orario , turbina->potenza_nominale, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n tempo, potenza[kW]");//genero file csv di uscita
+        gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n tempo, potenza[kW]");//genero file csv di uscita
         gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
 
         gnuplot_close(gp);  
     }
     
 }
+
+
+
 

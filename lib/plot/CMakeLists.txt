@@ -12,6 +12,7 @@ target_link_libraries( plot
 	PUBLIC
 	lib::estrazione_csv
 	lib::gnuplot_i
+	lib::calcolo_output
 )
 
 target_include_directories(plot PUBLIC include)
