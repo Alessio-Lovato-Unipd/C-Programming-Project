@@ -171,7 +171,7 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
         }
 
         //scrivi i dati
-        for (int i = 0; i < n_dati; i++){
+        for (int i = 0; (i < n_dati) || time != NULL; i++){
             fprintf(data_file, "%s, %f\n", time->orario, y->potenza);
             time = time->prev;
             y = y->next;
@@ -213,8 +213,6 @@ void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza
         else if (giorni >= 90) {
             gnuplot_cmd(gp, "set format x \"%m\"");//mese
         }
-        
-
 
         gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n tempo, potenza[kW]");//genero file csv di uscita
         gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
