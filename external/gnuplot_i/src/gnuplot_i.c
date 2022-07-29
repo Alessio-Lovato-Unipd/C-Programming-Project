@@ -29,12 +29,6 @@
 
 #include "gnuplot_i.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <assert.h>
-
 #ifdef WIN32
 #include <io.h>
 #endif // #ifdef WIN32
@@ -42,32 +36,6 @@
 /*---------------------------------------------------------------------------
                                 Defines
  ---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------
-                          Prototype Functions
- ---------------------------------------------------------------------------*/
-
-/**
- * Creates a temporary file name for writing
- *
- * @author Peter (12/9/2011)
- *
- * @param handle
- *
- * @return char const * Pointer to file name string.
- */
-char const * gnuplot_tmpfile(gnuplot_ctrl * handle);
-
-/**
- * Plot a temporary file.
- *
- * @author Peter (12/9/2011)
- *
- * @param handle
- * @param tmp_filename
- * @param title
- */
-void gnuplot_plot_atmpfile(gnuplot_ctrl * handle, char const* tmp_filename, char const* title);
 
 /*---------------------------------------------------------------------------
                             Function codes
@@ -606,27 +574,6 @@ int gnuplot_write_x_csv(
     return 0;
 }
 
-int gnuplot_write_xtime_y_csv(const char *file_name, const char *time, const float *y, int n_dati, const char *title)
-{
-    FILE *data_file;
-
-    data_file = fopen(file_name, "w+");
-    if (data_file != NULL){
-        // scrivi il titolo come commento
-        if (title != NULL) {
-            fprintf(data_file, "# %s\n", title);
-        }
-
-        //scrivi i dati
-        for (int i = 0; i < n_dati; i++) {
-            fprintf(data_file, "%s, %f\n", time[i], y[i]);
-        }
-
-        fclose(data_file);
-    }
-    
-    return 0;
-}
 
 
 int gnuplot_write_xy_csv(

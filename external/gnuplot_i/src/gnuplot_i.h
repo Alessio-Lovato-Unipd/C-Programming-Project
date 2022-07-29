@@ -30,9 +30,15 @@
  ---------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+#include <assert.h>
 
 /** Maximal number of simultaneous temporary files */
 #define GP_MAX_TMP_FILES    64
+
+
 
 /*---------------------------------------------------------------------------
                                 New Types
@@ -71,6 +77,8 @@ typedef struct _GNUPLOT_CTRL_ {
 /*---------------------------------------------------------------------------
                         Function ANSI C prototypes
  ---------------------------------------------------------------------------*/
+
+
 
 
 /*-------------------------------------------------------------------------*/
@@ -396,12 +404,6 @@ int gnuplot_write_xy_csv(
     int                 n,
     char const      *   title);
 
-
-/*
-Write a file csv with x axis as time
-*/
-int gnuplot_write_xtime_y_csv(const char *file_name, const char *time, const float *y, int n_dati, const char *title);
-
 /**
  * Writes a multi column CSV file for use with gnuplot commands later.  Allows files to also be
  * saved for post analysis with excel for example. Note that when used with gnuplot, since there
@@ -427,5 +429,29 @@ int gnuplot_write_multi_csv(
     int                 n,
     int                 numColumns,
     char const      *   title);
+
+
+
+/**
+ * Creates a temporary file name for writing
+ *
+ * @author Peter (12/9/2011)
+ *
+ * @param handle
+ *
+ * @return char const * Pointer to file name string.
+ */
+char const * gnuplot_tmpfile(gnuplot_ctrl * handle);
+
+/**
+ * Plot a temporary file.
+ *
+ * @author Peter (12/9/2011)
+ *
+ * @param handle
+ * @param tmp_filename
+ * @param title
+ */
+void gnuplot_plot_atmpfile(gnuplot_ctrl * handle, char const* tmp_filename, char const* title);
 
 #endif
