@@ -83,20 +83,24 @@ void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, stru
 	punt->power_curves[0] = 0.0;
 	for(i = 1; i <= LUNGHEZZA_VETTORE_POWER_CURVES; i++){
 		if(punt->power_curves[i] == -1){ //devo fare interpolazione tra il valore precedente e il successivo non nullo
-			for(j = i; j <= LUNGHEZZA_VETTORE_POWER_CURVES; j++){
+			for(j = i + 1; j <= LUNGHEZZA_VETTORE_POWER_CURVES; j++){
 				if(punt->power_curves[j] != -1)
 					break;
 			}
-			switch(metodo){
-			case INTERPOLAZIONE_LINEARE_O:
-				punt->power_curves[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
-				break;
-			case INTERPOLAZIONE_LOGARITMICA_O:
-				punt->power_curves[i] = interpolazione_logaritmica(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
-				break;
-			default:
-				punt->power_curves[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
-				break;
+			if(j > LUNGHEZZA_VETTORE_POWER_CURVES){
+				punt->power_curves[i] = 0.0; //ho superato la velocità del vento massimo per la turbina
+			}else{
+				switch(metodo){
+				case INTERPOLAZIONE_LINEARE_O:
+					punt->power_curves[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
+					break;
+				case INTERPOLAZIONE_LOGARITMICA_O:
+					punt->power_curves[i] = interpolazione_logaritmica(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
+					break;
+				default:
+					punt->power_curves[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_curves[i - 1], punt->wind_speed[j], punt->power_curves[j], punt->wind_speed[i]);
+					break;
+				}
 			}
 		}
 	}
@@ -113,16 +117,20 @@ void interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo,
 				if(punt->power_coefficients[j] != -1)
 					break;
 			}
-			switch(metodo){
-			case INTERPOLAZIONE_LINEARE_O:
-				punt->power_coefficients[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
-				break;
-			case INTERPOLAZIONE_LOGARITMICA_O:
-				punt->power_coefficients[i] = interpolazione_logaritmica(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
-				break;
-			default:
-				punt->power_coefficients[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
-				break;
+			if(j > LUNGHEZZA_VETTORE_POWER_COEFFICIENT){
+				punt->power_coefficients[i] = 0.0; //superato il limite massimo del vento
+			}else{
+				switch(metodo){
+				case INTERPOLAZIONE_LINEARE_O:
+					punt->power_coefficients[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
+					break;
+				case INTERPOLAZIONE_LOGARITMICA_O:
+					punt->power_coefficients[i] = interpolazione_logaritmica(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
+					break;
+				default:
+					punt->power_coefficients[i] = interpolazione_lineare(punt->wind_speed[i - 1], punt->power_coefficients[i - 1], punt->wind_speed[j], punt->power_coefficients[j], punt->wind_speed[i]);
+					break;
+				}
 			}
 		}
 	}
