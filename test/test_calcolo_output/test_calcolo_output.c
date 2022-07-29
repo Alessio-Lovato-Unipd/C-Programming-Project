@@ -47,6 +47,7 @@ void lettura_interpolazione_curve_interpolazione_lineare(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.478, elemento_cercato->power_coefficients[21]);
 	TEST_ASSERT_EQUAL_FLOAT(0.478, elemento_cercato->power_coefficients[22]);
 	TEST_ASSERT_EQUAL_FLOAT(0.0, elemento_cercato->power_coefficients[LUNGHEZZA_VETTORE_POWER_COEFFICIENT]);
+	svuota_lista_turbine_data(head);
 }
 
 void lettura_interpolazione_curve_interpolazione_logaritmica(void)
@@ -74,6 +75,7 @@ void lettura_interpolazione_curve_interpolazione_logaritmica(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.478, elemento_cercato->power_coefficients[21]);
 	TEST_ASSERT_EQUAL_FLOAT(0.478, elemento_cercato->power_coefficients[22]);
 	TEST_ASSERT_EQUAL_FLOAT(0.0, elemento_cercato->power_coefficients[LUNGHEZZA_VETTORE_POWER_COEFFICIENT]);
+	svuota_lista_turbine_data(head);
 }
 
 void prova_calcolo_potenza_precisa(void)
@@ -90,6 +92,43 @@ void prova_calcolo_potenza_precisa(void)
 	TEST_ASSERT_EQUAL_FLOAT(3000000.0, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, 15, 1.225);
 	TEST_ASSERT_EQUAL_FLOAT(3047406.027, potenza);
+	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "VS112/2500", head, 0.0, 4.0);
+	TEST_ASSERT_EQUAL_FLOAT(154200.0, potenza);
+	svuota_lista_turbine_data(head);
+}
+
+void prova_calcolo_potenza_interpolazione_lineare(void)
+{
+	struct turbina *head = NULL;
+	struct csv file_coefficienti;
+	struct csv file_potenza;
+	float potenza;
+	int errore = 0;
+	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-115/3200", head, 92, 4.1);
+	TEST_ASSERT_EQUAL_FLOAT(137850, potenza);
+	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "E-115/3200", head, 92, 4.1, 1.225);
+	TEST_ASSERT_EQUAL_FLOAT(171314.74, potenza);
+	svuota_lista_turbine_data(head);
+}
+
+void prova_calcolo_potenza_interpolazione_logaritmica(void)
+{
+	struct turbina *head = NULL;
+	struct csv file_coefficienti;
+	struct csv file_potenza;
+	float potenza;
+	int errore = 0;
+	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LOGARITMICA_O, "E-115/3200", head, 92, 4.1);
+	TEST_ASSERT_EQUAL_FLOAT(140232, potenza);
+	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LOGARITMICA_O, "E-115/3200", head, 92, 4.1, 1.225);
+	TEST_ASSERT_EQUAL_FLOAT(171493.2, potenza);
+	svuota_lista_turbine_data(head);
 }
 
 int main(void)
@@ -99,5 +138,7 @@ int main(void)
 	RUN_TEST(lettura_interpolazione_curve_interpolazione_lineare);
 	RUN_TEST(lettura_interpolazione_curve_interpolazione_logaritmica);
 	RUN_TEST(prova_calcolo_potenza_precisa);
+	RUN_TEST(prova_calcolo_potenza_interpolazione_lineare);
+	RUN_TEST(prova_calcolo_potenza_interpolazione_logaritmica);
 	return UNITY_END();
 }
