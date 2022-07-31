@@ -70,6 +70,8 @@
     struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altezza_mozzo, const struct turbina *head_turbina);
 	
 	struct turbina *scorri_lista_turbina(const struct turbina *puntatore);
+    
+    struct turbina *conversione_dati_in_booleano(struct turbina *elemento_attuale_turbina);
 
      /* GESTIONE DATI WEATHER */
 

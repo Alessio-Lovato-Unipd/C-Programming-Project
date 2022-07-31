@@ -80,6 +80,12 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	nuova->wind_speed = NULL;
 	nuova->power_coefficients = NULL;
 	nuova->power_curves = NULL;
+	
+	nuova->char_p_coefficient=malloc(sizeof(char) * (strlen(fields[16]) +1 ));
+	strcpy(nuova->char_p_coefficient, fields[16]);
+
+	nuova->char_p_curves=malloc(sizeof(char) * (strlen(fields[15]) +1 ));
+	strcpy(nuova->char_p_curves, fields[15]);
 
 	int num_caratteri=0;
 	char *punto_virgola_temp = NULL;
@@ -208,6 +214,28 @@ struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altez
 struct turbina *scorri_lista_turbina(const struct turbina *puntatore)
 {
 	return puntatore->prev;
+}
+
+struct turbina *conversione_dati_in_booleano(struct turbina *elemento_attuale_turbina)
+{
+	if(strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1)==0)
+	{
+		elemento_attuale_turbina->bool_p_coefficient=false;
+	}
+	if(strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1)!=0)
+	{
+		elemento_attuale_turbina->bool_p_coefficient=true;
+	}
+
+	if(strncmp(elemento_attuale_turbina->char_p_curves, "F", 1)!=0)
+	{
+		elemento_attuale_turbina->bool_p_curves=true;
+	}
+	else
+	{
+		elemento_attuale_turbina->bool_p_curves=false;
+	}
+	return elemento_attuale_turbina;
 }
 
 
