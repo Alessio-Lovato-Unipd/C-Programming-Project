@@ -22,6 +22,10 @@
 		float *wind_speed;
         float *power_coefficients;
         int *power_curves;
+        char *char_p_coefficient;
+        char *char_p_curves;
+        bool bool_p_coefficient;
+        bool bool_p_curves;
         struct turbina *prev;
     };
 
