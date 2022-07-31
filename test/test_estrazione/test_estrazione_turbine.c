@@ -410,6 +410,61 @@ void verifica_funzione_svuotamento_lista(void)
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 
+void verifica_funzione_conversione_bool_FF(void) //nel caso di char False-False
+{
+	int errore = 0;
+	struct turbina *puntatore = NULL, *elemento_cercato = NULL;
+
+	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	elemento_cercato = puntatore;
+
+	elemento_cercato = cerca_dati_turbina("AW100/3000", 100, puntatore);
+	TEST_ASSERT_EQUAL_STRING("AW100/3000", elemento_cercato->nome);
+	TEST_ASSERT_EQUAL_STRING("29_100", elemento_cercato->id); //perché considero la prima altezza del mozzo
+	TEST_ASSERT_EQUAL_STRING("False", elemento_cercato->char_p_coefficient);
+	TEST_ASSERT_EQUAL_STRING("False", elemento_cercato->char_p_curves);
+	TEST_ASSERT_EQUAL_INT(0, elemento_cercato->bool_p_coefficient);
+	TEST_ASSERT_EQUAL_INT(0, elemento_cercato->bool_p_curves);
+}
+
+void verifica_funzione_conversione_bool_TT(void) //nel caso di char True-True
+{
+	int errore = 0;
+	struct turbina *puntatore = NULL, *elemento_cercato = NULL;
+
+	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	elemento_cercato = puntatore;
+
+	elemento_cercato = cerca_dati_turbina("V126/3300", 117, puntatore);
+	puntatore = conversione_dati_in_booleano(elemento_cercato);
+	TEST_ASSERT_EQUAL_STRING("V126/3300", elemento_cercato->nome);
+	TEST_ASSERT_EQUAL_STRING("43_117", elemento_cercato->id); //perché considero la prima altezza del mozzo
+	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_coefficient);
+	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_curves);
+	TEST_ASSERT_EQUAL_INT(1, elemento_cercato->bool_p_coefficient);
+	TEST_ASSERT_EQUAL_INT(1, elemento_cercato->bool_p_curves);
+}
+
+void verifica_funzione_conversione_bool_FT(void) //nel caso di char False-True
+{
+	int errore = 0;
+	struct turbina *puntatore = NULL, *elemento_cercato = NULL;
+
+	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+	elemento_cercato = puntatore;
+
+	elemento_cercato = cerca_dati_turbina("S152/6330", 121, puntatore);
+	puntatore = conversione_dati_in_booleano(elemento_cercato);
+	TEST_ASSERT_EQUAL_STRING("S152/6330", elemento_cercato->nome);
+	TEST_ASSERT_EQUAL_STRING("84_121", elemento_cercato->id);
+	TEST_ASSERT_EQUAL_STRING("False", elemento_cercato->char_p_coefficient);
+	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_curves);
+	TEST_ASSERT_EQUAL_INT(0, elemento_cercato->bool_p_coefficient);
+	TEST_ASSERT_EQUAL_INT(1, elemento_cercato->bool_p_curves);
+}
+
+//non ho trovato nessuna turbina per il caso TF
+
 int main()
 {
     UNITY_BEGIN();
@@ -429,5 +484,8 @@ int main()
 	RUN_TEST(verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola);
 	RUN_TEST(verifica_ricerca_turbina_estremi);
 	RUN_TEST(verifica_ricerca_turbina_falso);
+	RUN_TEST(verifica_funzione_conversione_bool_FF);
+	RUN_TEST(verifica_funzione_conversione_bool_TT);
+	RUN_TEST(verifica_funzione_conversione_bool_FT);
     return UNITY_END();
 }
