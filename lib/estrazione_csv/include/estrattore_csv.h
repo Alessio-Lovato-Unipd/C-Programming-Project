@@ -9,9 +9,9 @@
 	#define NUMERO_COLONNE_TURBINA 19
 	#define NUMERO_COLONNE_WEATHER 7 
     #define NUMERO_COLONNE_POWER_COEFFICIENT_CURVES 60
-	#define NUMERO_COLONNE_POWER_CURVES 80
+	#define NUMERO_COLONNE_POWER_CURVES 79
     #define LUNGHEZZA_VETTORE_POWER_COEFFICIENT 58
-    #define LUNGHEZZA_VETTORE_POWER_CURVES 78
+    #define LUNGHEZZA_VETTORE_POWER_CURVES 77
 	#define SEPARATORE ','
 
     struct turbina {
@@ -92,11 +92,11 @@
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
-    void reading_file_power_coefficient(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
+    void reading_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
 	
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
-	void reading_file_power_curves(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
+	void reading_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
 	
 	void inserimento_power_curves(float *array_dati, char **fields);
     
