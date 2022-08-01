@@ -425,6 +425,7 @@ void verifica_funzione_conversione_bool_FF(void) //nel caso di char False-False
 	TEST_ASSERT_EQUAL_STRING("False", elemento_cercato->char_p_curves);
 	TEST_ASSERT_EQUAL_INT(0, elemento_cercato->bool_p_coefficient);
 	TEST_ASSERT_EQUAL_INT(0, elemento_cercato->bool_p_curves);
+	svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_funzione_conversione_bool_TT(void) //nel caso di char True-True
@@ -436,13 +437,14 @@ void verifica_funzione_conversione_bool_TT(void) //nel caso di char True-True
 	elemento_cercato = puntatore;
 
 	elemento_cercato = cerca_dati_turbina("V126/3300", 117, puntatore);
-	puntatore = conversione_dati_in_booleano(elemento_cercato);
+	elemento_cercato = conversione_dati_in_booleano(elemento_cercato);
 	TEST_ASSERT_EQUAL_STRING("V126/3300", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("43_117", elemento_cercato->id); //perché considero la prima altezza del mozzo
 	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_coefficient);
 	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_curves);
 	TEST_ASSERT_EQUAL_INT(1, elemento_cercato->bool_p_coefficient);
 	TEST_ASSERT_EQUAL_INT(1, elemento_cercato->bool_p_curves);
+	svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_funzione_conversione_bool_FT(void) //nel caso di char False-True
@@ -454,13 +456,14 @@ void verifica_funzione_conversione_bool_FT(void) //nel caso di char False-True
 	elemento_cercato = puntatore;
 
 	elemento_cercato = cerca_dati_turbina("S152/6330", 121, puntatore);
-	puntatore = conversione_dati_in_booleano(elemento_cercato);
+	elemento_cercato = conversione_dati_in_booleano(elemento_cercato);
 	TEST_ASSERT_EQUAL_STRING("S152/6330", elemento_cercato->nome);
 	TEST_ASSERT_EQUAL_STRING("84_121", elemento_cercato->id);
 	TEST_ASSERT_EQUAL_STRING("False", elemento_cercato->char_p_coefficient);
 	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_curves);
 	TEST_ASSERT_EQUAL_INT(0, elemento_cercato->bool_p_coefficient);
 	TEST_ASSERT_EQUAL_INT(1, elemento_cercato->bool_p_curves);
+	svuota_lista_turbine_data(puntatore);
 }
 
 //non ho trovato nessuna turbina per il caso TF

@@ -20,18 +20,24 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
     }
 	
 	char **fields = NULL;
+	char *valori = malloc(sizeof(char) * 6); //dimensione massima delle stringhe relative alle velocità del vento
 	
 	csv_read_record(file, &fields); //salvo le velocità del vento per avere corrispondenza con i coefficienti
 	do{
-		for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++)
-			temp->wind_speed[i - 1] = atof(fields[i]);
+		if(temp->bool_p_curves){
+			for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++){
+				strcpy(valori, fields[i]);
+				temp->wind_speed[i - 1] = atof(valori);
+			}
+		}
 	}while((temp = scorri_lista_turbina(temp)) != NULL);
+	free(valori);
 	
 	temp = puntatore;
 	while ((*errore = csv_read_record(file, &fields)) == CSV_OK) {
 		while(temp != NULL){ //faccio scorrere la lista per inserire in ogni turbina i dati delle curve
 			if(strcmp(temp->nome, fields[0]) == 0){
-				temp->power_curves = malloc(sizeof(int) * (NUMERO_COLONNE_POWER_CURVES - 1));
+				temp->power_curves = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_CURVES - 1));
 				if (temp->power_curves == NULL){
 					printf("Error: malloc() failed in salvataggio_power_curves\n");
 					exit(EXIT_FAILURE);
@@ -53,7 +59,7 @@ void reading_file_power_curves(struct csv *file, struct turbina *const puntatore
 	}
 }
 
-void inserimento_power_curves(int *array_dati, char **fields)
+void inserimento_power_curves(float *array_dati, char **fields)
 {
 	for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++){
 		if (strcmp(fields[i], "")!= 0)

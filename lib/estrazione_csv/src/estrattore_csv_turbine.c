@@ -84,6 +84,13 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	nuova->char_p_curves=malloc(sizeof(char) * (strlen(fields[15]) +1 ));
 	strcpy(nuova->char_p_curves, fields[15]);
 
+	//allocazione memoria wind_speed in base alla presenza delle curve
+	conversione_dati_in_booleano(nuova);
+	if(nuova->bool_p_curves)
+		nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_CURVES + 1));
+	if(nuova->bool_p_coefficient && !(nuova->bool_p_curves))
+		nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1));
+	
 	int num_caratteri=0;
 	char *punto_virgola_temp = NULL;
 	bool ultima_copia = true;
@@ -171,12 +178,15 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
 void elimina_nodo_turbina (struct turbina *nodo)
 {
 	free(nodo->nome);
-	free(nodo->wind_speed);
+	if(nodo->wind_speed != NULL)
+		free(nodo->wind_speed);
 	free(nodo->id);
 	if(nodo->power_coefficients != NULL)
 		free(nodo->power_coefficients);
 	if(nodo->power_curves != NULL)
 		free(nodo->power_curves);
+	free(nodo->char_p_coefficient);
+	free(nodo->char_p_curves);
 	free(nodo);
 }
 

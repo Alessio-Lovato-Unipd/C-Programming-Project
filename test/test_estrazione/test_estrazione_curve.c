@@ -105,7 +105,7 @@ void verifica_lettura_vel_vento(void)
 		TEST_ASSERT_EQUAL_FLOAT(0, temp->wind_speed[0]);
 		TEST_ASSERT_EQUAL_FLOAT(0.5, temp->wind_speed[1]);
 		TEST_ASSERT_EQUAL_FLOAT(15, temp->wind_speed[37]);
-		TEST_ASSERT_EQUAL_FLOAT(35, temp->wind_speed[LUNGHEZZA_VETTORE_POWER_CURVES]);
+		TEST_ASSERT_EQUAL_FLOAT(35, temp->wind_speed[LUNGHEZZA_VETTORE_POWER_CURVES]); // fare controllo di quali avevano curve di potenza
 		TEST_ASSERT_EQUAL_FLOAT(26, temp->wind_speed[LUNGHEZZA_VETTORE_POWER_COEFFICIENT]);
 		temp = scorri_lista_turbina(temp);
 	}

@@ -19,12 +19,18 @@ void reading_file_power_coefficient(struct csv *file, struct turbina *const punt
 	}
 	
 	char **fields = NULL;
+	char *valori = malloc(sizeof(char) * 6);
 	
 	csv_read_record(file, &fields); //salvo le velocità del vento per avere corrispondenza con i coefficienti
 	do{
-		for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT_CURVES; i++)
-			temp->wind_speed[i - 1] = atof(fields[i]);
+		if(temp->bool_p_coefficient){
+			for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT_CURVES; i++){
+			strcpy(valori, fields[i]);	
+			temp->wind_speed[i - 1] = atof(valori);
+			}
+		}
 	}while((temp = scorri_lista_turbina(temp)) != NULL);
+	free(valori);
 	
 	temp = puntatore;
 	while ((*errore = csv_read_record(file, &fields)) == CSV_OK) {

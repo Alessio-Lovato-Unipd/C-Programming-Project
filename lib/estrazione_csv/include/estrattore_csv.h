@@ -21,7 +21,7 @@
         float altezza_mozzo;
 		float *wind_speed;
         float *power_coefficients;
-        int *power_curves;
+        float *power_curves;
         char *char_p_coefficient;
         char *char_p_curves;
         bool bool_p_coefficient;
@@ -98,6 +98,6 @@
 	
 	void reading_file_power_curves(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
 	
-	void inserimento_power_curves(int *array_dati, char **fields);
+	void inserimento_power_curves(float *array_dati, char **fields);
     
 #endif
