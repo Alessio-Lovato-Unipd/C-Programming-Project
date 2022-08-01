@@ -4,7 +4,7 @@
 ************************    GESTIONE FILE power_curves.csv      **************************************
 ******************************************************************************************************/
 
-void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore)
+void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore, float *array_vento)
 {
 	struct turbina *temp = puntatore;
 	struct csv file;
@@ -21,14 +21,9 @@ void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_f
 		controllo_csv(errore);
 		return;
 	}
-
-	do{
-		if(temp->bool_p_curves){
-			for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++){
-				temp->wind_speed[i - 1] = atof(fields[i]);
-			}
-		}
-	}while((temp = scorri_lista_turbina(temp)) != NULL);
+	for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++){
+		array_vento[i - 1] = atof(fields[i]);
+	}
 	
 	temp = puntatore;
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {

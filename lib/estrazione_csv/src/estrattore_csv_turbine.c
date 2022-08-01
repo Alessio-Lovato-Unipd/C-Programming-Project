@@ -71,7 +71,6 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
     nuova->potenza_nominale = atoi(fields[5]); // conversione del dato da stringa a intero tramite funzione atoi()
 	nuova->diametro_rotore = atoi(fields[6]);
-	nuova->wind_speed = NULL;
 	nuova->power_coefficients = NULL;
 	nuova->power_curves = NULL;
 
@@ -83,10 +82,8 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	//allocazione memoria wind_speed in base alla presenza delle curve
 	conversione_dati_in_booleano(nuova);
-	if(nuova->bool_p_curves)
-		nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_CURVES + 1));
-	if(nuova->bool_p_coefficient && !(nuova->bool_p_curves))
-		nuova->wind_speed = malloc(sizeof(float) * (LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1));
+	free(nuova->char_p_coefficient);
+	free(nuova->char_p_curves);
 	
 	int num_caratteri=0;
 	char *punto_virgola_temp = NULL;
@@ -175,15 +172,11 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
 void elimina_nodo_turbina (struct turbina *nodo)
 {
 	free(nodo->nome);
-	if(nodo->wind_speed != NULL)
-		free(nodo->wind_speed);
 	free(nodo->id);
 	if(nodo->power_coefficients != NULL)
 		free(nodo->power_coefficients);
 	if(nodo->power_curves != NULL)
 		free(nodo->power_curves);
-	free(nodo->char_p_coefficient);
-	free(nodo->char_p_curves);
 	free(nodo);
 }
 

@@ -19,7 +19,6 @@
         int potenza_nominale;
         int diametro_rotore;
         float altezza_mozzo;
-		float *wind_speed;
         float *power_coefficients;
         float *power_curves;
         char *char_p_coefficient;
@@ -91,11 +90,11 @@
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
-    void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
+    void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore, float *array_vento);
 	
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
-	void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
+	void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore, float *array_vento);
 	
 	void inserimento_power_curves(float *array_dati, char **fields);
 
