@@ -4,7 +4,7 @@
 ************************    GESTIONE FILE power_coefficient_curves.csv      **************************************
 ******************************************************************************************************/
 
-void reading_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore)
+void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore)
 {
 	struct turbina *temp = puntatore;
 	struct csv file;
@@ -47,7 +47,7 @@ void reading_file_power_coefficient(struct turbina *const puntatore, char *perco
 	}
 	
  	
-		if (*errore != CSV_END){
+	if (*errore != CSV_END){
 		controllo_csv(errore);
 		svuota_lista_turbine_data(puntatore);
 	}

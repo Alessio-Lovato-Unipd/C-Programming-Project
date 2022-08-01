@@ -91,11 +91,11 @@
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
-    void reading_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
+    void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
 	
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
-	void reading_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
+	void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
 	
 	void inserimento_power_curves(float *array_dati, char **fields);
 

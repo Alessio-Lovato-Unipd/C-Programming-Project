@@ -4,7 +4,7 @@
 ************************    GESTIONE FILE power_curves.csv      **************************************
 ******************************************************************************************************/
 
-void reading_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore)
+void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore)
 {
 	struct turbina *temp = puntatore;
 	struct csv file;

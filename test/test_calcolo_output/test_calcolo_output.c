@@ -9,12 +9,10 @@ void ricerca_turbina(void)
 {
 	struct turbina *head = NULL;
 	struct turbina *elemento_cercato = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	elemento_cercato = cerca_dati_turbina("E-101/3050", 99, head);
 	TEST_ASSERT_EQUAL_STRING("E-101/3050", elemento_cercato->nome);
 	elemento_cercato = cerca_dati_turbina("E-126/7500", 0.0, head);
@@ -26,12 +24,10 @@ void lettura_interpolazione_curve_interpolazione_lineare(void)
 {
 	struct turbina *head = NULL;
 	struct turbina *elemento_cercato = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	elemento_cercato = cerca_dati_turbina("E-101/3050", 99, head);
 	
 	calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, 15);
@@ -54,12 +50,10 @@ void lettura_interpolazione_curve_interpolazione_logaritmica(void)
 {
 	struct turbina *head = NULL;
 	struct turbina *elemento_cercato = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	elemento_cercato = cerca_dati_turbina("E-101/3050", 99, head);
 	
 	calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LOGARITMICA_O, "E-101/3050", head, 99, 15);
@@ -81,13 +75,11 @@ void lettura_interpolazione_curve_interpolazione_logaritmica(void)
 void prova_calcolo_potenza_precisa(void)
 {
 	struct turbina *head = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	float potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, 15);
 	TEST_ASSERT_EQUAL_FLOAT(3000000.0, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, 15, 1.225);
@@ -100,13 +92,11 @@ void prova_calcolo_potenza_precisa(void)
 void prova_calcolo_potenza_interpolazione_lineare(void)
 {
 	struct turbina *head = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	float potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-115/3200", head, 92, 4.1);
 	TEST_ASSERT_EQUAL_FLOAT(137850, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "E-115/3200", head, 92, 4.1, 1.225);
@@ -117,13 +107,11 @@ void prova_calcolo_potenza_interpolazione_lineare(void)
 void prova_calcolo_potenza_interpolazione_logaritmica(void)
 {
 	struct turbina *head = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	float potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LOGARITMICA_O, "E-115/3200", head, 92, 4.1);
 	TEST_ASSERT_EQUAL_FLOAT(140232, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LOGARITMICA_O, "E-115/3200", head, 92, 4.1, 1.225);
@@ -134,13 +122,11 @@ void prova_calcolo_potenza_interpolazione_logaritmica(void)
 void prova_calcolo_valori_ai_limiti(void)
 {
 	struct turbina *head = NULL;
-	struct csv file_coefficienti;
-	struct csv file_potenza;
 	float potenza;
 	int errore = 0;
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
+	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
+	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "VS112/2500", head, 0.0, 35.0);
 	TEST_ASSERT_EQUAL_FLOAT(0.0, potenza);
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "VS112/2500", head, 0.0, 36.0);
