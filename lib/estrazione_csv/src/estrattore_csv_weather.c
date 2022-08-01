@@ -1,5 +1,26 @@
 #include "../include/estrattore_csv.h"
 
+
+/*****************************************************************************************************
+************************    STAMPA ERRORI FILE CSV    **************************************
+******************************************************************************************************/
+
+
+void controllo_csv(int *errore)
+{
+	char *error;
+    if (*errore == CSV_E_IO)
+    {
+        printf("\n ATTENZIONE!\nI file necessari:\n");
+        printf("\tturbine_data.csv\n\tweather.csv\n\tpower_curves.csv\n\tpower_coefficient_curves.csv\n\n");
+        printf("non si trovano nella cartella \"../../data/\" rispetto a dove è stato lanciato l'eseguibile\n\n");
+    } else {
+        csv_error_string(*errore, &error);
+        printf("ERROR: %s\n", error);
+    }
+    return;
+}
+
 /*****************************************************************************************************
 ************************    GESTIONE FILE weather.csv      **************************************
 ******************************************************************************************************/
@@ -9,24 +30,23 @@ struct dati_weather *apertura_file_weather(struct csv *file, char** fields, stru
 {
 
     *errore = csv_open(file, percorso_file_weather, SEPARATORE, NUMERO_COLONNE_WEATHER);
-    if (*errore == CSV_E_IO)
-    {
-        printf("\n ATTENZIONE!\nLa cartella contenente il file \"weather.csv\" non si ");
-        printf("trova nel percorso \"../../data/weather.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
-    }
-	if(*errore != CSV_OK){
+    if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return NULL;
 	}
 	
     *errore = csv_read_record(file, &fields); //salto l'intestazione del file csv
-	if(*errore != CSV_OK){
+	if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return NULL;
 	}
 	
 	*errore = csv_read_record(file, &fields);	//salvo la struttura con le informazioni di altezza
-	if(*errore != CSV_OK){
+	if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return NULL;
 	}
+
 	puntatore_dati_weather = malloc(sizeof(struct dati_weather));
 	//verifico riuscita allocazione
     if (puntatore_dati_weather == NULL)
@@ -52,25 +72,26 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
     char** fields=NULL;
 
     puntatore_dati_weather=apertura_file_weather(&file, fields, puntatore_dati_weather, percorso_file_weather, errore);
+
+    if (puntatore_dati_weather == NULL)
+        return NULL;
 	
-    if (*errore ==  CSV_OK)
-    {
-        while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-            if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
-            {
-                puntatore_dati_weather->head_weather = nuovo_elemento_weather(fields, puntatore_dati_weather);
-            }
+    while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
+        if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
+        {
+            puntatore_dati_weather->head_weather = nuovo_elemento_weather(fields, puntatore_dati_weather);
         }
+   }
 
-        if (*errore == CSV_END) {
-            csv_close(&file);
-            return puntatore_dati_weather;
-        }
+    csv_close(&file);
+
+    if (*errore != CSV_END){
+        controllo_csv(errore);
+        svuota_dati_weather(puntatore_dati_weather);
+        return NULL;
+    }else{
+        return puntatore_dati_weather;
     }
-
-    controllo_csv(errore);
-    svuota_dati_weather(puntatore_dati_weather);
-    return NULL;
 
 }
 
@@ -84,7 +105,6 @@ struct weather *nuovo_elemento_weather(char** fields, struct dati_weather *punta
     if (nuova == NULL)
     {
         printf("Error: malloc() failed in nuovo_elemento\n");
-        svuota_dati_weather(puntatore_dati_weather);
         exit(EXIT_FAILURE);
     }
 
@@ -137,18 +157,3 @@ struct weather *cerca_dati_weather(char *orario, const struct weather *head_weat
 	return (struct weather *)temporaneo_weather;
 }
 
-
-void controllo_csv(int *errore)
-{
-	char *error;
-    csv_error_string(*errore, &error);
-    printf("ERROR: %s\n", error);
-}
-
-
-
-void chiusura_file_weather(struct csv *file, struct dati_weather *puntatore_dati_weather)
-{
-	csv_close(file);
-    svuota_dati_weather(puntatore_dati_weather);
-}

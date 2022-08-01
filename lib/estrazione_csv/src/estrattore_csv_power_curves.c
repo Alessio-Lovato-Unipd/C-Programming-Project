@@ -6,29 +6,22 @@
 
 void reading_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore)
 {
-    char* error;
 	struct turbina *temp = puntatore;
 	struct csv file;
 	
     *errore = csv_open(&file, percorso_file_power_curves, SEPARATORE, NUMERO_COLONNE_POWER_CURVES);
-    if (*errore == CSV_E_IO)
-    {
-        printf("\n ATTENZIONE!\nLa cartella contenente il file \"power_coefficient_curves.csv\" non si ");
-        printf("trova nel percorso \"../../data/power_curves.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
-		csv_error_string(*errore, &error);
-		printf("ERROR: %s\n", error);
+    if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return;
-    }
-	
+	}
 	char **fields;
 	
 	*errore=csv_read_record(&file, &fields); //salvo le velocità del vento per avere corrispondenza con i coefficienti
-	if (*errore != CSV_OK)
-	{
-		csv_error_string(*errore, &error);
-		printf("ERROR: %s\n", error);
+	if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return;
 	}
+
 	do{
 		if(temp->bool_p_curves){
 			for(int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++){
@@ -52,15 +45,14 @@ void reading_file_power_curves(struct turbina *const puntatore, char *percorso_f
 		}
 		temp = puntatore;
     }
-
-    if (*errore == CSV_END) {
-		csv_close(&file);
-	}else{
-		csv_error_string(*errore, &error);
-		printf("ERROR: %s\n", error);
-		csv_close(&file);
+	
+	if (*errore != CSV_END){
+		controllo_csv(errore);
 		svuota_lista_turbine_data(puntatore);
 	}
+
+	csv_close(&file);
+
 }
 
 void inserimento_power_curves(float *array_dati, char **fields)

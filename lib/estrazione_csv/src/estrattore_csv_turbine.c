@@ -8,27 +8,25 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 {
     struct csv file;
 	char** fields;
-    char* error;
 
     *errore = csv_open(&file, percorso_file_turbine_data, SEPARATORE, NUMERO_COLONNE_TURBINA);
-    if (*errore == CSV_E_IO)
-    {
-        printf("\n ATTENZIONE!\nLa cartella contenente il file \"turbine_data.csv\" non si ");
-        printf("trova nel percorso \"../../data/turbine_data.csv\" rispetto a dove è stato lanciato l'eseguibile\n\n");
-        return(NULL);
-    }
+    if (*errore != CSV_OK){
+		controllo_csv(errore);
+		return NULL;
+	}
 
-	//fare ciclo for con #define RIGHE_DA_SALTARE?
 	*errore=csv_read_record(&file, &fields); //salto l'intestazione del file csv
-	if(*errore != CSV_OK){
+    if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return NULL;
 	}
 	
 	*errore=csv_read_record(&file, &fields); //salto seconda intestazione
-	if(*errore != CSV_OK){
+    if (*errore != CSV_OK){
+		controllo_csv(errore);
 		return NULL;
 	}
-	//fine possibile ciclo for
+        
 
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
         puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
@@ -42,16 +40,15 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percors
 			}
 		}
 
-    if (*errore == CSV_END) {
-		csv_close(&file);
-		return puntatore;
-	}
-
-    csv_error_string(*errore, &error);
-	printf("ERROR: %s\n", error);
 	csv_close(&file);
-    svuota_lista_turbine_data(puntatore);
-	return NULL;
+
+	if (*errore != CSV_END){
+		controllo_csv(errore);
+		svuota_lista_turbine_data(puntatore);
+		return NULL;
+	} else {
+		return puntatore;
+	} 
 
 }
 

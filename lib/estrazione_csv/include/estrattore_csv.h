@@ -50,7 +50,9 @@
         struct weather *head_weather;
     };
 
-    //funzione per estrarre i dati dal file turbine_data.csv
+     /* GESTIONE DATI TURBINA */
+
+    
     /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
        fare riferimento alla libreria csv per risolvere tali errori */
     struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
@@ -73,6 +75,7 @@
     
     struct turbina *conversione_dati_in_booleano(struct turbina *elemento_attuale_turbina);
 
+
      /* GESTIONE DATI WEATHER */
 
     struct dati_weather *apertura_file_weather(struct csv *file, char** fields, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
@@ -84,10 +87,6 @@
     struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather);
 	
 	void svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
-	
-	void controllo_csv(int *errore);
-	
-	void chiusura_file_weather(struct csv *file, struct dati_weather *puntatore_dati_weather);
 
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
@@ -99,5 +98,10 @@
 	void reading_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
 	
 	void inserimento_power_curves(float *array_dati, char **fields);
+
+
+    /*GESTIONE ERRORI NEI FILE CSV*/
     
+    void controllo_csv(int *errore);
+
 #endif
