@@ -37,6 +37,7 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	int indice = 0;
 	float pot_min = 0;
 	float pot_max = 0;
+	float potenza = 0;
 	temp = cerca_dati_turbina(nome_turbina, altezza_mozzo, head);
 	
 	//interpolazione della curva
@@ -44,10 +45,10 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	
 	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, array_vento);
 	if(indice == LUNGHEZZA_VETTORE_POWER_COEFFICIENT){
-		return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
+		return potenza = calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
 	}
 	if(array_vento[indice] == vel_vento)
-		return calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
+		return potenza = calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_vento, temp->power_coefficients[indice]);
 	
 	//calcolo le potenze corrispondenti ai coefficienti
 	pot_min = calcolo_potenza_da_coefficienti(densita_aria, temp->diametro_rotore, vel_min, temp->power_coefficients[indice - 1]);

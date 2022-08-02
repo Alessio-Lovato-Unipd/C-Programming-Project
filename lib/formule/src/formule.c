@@ -51,5 +51,5 @@ float gas_ideale(float h1, float p1, float T_x, float h_x)
 float calcolo_potenza_da_coefficienti(float densita_aria, float diametro, float vel_vento, float coefficiente)
 {
 	double pi = atan(1) * 4;
-	return (1/8 * densita_aria * (pow(diametro, 2)) * pi * (pow(vel_vento, 3)) * coefficiente);
+	return (densita_aria * (pow(diametro, 2)) * pi * (pow(vel_vento, 3)) * coefficiente / 8);
 }
