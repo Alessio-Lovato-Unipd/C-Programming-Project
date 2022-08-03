@@ -9,9 +9,9 @@
 	#define NUMERO_COLONNE_TURBINA 19
 	#define NUMERO_COLONNE_WEATHER 7 
     #define NUMERO_COLONNE_POWER_COEFFICIENT_CURVES 60
-	#define NUMERO_COLONNE_POWER_CURVES 80
+	#define NUMERO_COLONNE_POWER_CURVES 79
     #define LUNGHEZZA_VETTORE_POWER_COEFFICIENT 58
-    #define LUNGHEZZA_VETTORE_POWER_CURVES 78
+    #define LUNGHEZZA_VETTORE_POWER_CURVES 77
 	#define SEPARATORE ','
 
     struct turbina {
@@ -19,9 +19,15 @@
         int potenza_nominale;
         int diametro_rotore;
         float altezza_mozzo;
-		float *wind_speed;
         float *power_coefficients;
         float *power_curves;
+<<<<<<< HEAD
+=======
+        char *char_p_coefficient;
+        char *char_p_curves;
+        bool bool_p_coefficient;
+        bool bool_p_curves;
+>>>>>>> main
         struct turbina *prev;
     };
 
@@ -46,7 +52,9 @@
         struct weather *head_weather;
     };
 
-    //funzione per estrarre i dati dal file turbine_data.csv
+     /* GESTIONE DATI TURBINA */
+
+    
     /* Restituisce il puntatore alla testa della lista, il puntatore a errore serve per gestire gli errori nella lettura del file,
        fare riferimento alla libreria csv per risolvere tali errori */
     struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore);
@@ -66,6 +74,9 @@
     struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altezza_mozzo, const struct turbina *head_turbina);
 	
 	struct turbina *scorri_lista_turbina(const struct turbina *puntatore);
+    
+    struct turbina *conversione_dati_in_booleano(struct turbina *elemento_attuale_turbina);
+
 
      /* GESTIONE DATI WEATHER */
 
@@ -78,20 +89,20 @@
     struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather);
 	
 	void svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
-	
-	void controllo_csv(int *errore);
-	
-	void chiusura_file_weather(struct csv *file, struct dati_weather *puntatore_dati_weather);
 
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
-    void reading_file_power_coefficient(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore);
+    void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore, float *array_vento);
 	
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
-	void reading_file_power_curves(struct csv *file, struct turbina *const puntatore, char *percorso_file_power_curves, int *errore);
+	void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore, float *array_vento);
 	
 	void inserimento_power_curves(float *array_dati, char **fields);
-    
+
+    /*GESTIONE ERRORI NEI FILE CSV*/
+
+    void controllo_csv(int *errore);
+
 #endif
