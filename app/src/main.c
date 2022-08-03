@@ -1,7 +1,41 @@
 #include "../include/main.h"
 #define tipo_dati_stampa 0 //serve per eseguire solo il codice relativo alla turbina oopure quello relativo al meteo, se pari a 0 esegue le turbine, se pari a 1 esegue il meteo
 
+int main()
+{
+    struct turbina *head_turbina=NULL;
+    struct weather *meteo=NULL; 
+    struct dati_weather *dati = NULL;
+    struct csv file_coefficient;
+    struct csv file_power;
+    int errore=0;
 
+    //inizio generazione lista turbine tramite la lettura da file
+    head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
+    if (errore==CSV_E_IO)
+    {
+        return(EXIT_FAILURE);
+    }
+    controllo_csv(&errore);
+    lettura_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
+    lettura_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
+    //fine generazione lista
+
+    //inizio generazione lista dati meteorologici tramite la lettura da file
+    dati = apertura_file_weather(&file, dati, PERCORSO_WEATHER, &errore);
+    dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
+    if (errore!=CSV_E_IO)
+    {
+        return(EXIT_FAILURE);
+    }
+    controllo_csv(&errore);
+    //fine generazione lista
+}
+
+//RICODATI DI DEALLOCARE LA MEMORIA!!!!!!
+
+--------------------------------------------------
+/*
 int main()
 {
     #if(tipo_dati_stampa==0)
@@ -66,7 +100,7 @@ int main()
 				printf("%d\t", temporaneo->power_curves[i]);
 		}
 		printf("\n");
-        printf("----\n\n");  */
+        printf("----\n\n");  
 
         temporaneo=temporaneo->prev;
 
@@ -158,4 +192,4 @@ int main()
 
     #endif
 
-}
+}*/

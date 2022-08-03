@@ -82,8 +82,6 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	//allocazione memoria wind_speed in base alla presenza delle curve
 	conversione_dati_in_booleano(nuova);
-	free(nuova->char_p_coefficient);
-	free(nuova->char_p_curves);
 	
 	int num_caratteri=0;
 	char *punto_virgola_temp = NULL;
@@ -173,6 +171,8 @@ void elimina_nodo_turbina (struct turbina *nodo)
 {
 	free(nodo->nome);
 	free(nodo->id);
+	free(nodo->char_p_coefficient);
+	free(nodo->char_p_curves);
 	if(nodo->power_coefficients != NULL)
 		free(nodo->power_coefficients);
 	if(nodo->power_curves != NULL)
