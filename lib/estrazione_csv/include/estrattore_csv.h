@@ -21,13 +21,10 @@
         float altezza_mozzo;
         float *power_coefficients;
         float *power_curves;
-<<<<<<< HEAD
-=======
         char *char_p_coefficient;
         char *char_p_curves;
         bool bool_p_coefficient;
         bool bool_p_curves;
->>>>>>> main
         struct turbina *prev;
     };
 

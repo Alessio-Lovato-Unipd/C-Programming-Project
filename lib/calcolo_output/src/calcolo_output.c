@@ -46,7 +46,7 @@ struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo
 }
 
 /*******************CALCOLO DELLA POTENZA ISTANTANEA*************/
-float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento)
+float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float *array_vento)
 {
 	struct turbina *temp = head;
 	float vel_min = 0;
@@ -110,12 +110,7 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	}
 }
 
-<<<<<<< HEAD
-/*******************************ELABORAZIONE CURVE********************/
-int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel_vento, const struct turbina *target, int lunghezza_vettore) //ritorna il valore in cui vel_vento = vel_max
-=======
 int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel_vento, int lunghezza_vettore, float *array_vento) //ritorna il valore in cui vel_vento = vel_max
->>>>>>> main
 {
 	int i;
 	for(i = 1; i <= lunghezza_vettore; i++){
