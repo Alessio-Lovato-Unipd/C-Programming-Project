@@ -20,6 +20,7 @@ struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float
     return nuovo_elemento;
 }
 
+/******************* GENERAZIONE LISTA DI POTENZE **************/
 struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, struct parametro *in, struct potenza_out *hp)
 {
 	float potenza;

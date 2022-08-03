@@ -120,42 +120,47 @@
 /************** PLOT  DELLE CURVE ****/
 void plot_curva_potenza(const struct turbina *turbina)
 {
-    gnuplot_ctrl *gp = NULL;  
-    gp = gnuplot_init(); 
-    gnuplot_setstyle(gp, "linespoints");
-    gnuplot_set_line(gp, "3", "green", "8");
-    gnuplot_set_point(gp, "1", NULL);
+    if ((turbina->wind_speed != NULL) && (turbina->power_curves != NULL)){
+        gnuplot_ctrl *gp = NULL;  
+        gp = gnuplot_init(); 
+        gnuplot_setstyle(gp, "linespoints");
+        gnuplot_set_line(gp, "1", "green", "1");
+        gnuplot_set_point(gp, "3", NULL);
 
-    gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
-    gnuplot_set_ylabel(gp, "Potenza [kW]");
-    //comandi diretti a gnuplot
-    gnuplot_cmd(gp, "set grid back nopolar");
-    gnuplot_cmd(gp, "set terminal png");
-	gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
-    gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, "Curva di Potenza");
+        gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
+        gnuplot_set_ylabel(gp, "Potenza [kW]");
+        //comandi diretti a gnuplot
+        gnuplot_cmd(gp, "set grid back nopolar");
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
+        gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, "Curva di Potenza");
 
-    gnuplot_close(gp);
-
+        gnuplot_close(gp); 
+    }
+    
 }
 
 void plot_curva_coefficienti(const struct turbina *turbina)
 {
-    gnuplot_ctrl *gp = NULL;  
-    gp = gnuplot_init();
+    if ((turbina->wind_speed != NULL) && (turbina->power_coefficients != NULL)){
+        gnuplot_ctrl *gp = NULL;  
+        gp = gnuplot_init();
 
-    gnuplot_setstyle(gp, "linespoints");
-    gnuplot_set_line(gp, "3", "red", "8");
-    gnuplot_set_point(gp, "1", NULL);
-    gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
-    gnuplot_set_ylabel(gp, "Coefficienti di potenza");
+        gnuplot_setstyle(gp, "linespoints");
+        gnuplot_set_line(gp, "3", "red", "1");
+        gnuplot_set_point(gp, "1", NULL);
+        gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
+        gnuplot_set_ylabel(gp, "Coefficienti di potenza");
+        
+        gnuplot_cmd(gp, "set grid back nopolar");//set griglia
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
+
+        gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, "Curva coefficienti di potenza");
+
+        gnuplot_close(gp);   
+    }
     
-    gnuplot_cmd(gp, "set grid back nopolar");//set griglia
-    gnuplot_cmd(gp, "set terminal png");
-	gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
-
-    gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, "Curva coefficienti di potenza");
-
-    gnuplot_close(gp);
 }
 
 /*********************** FUNZIONE COSTRUITA SULLE LISTA CONCATENATE CREATE NELLE ALTRE LIBRERIE *******************/
@@ -185,7 +190,7 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
 
 void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza, int giorni)//quanti giorni voglio visualizzare?
 {
-    if (giorni > 0){
+    if ((giorni > 0) && (tempo != NULL) && (potenza != NULL)){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
 
         gnuplot_ctrl *gp = NULL;
