@@ -12,6 +12,7 @@ void ricerca_turbina(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
@@ -19,6 +20,7 @@ void ricerca_turbina(void)
 	TEST_ASSERT_EQUAL_STRING("E-101/3050", elemento_cercato->nome);
 	elemento_cercato = cerca_dati_turbina("E-126/7500", 0.0, head);
 	TEST_ASSERT_EQUAL_STRING("E-126/7500", elemento_cercato->nome);
+	
 	svuota_lista_turbine_data(head);
 }
 
@@ -29,6 +31,7 @@ void lettura_interpolazione_curve_interpolazione_lineare(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
@@ -52,6 +55,7 @@ void lettura_interpolazione_curve_interpolazione_lineare(void)
 	calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-101/3500", head, 0.0, 15, array_vento_curves);
 	TEST_ASSERT_EQUAL_FLOAT(0.0, elemento_cercato->power_curves[LUNGHEZZA_VETTORE_POWER_CURVES - 1]); //ultimi valori nulli sono tutti uguali a 0
 	TEST_ASSERT_EQUAL_FLOAT(0.0, elemento_cercato->power_curves[LUNGHEZZA_VETTORE_POWER_CURVES - 2]);
+	
 	svuota_lista_turbine_data(head);
 }
 
@@ -62,6 +66,7 @@ void lettura_interpolazione_curve_interpolazione_logaritmica(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
@@ -80,6 +85,7 @@ void lettura_interpolazione_curve_interpolazione_logaritmica(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.478, elemento_cercato->power_coefficients[21]);
 	TEST_ASSERT_EQUAL_FLOAT(0.478, elemento_cercato->power_coefficients[22]);
 	TEST_ASSERT_EQUAL_FLOAT(0.0, elemento_cercato->power_coefficients[LUNGHEZZA_VETTORE_POWER_COEFFICIENT]);
+	
 	svuota_lista_turbine_data(head);
 }
 
@@ -90,15 +96,18 @@ void prova_calcolo_potenza_precisa(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
+	
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, 15, array_vento_curves);
 	TEST_ASSERT_EQUAL_FLOAT(3000000.0, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, 15, 1.225, array_vento_coeff);
 	TEST_ASSERT_EQUAL_FLOAT(3047406.027, potenza);
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "VS112/2500", head, 0.0, 4.0, array_vento_curves);
 	TEST_ASSERT_EQUAL_FLOAT(154200.0, potenza);
+	
 	svuota_lista_turbine_data(head);
 }
 
@@ -109,13 +118,16 @@ void prova_calcolo_potenza_interpolazione_lineare(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
+	
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LINEARE_O, "E-115/3200", head, 92, 4.1, array_vento_curves);
 	TEST_ASSERT_EQUAL_FLOAT(173400, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LINEARE_O, "E-115/3200", head, 92, 4.1, 1.225, array_vento_coeff);
 	TEST_ASSERT_EQUAL_FLOAT(171751, potenza);
+	
 	svuota_lista_turbine_data(head);
 }
 
@@ -126,13 +138,16 @@ void prova_calcolo_potenza_interpolazione_logaritmica(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
+	
 	potenza = calcolo_potenza_curve_di_potenza(INTERPOLAZIONE_LOGARITMICA_O, "E-115/3200", head, 92, 4.1, array_vento_curves);
 	TEST_ASSERT_EQUAL_FLOAT(175360.8, potenza);
 	potenza = calcolo_potenza_curve_coefficienti(INTERPOLAZIONE_LOGARITMICA_O, "E-115/3200", head, 92, 4.1, 1.225, array_vento_coeff);
 	TEST_ASSERT_EQUAL_FLOAT(172106.8, potenza);
+	
 	svuota_lista_turbine_data(head);
 }
 
@@ -143,6 +158,7 @@ void prova_calcolo_valori_ai_limiti(void)
 	int errore = 0;
 	float array_vento_coeff[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);

@@ -32,6 +32,7 @@ void lettura_file_power_coefficient(struct turbina *const puntatore, char *perco
 				temp->power_coefficients = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1));
 				if (temp->power_coefficients == NULL){
 					printf("Error: malloc() failed in salvataggio_power_coefficient\n");
+					svuota_lista_turbine_data(puntatore);
 					exit(EXIT_FAILURE);
 				}
 				inserimento_power_coefficients(temp->power_coefficients, fields);

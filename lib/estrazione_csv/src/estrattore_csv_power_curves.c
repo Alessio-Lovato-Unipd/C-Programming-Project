@@ -32,6 +32,7 @@ void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_f
 				temp->power_curves = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_CURVES - 1));
 				if (temp->power_curves == NULL){
 					printf("Error: malloc() failed in salvataggio_power_curves\n");
+					svuota_lista_turbine_data(puntatore);
 					exit(EXIT_FAILURE);
 				}
 				inserimento_power_curves(temp->power_curves, fields);
