@@ -90,12 +90,16 @@
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
+	//funzioni per la lettura delle curve dei coefficienti di potenza, array_vento sarà l'array corrispondente ai coefficienti, puntatore è la testa della lista
     void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore, float *array_vento);
 	
+	//funzione chiamata dalla precedente, per l'effettivo inserimento dei valori
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
+	//funzioni per la lettura delle curve di potenza, array_vento sarà l'array corrispondente alle curve di potenza, puntatore è la testa della lista
 	void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore, float *array_vento);
 	
+	//funzione chiamata dalla precedente, per l'effettivo inserimento dei valori
 	void inserimento_power_curves(float *array_dati, char **fields);
 
 
