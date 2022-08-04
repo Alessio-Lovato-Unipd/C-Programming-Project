@@ -9,7 +9,7 @@ void verifica_svuotamento_liste(void)
 	int errore = 0;
 	struct dati_weather *puntatore = NULL;
 	puntatore = estrazione_dati_weather(puntatore, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
-	svuota_dati_weather(puntatore);
+	puntatore = svuota_dati_weather(puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 
@@ -19,7 +19,7 @@ void verifica_presenza_file_csv_percorso_corretto(void)
     int errore = 0;
     puntatore = estrazione_dati_weather(puntatore, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
     TEST_ASSERT_EQUAL_INT(CSV_END, errore);
-	svuota_dati_weather(puntatore);
+	puntatore = svuota_dati_weather(puntatore);
 }
 
 void verifica_presenza_file_csv_percorso_errato(void)
@@ -61,7 +61,7 @@ void verifica_ricerca_data_ora_weather(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.15,elemento_cercato->rugosita);
 	TEST_ASSERT_EQUAL_FLOAT(289.19,elemento_cercato->temperatura2);
 	TEST_ASSERT_EQUAL_FLOAT(4.46812,elemento_cercato->velocita_vento2);
-	svuota_dati_weather(puntatore);
+	puntatore = svuota_dati_weather(puntatore);
 }
 
 void verifica_estremi_weather(void)
@@ -87,7 +87,7 @@ void verifica_estremi_weather(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.15,elemento_cercato->rugosita);
 	TEST_ASSERT_EQUAL_FLOAT(268.45,elemento_cercato->temperatura2);
 	TEST_ASSERT_EQUAL_FLOAT(6.73125,elemento_cercato->velocita_vento2);
-	svuota_dati_weather(puntatore);
+	puntatore = svuota_dati_weather(puntatore);
 }
 
 

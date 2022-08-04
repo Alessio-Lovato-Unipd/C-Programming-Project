@@ -61,7 +61,7 @@
     struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *punto_virgola);
 
     //funzione per liberare la memoria heap allocata con la lista
-    void svuota_lista_turbine_data(struct turbina *head_turbina);
+    struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina);
 
     //funzione che elimina un solo nodo della lista turbine
     void elimina_nodo_turbina (struct turbina *nodo);
@@ -85,7 +85,7 @@
 
     struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather);
 	
-	void svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
+	struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
 
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
