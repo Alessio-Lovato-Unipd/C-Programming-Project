@@ -132,7 +132,7 @@
      * dalla funzione estrazione_dati_weather.
      * NOTA: Funzione pensata per non essere utilizzata esternamente.
     */
-    struct dati_weather *apertura_file_weather(struct csv *file, char** fields, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
+    struct dati_weather *apertura_file_weather(struct csv *file, char **fields, struct dati_weather *puntatore_head_weather,  char *const percorso_file_weather, int *errore);
 
     /*
      * Funzione per il salvataggio dei dati dal file weather.csv tramite lista concatenata.
@@ -147,7 +147,7 @@
     /*
      * Funzione per la creazione di nuovo elemento della lista head_weather.
     */
-    struct weather *nuovo_elemento_weather(char** fields, struct dati_weather *puntatore_dati_weather);
+    struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *puntatore_dati_weather);
 
      /*
      * Funzione per ricercare i dati di un orario nella lista weather.
