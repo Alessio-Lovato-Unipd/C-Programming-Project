@@ -1,35 +1,66 @@
 #include "../include/main.h"
-#define tipo_dati_stampa 0 //serve per eseguire solo il codice relativo alla turbina oopure quello relativo al meteo, se pari a 0 esegue le turbine, se pari a 1 esegue il meteo
 
-int main()
+int main(int argc, char *argv[])
 {
     struct turbina *head_turbina=NULL;
-    struct weather *meteo=NULL; 
+    struct turbina *turbina_cercata=NULL;
+    //struct weather *meteo=NULL; 
     struct dati_weather *dati = NULL;
-    struct csv file_coefficient;
-    struct csv file_power;
     int errore=0;
+    float array_vento_power_coefficient=0;
+    float array_vento_power_curves=0;
+
+    if(argc != VALORE_ARGOMENTI_INSERIBILI)
+    {
+        printf("Errore nell'inserimento degli argomenti.\n");
+        return(EXIT_FAILURE);
+    }   
 
     //inizio generazione lista turbine tramite la lettura da file
     head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
-    if (errore==CSV_E_IO)
+    if (errore!=CSV_OK)
     {
         return(EXIT_FAILURE);
     }
     controllo_csv(&errore);
-    lettura_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
-    lettura_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
+    lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, &array_vento_power_coefficient);
+    lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, &array_vento_power_curves);
     //fine generazione lista
 
     //inizio generazione lista dati meteorologici tramite la lettura da file
     dati = apertura_file_weather(&file, dati, PERCORSO_WEATHER, &errore);
     dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
-    if (errore!=CSV_E_IO)
+    if (errore!=CSV_IO)
     {
         return(EXIT_FAILURE);
     }
     controllo_csv(&errore);
     //fine generazione lista
+
+    //salvataggio degli argomenti necessari alla determinazione del metodo per calcolare la velocità del vento, la temperatura e la densità dell'aria
+    struct tipo_metodo *metodo_calcolo_parametri=NULL;
+
+    metodo_calcolo_parametri = malloc(sizeof(struct tipo_metodo));
+    if (metodo_calcolo_parametri == NULL) {
+        printf("Error: malloc() failed in insert()\n");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        metodo_calcolo_parametri->vento=argv[2]; //CONTROLLO PER VERIFICARE SE ESISTONO QUESTE STRINGHE?
+        metodo_calcolo_parametri->temperatura=argv[3];
+        metodo_calcolo_parametri->densita=argv[4];
+    }
+    
+    //ricerca della turbina richiesta
+    turbina_cercata = cerca_dati_turbina("argv[1]", 0.0, head_turbina); 
+    if (temporaneo == NULL)
+    {
+        printf("Modello turbina non trovato!\n\n\n");
+    }else{
+        //cose da fare se la turbina esiste
+    }
+    
 }
 
 //RICODATI DI DEALLOCARE LA MEMORIA!!!!!!
