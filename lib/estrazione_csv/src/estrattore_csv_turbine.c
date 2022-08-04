@@ -148,12 +148,12 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
    
 }
 
-void svuota_lista_turbine_data(struct turbina *head_turbina)
+struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina)
 {
     struct turbina *temporaneo_turbina = head_turbina;
 	
 	if(head_turbina == NULL){
-		return;
+		return NULL;
 	}
 	
     do
@@ -163,8 +163,8 @@ void svuota_lista_turbine_data(struct turbina *head_turbina)
         head_turbina = temporaneo_turbina;
 
     }while(temporaneo_turbina!=NULL);
-    head_turbina=NULL;
-	return;
+
+	return head_turbina;
 }
 
 void elimina_nodo_turbina (struct turbina *nodo)
