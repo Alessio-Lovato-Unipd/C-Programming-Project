@@ -233,3 +233,4 @@ struct turbina *conversione_dati_in_booleano(struct turbina *elemento_attuale_tu
 
 	return elemento_attuale_turbina;
 }
+

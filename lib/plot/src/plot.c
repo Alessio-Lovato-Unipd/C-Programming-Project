@@ -118,14 +118,18 @@
 
 
 /************** PLOT  DELLE CURVE ****/
-void plot_curva_potenza(const struct turbina *turbina)
+void plot_curva_potenza(float *x, const struct turbina *turbina)
 {
-    if ((turbina->wind_speed != NULL) && (turbina->power_curves != NULL)){
-        gnuplot_ctrl *gp = NULL;  
+    if ((x != NULL) && (turbina->power_curves != NULL)){
+        gnuplot_ctrl *gp = NULL; 
+        char *titolo = malloc(sizeof(char) * (strlen("Curva di Potnza ") + strlen(turbina->nome) + 1 ));
+        strcpy(titolo, "Curva di Potenza ");
+        strcat(titolo, turbina->nome);
+
         gp = gnuplot_init(); 
         gnuplot_setstyle(gp, "linespoints");
-        gnuplot_set_line(gp, "1", "green", "1");
-        gnuplot_set_point(gp, "3", NULL);
+        gnuplot_set_line(gp, "1", "dark-cyan", "2");
+        gnuplot_set_point(gp, "7", NULL);
 
         gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
         gnuplot_set_ylabel(gp, "Potenza [kW]");
@@ -133,17 +137,21 @@ void plot_curva_potenza(const struct turbina *turbina)
         gnuplot_cmd(gp, "set grid back nopolar");
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
-        gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, "Curva di Potenza");
+        gnuplot_plot_xy(gp, x, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
 
         gnuplot_close(gp); 
     }
     
 }
 
-void plot_curva_coefficienti(const struct turbina *turbina)
+void plot_curva_coefficienti(float *x, const struct turbina *turbina)
 {
-    if ((turbina->wind_speed != NULL) && (turbina->power_coefficients != NULL)){
+    if ((x != NULL) && (turbina->power_coefficients != NULL)){
         gnuplot_ctrl *gp = NULL;  
+        char *titolo = malloc(sizeof(char) * (strlen("Curva coefficienti di potenza ") + strlen(turbina->nome) + 1 ));
+        strcpy(titolo, "Curva coefficienti di potenza ");
+        strcat(titolo, turbina->nome);
+
         gp = gnuplot_init();
 
         gnuplot_setstyle(gp, "linespoints");
@@ -156,7 +164,7 @@ void plot_curva_coefficienti(const struct turbina *turbina)
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
 
-        gnuplot_plot_xy(gp, turbina->wind_speed, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, "Curva coefficienti di potenza");
+        gnuplot_plot_xy(gp, x, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
 
         gnuplot_close(gp);   
     }

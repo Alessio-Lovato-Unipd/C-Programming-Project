@@ -18,9 +18,9 @@
 
 	struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p);
 
-	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, struct parametro *in, struct potenza_out *hp);
+	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, float *array_vento, struct parametro *in, struct potenza_out *hp);
 
-	float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento);
+	float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float *array_vento);
 	
 	float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float densita_aria, float *array_vento);
 	

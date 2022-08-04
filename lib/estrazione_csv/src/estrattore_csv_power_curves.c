@@ -60,3 +60,4 @@ void inserimento_power_curves(float *array_dati, char **fields)
 				array_dati[i - 1] = -1;
 	}
 }
+

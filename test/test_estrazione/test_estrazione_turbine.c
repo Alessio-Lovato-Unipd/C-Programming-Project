@@ -239,14 +239,8 @@ void verifica_turbina_virgolette_altezza_mozzo(void)
 	TEST_ASSERT_EQUAL_FLOAT(100, elemento_cercato->altezza_mozzo);
 	TEST_ASSERT_EQUAL_FLOAT(93, elemento_cercato->diametro_rotore);
 	TEST_ASSERT_EQUAL_INT(2050000, elemento_cercato->potenza_nominale);
-<<<<<<< HEAD
-	//TEST_ASSERT_TRUE(elemento_cercato->curva_potenza);
-	//TEST_ASSERT_FALSE(elemento_cercato->coefficienti_potenza);
-
-=======
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
->>>>>>> main
 	svuota_lista_turbine_data(puntatore);
 }
 

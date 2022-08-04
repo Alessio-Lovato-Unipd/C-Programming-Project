@@ -21,22 +21,23 @@ struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float
 }
 
 /******************* GENERAZIONE LISTA DI POTENZE **************/
-struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, struct parametro *in, struct potenza_out *hp)
+struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, float *array_vento, struct parametro *in, struct potenza_out *hp)
 {
 	float potenza;
 	struct potenza_out *out = hp;
 
 	switch (curva){
 	case CURVA_POTENZA:
+		
 		for (struct parametro *p = in; p != NULL; p = p->next) {
-			potenza= calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento);
+			potenza= calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, array_vento);
 			out = aggiungi_potenza(out, potenza);
 		}
 		break;
 	
 	case CURVA_COEFFICIENTI_POTENZA:
 		for (struct parametro *p = in; p != NULL; p = p->next) {
-			potenza = calcolo_potenza_curve_coefficienti(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, p->densita_aria);
+			potenza = calcolo_potenza_curve_coefficienti(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, p->densita_aria, array_vento);
 			out = aggiungi_potenza(out, potenza);
 		}
 		break;
@@ -46,7 +47,7 @@ struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo
 }
 
 /*******************CALCOLO DELLA POTENZA ISTANTANEA*************/
-float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float *array_vento)
+float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float *array_vento)
 {
 	struct turbina *temp = head;
 	float vel_min = 0;

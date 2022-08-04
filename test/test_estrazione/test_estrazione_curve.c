@@ -91,17 +91,6 @@ void verifica_valori_su_curve_diverse(void)
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1];
 	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-<<<<<<< HEAD
-	reading_file_power_coefficient(&file_coefficienti, head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore);
-	reading_file_power_curves(&file_potenza, head, PERCORSO_POWER_CURVES_CORRETTO, &errore);
-	cerca_coefficienti = cerca_dati_turbina("DUMMY 2", head);
-	cerca_curva_potenza = cerca_dati_turbina("DUMMY 3", head);
-	TEST_ASSERT_EQUAL_STRING("DUMMY 2", cerca_coefficienti->nome);
-	TEST_ASSERT_EQUAL_STRING("DUMMY 3", cerca_curva_potenza->nome);
-	TEST_ASSERT_EQUAL_FLOAT(0, cerca_coefficienti->power_coefficients[0]);
-	TEST_ASSERT_EQUAL_FLOAT(0.41, cerca_coefficienti->power_coefficients[11]);
-	TEST_ASSERT_EQUAL_FLOAT(0, cerca_coefficienti->power_coefficients[NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 2]);
-=======
 	lettura_file_power_coefficient(head, PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO, &errore, array_vento_coeff);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
 	cerca_coefficienti = cerca_dati_turbina("ENO114/3500", 0.0, head);
@@ -115,7 +104,6 @@ void verifica_valori_su_curve_diverse(void)
 	TEST_ASSERT_EQUAL_FLOAT(0.035, cerca_coefficienti->power_coefficients[LUNGHEZZA_VETTORE_POWER_COEFFICIENT - 1]);
 	TEST_ASSERT_EQUAL_FLOAT(-1, cerca_coefficienti->power_coefficients[LUNGHEZZA_VETTORE_POWER_COEFFICIENT]);
 	
->>>>>>> main
 	TEST_ASSERT_EQUAL_INT(0, cerca_curva_potenza->power_curves[0]);
 	TEST_ASSERT_EQUAL_INT(194000, cerca_curva_potenza->power_curves[11]);
 	TEST_ASSERT_EQUAL_INT(0.0, cerca_curva_potenza->power_curves[LUNGHEZZA_VETTORE_POWER_CURVES]);
