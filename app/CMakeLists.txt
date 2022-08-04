@@ -13,4 +13,7 @@ target_link_libraries( main
 	PRIVATE 
 	lib::csv
 	lib::estrazione_csv
+	lib::formule
+	lib::parametri
+	lib::calcolo_output
 )

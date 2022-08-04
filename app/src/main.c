@@ -6,8 +6,8 @@ int main(int argc, char *argv[])
     struct turbina *turbina_cercata=NULL;
     struct dati_weather *dati = NULL;
     int errore=0;
-    float array_vento_power_coefficient=0;
-    float array_vento_power_curves=0;
+    float array_vento_power_coefficient[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1]={0};
+    float array_vento_power_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1]={0};
 
     if(argc != VALORE_ARGOMENTI_INSERIBILI)
     {
@@ -22,8 +22,8 @@ int main(int argc, char *argv[])
         return(EXIT_FAILURE);
     }
     controllo_csv(&errore);
-    lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, &array_vento_power_coefficient);
-    lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, &array_vento_power_curves);
+    lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, array_vento_power_coefficient);
+    lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, array_vento_power_curves);
     //fine generazione lista
 
     //inizio generazione lista dati meteorologici tramite la lettura da file
@@ -47,8 +47,19 @@ int main(int argc, char *argv[])
         printf("Error: malloc() failed in insert()\n");
         exit(EXIT_FAILURE);
     }
-    
-    metodo_calcolo_parametri->vento=argv[2]; //CONTROLLO PER VERIFICARE SE ESISTONO QUESTE STRINGHE?
+    //INTERPOLAZIONE_LINEARE_V, cccccc, PROFILO_LOGARITMICO, HELLMAN
+    if(strcmp(INTERPOLAZIONE_LINEARE_V, argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+
+    if(strcmp(INTERPOLAZIONE_LOGARITMICA, argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+
+    if(strcmp(INTERPOLAZIONE_LINEARE_V, argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+
+    if(strcmp(INTERPOLAZIONE_LINEARE_V, argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+
     metodo_calcolo_parametri->temperatura=argv[3];
     metodo_calcolo_parametri->densita=argv[4];
 
@@ -84,7 +95,7 @@ int main(int argc, char *argv[])
         }
         if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0)
         {
-            potenza_in_uscita=calcolo_potenza_curve_coefficienti(argv[6], argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita, array_vento_power_coefficient);
+            potenza_in_uscita=calcolo_potenza_curve_coefficienti(argv[6], argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita_aria, array_vento_power_coefficient);
         }
         else
         {
