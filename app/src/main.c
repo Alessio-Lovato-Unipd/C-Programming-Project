@@ -47,21 +47,42 @@ int main(int argc, char *argv[])
         printf("Error: malloc() failed in insert()\n");
         exit(EXIT_FAILURE);
     }
-    //INTERPOLAZIONE_LINEARE_V, cccccc, PROFILO_LOGARITMICO, HELLMAN
-    if(strcmp(INTERPOLAZIONE_LINEARE_V, argv[2])==0)
+    //salvataggio di argv[2] nella variabile vento 
+    if(strcmp("INTERPOLAZIONE_LINEARE_V", argv[2])==0)
         metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+    if(strcmp("INTERPOLAZIONE_LOGARITMICA", argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LOGARITMICA;
+    if(strcmp("PROFILO_LOGARITMICO", argv[2])==0)
+        metodo_calcolo_parametri->vento=PROFILO_LOGARITMICO;
+    if(strcmp("HELLMAN", argv[2])==0)
+        metodo_calcolo_parametri->vento=HELLMAN;
+    else
+    {
+        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        exit(EXIT_FAILURE);
+    }
 
-    if(strcmp(INTERPOLAZIONE_LOGARITMICA, argv[2])==0)
-        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+    //salvataggio di argv[3] nella variabile temperatura
+    if(strcmp("INTERPOLAZIONE_LINEARE_T", argv[3])==0)
+        metodo_calcolo_parametri->temperatura=INTERPOLAZIONE_LINEARE_T;
+    if(strcmp("GRADIENTE_LINEARE", argv[3])==0)
+        metodo_calcolo_parametri->temperatura=GRADIENTE_LINEARE;
+    else
+    {
+        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        exit(EXIT_FAILURE);
+    }
 
-    if(strcmp(INTERPOLAZIONE_LINEARE_V, argv[2])==0)
-        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
-
-    if(strcmp(INTERPOLAZIONE_LINEARE_V, argv[2])==0)
-        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
-
-    metodo_calcolo_parametri->temperatura=argv[3];
-    metodo_calcolo_parametri->densita=argv[4];
+    //salvataggio di argv[4] nella variabile densita 
+    if(strcmp("BAROMETRICO", argv[4])==0)
+        metodo_calcolo_parametri->densita=BAROMETRICO;
+    if(strcmp("GAS_IDEALE", argv[4])==0)
+        metodo_calcolo_parametri->densita=GAS_IDEALE;
+    else
+    {
+        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        exit(EXIT_FAILURE);
+    }
 
     //ricerca della turbina richiesta
     turbina_cercata = cerca_dati_turbina("argv[1]", 0.0, head_turbina); 
@@ -74,7 +95,7 @@ int main(int argc, char *argv[])
 
         //calcolo dei parametri a partire dai dati meteorologici
         struct parametro *parametri=NULL;
-        struct parametro *head_parametri;
+        struct parametro *head_parametri=NULL;
         float altezza_ostacolo=0;
 
         parametri = malloc(sizeof(struct parametro));
@@ -87,21 +108,35 @@ int main(int argc, char *argv[])
         parametri=calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
         //fine calcolo parametri
 
+        //salvataggio di argv[6]
+        tipo_calcolo_output var_argv6;
+        if(strcmp("INTERPOLAZIONE_LINEARE_O", argv[6])==0)
+            var_argv6=INTERPOLAZIONE_LINEARE_O;
+        if(strcmp("INTERPOLAZIONE_LOGARITMICA_O", argv[6])==0)
+            var_argv6=INTERPOLAZIONE_LOGARITMICA_O;
+        else
+        {
+            printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+            exit(EXIT_FAILURE);
+        }
+
         float potenza_in_uscita=0;
 
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0)
         {
-            potenza_in_uscita=calcolo_potenza_curve_di_potenza(argv[6], argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, array_vento_power_curves);
+            potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, array_vento_power_curves);
         }
         if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0)
         {
-            potenza_in_uscita=calcolo_potenza_curve_coefficienti(argv[6], argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita_aria, array_vento_power_coefficient);
+            potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita_aria, array_vento_power_coefficient);
         }
         else
         {
             printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
             exit(EXIT_FAILURE);
         }
+
+        printf("Otteniamo: %f\n", potenza_in_uscita);
     }
 
     svuota_lista_turbine_data(head_turbina);
