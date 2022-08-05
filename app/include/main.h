@@ -28,7 +28,7 @@
         - argv[4] ---> {BAROMETRICO, GAS_IDEALE}, per il calcolo della densità dell'aria
         - argv[5] ---> {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA}, per la scelta se usare le curve di coefficienti di potenza oppure le curve di potenza
         - argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output
-        - argv[7] ---> valore di altezza_ostacolo
+        - argv[7] ---> valore di altezza_ostacolo, mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]
         - argv[8] ---> NULL
 
         Esempio: ./main E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1

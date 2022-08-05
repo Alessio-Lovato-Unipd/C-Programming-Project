@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     //inizio generazione lista turbine tramite la lettura da file
     printf("Codice partito.\n");
     head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
-    if (errore==CSV_E_IO)
+    if (errore!=CSV_END)
     {
         return(EXIT_FAILURE);
     }
@@ -72,8 +72,6 @@ int main(int argc, char *argv[])
     }*/
     //fine esempio di stampa
 
-    //controllo_csv(&errore);
-
     printf("Lettura power_curves iniziata.\n");
     lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, array_vento_power_coefficient);
     lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, array_vento_power_curves);
@@ -86,12 +84,10 @@ int main(int argc, char *argv[])
 
     dati = apertura_file_weather(&file, fields, dati, PERCORSO_WEATHER, &errore);
     dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
-    if (errore==CSV_E_IO)
+    if (errore!=CSV_END)
     {
         return(EXIT_FAILURE);
     }
-    
-    //controllo_csv(&errore);
 
     printf("Fine salvataggio weather.\n");
     //fine generazione lista
@@ -206,11 +202,11 @@ int main(int argc, char *argv[])
 
         float potenza_in_uscita=0;
 
-        if(strcmp(argv[5], "CURVE_DI_POTENZA")==0)
+        if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
             potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, array_vento_power_curves);
         }
-        else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0)
+        else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
             potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita_aria, array_vento_power_coefficient);
         }
