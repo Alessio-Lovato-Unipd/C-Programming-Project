@@ -125,10 +125,10 @@ struct weather *nuovo_elemento_weather(char** fields, struct dati_weather *punta
 }
 
 
-void svuota_dati_weather(struct dati_weather *puntatore_dati_weather)
+struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather)
 {
     if(puntatore_dati_weather == NULL){
-		return;
+		return NULL;
 	}
     struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
 		
@@ -140,7 +140,9 @@ void svuota_dati_weather(struct dati_weather *puntatore_dati_weather)
 
     }while(temporaneo_weather!=NULL);
     free(puntatore_dati_weather);
-	return;
+    puntatore_dati_weather = NULL;
+    
+	return puntatore_dati_weather;
 }
 
 

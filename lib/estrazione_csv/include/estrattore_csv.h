@@ -61,7 +61,7 @@
     struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *punto_virgola);
 
     //funzione per liberare la memoria heap allocata con la lista
-    void svuota_lista_turbine_data(struct turbina *head_turbina);
+    struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina);
 
     //funzione che elimina un solo nodo della lista turbine
     void elimina_nodo_turbina (struct turbina *nodo);
@@ -85,17 +85,21 @@
 
     struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather);
 	
-	void svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
+	struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
 
 
     /* GESTIONE CURVE POTENZA E CURVE COEFFICIENTI DI POTENZA */
 
+	//funzioni per la lettura delle curve dei coefficienti di potenza, array_vento sarà l'array corrispondente ai coefficienti, puntatore è la testa della lista
     void lettura_file_power_coefficient(struct turbina *const puntatore, char *percorso_file_power_coefficient_curves, int *errore, float *array_vento);
 	
+	//funzione chiamata dalla precedente, per l'effettivo inserimento dei valori
 	void inserimento_power_coefficients(float *array_dati, char **fields);
 	
+	//funzioni per la lettura delle curve di potenza, array_vento sarà l'array corrispondente alle curve di potenza, puntatore è la testa della lista
 	void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore, float *array_vento);
 	
+	//funzione chiamata dalla precedente, per l'effettivo inserimento dei valori
 	void inserimento_power_curves(float *array_dati, char **fields);
 
     /*GESTIONE ERRORI NEI FILE CSV*/

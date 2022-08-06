@@ -11,7 +11,7 @@ void verifica_presenza_file_csv_percorso_corretto(void)
     int errore = 0;
     puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
     TEST_ASSERT_EQUAL_INT(CSV_END, errore);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 	
 }
 
@@ -21,7 +21,7 @@ void verifica_presenza_file_csv_percorso_errato(void)
     int errore = 0;
     puntatore_errato = estrazione_dati_turbine(puntatore_errato, PERCORSO_TURBINE_DATA_ERRATO, &errore);
     TEST_ASSERT_EQUAL_INT(CSV_E_IO, errore);
-	svuota_lista_turbine_data(puntatore_errato);
+	puntatore_errato = svuota_lista_turbine_data(puntatore_errato);
 }
 
 
@@ -79,7 +79,7 @@ void verifica_funzione_cerca_elemento(void)
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_coefficient);
 
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_altezza_mozzo_unica(void)
@@ -95,7 +95,7 @@ void verifica_turbina_altezza_mozzo_unica(void)
 	TEST_ASSERT_EQUAL_INT(2200000, elemento_cercato->potenza_nominale);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_coefficient);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_altezza_mozzo_multipla(void)
@@ -144,7 +144,7 @@ void verifica_turbina_altezza_mozzo_multipla(void)
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_coefficient);
 	
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_altezza_mozzo_multipla_senza_spazi(void)
@@ -173,7 +173,7 @@ void verifica_turbina_altezza_mozzo_multipla_senza_spazi(void)
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
 
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_spazio_prima_della_seconda_altezza_mozzo(void)
@@ -202,7 +202,7 @@ void verifica_turbina_spazio_prima_della_seconda_altezza_mozzo(void)
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
 	
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 
@@ -241,7 +241,7 @@ void verifica_turbina_virgolette_altezza_mozzo(void)
 	TEST_ASSERT_EQUAL_INT(2050000, elemento_cercato->potenza_nominale);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_seconda_altezza_mozzo_nulla(void)
@@ -269,7 +269,7 @@ void verifica_turbina_seconda_altezza_mozzo_nulla(void)
 		elemento_cercato = scorri_lista_turbina(elemento_cercato);
 	}
 	TEST_ASSERT_EQUAL_INT(1,numero_occorrenze);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_altezza_mozzo_nulla(void)
@@ -279,7 +279,7 @@ void verifica_turbina_altezza_mozzo_nulla(void)
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	struct turbina *elemento_cercato = cerca_dati_turbina("V112/3000", 0, puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, elemento_cercato);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_altezza_mozzo_testuale(void)
@@ -307,7 +307,7 @@ void verifica_turbina_altezza_mozzo_testuale(void)
 		elemento_cercato = scorri_lista_turbina(elemento_cercato);
 	}
 	TEST_ASSERT_EQUAL_INT(1,numero_occorrenze);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola(void)
@@ -336,7 +336,7 @@ void verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola(void)
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
 
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_ricerca_turbina_estremi(void)
@@ -385,7 +385,7 @@ void verifica_ricerca_turbina_estremi(void)
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
 	
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_ricerca_turbina_falso(void)
@@ -395,7 +395,7 @@ void verifica_ricerca_turbina_falso(void)
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	struct turbina *elemento_cercato = cerca_dati_turbina("DUMMY", 0, puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, elemento_cercato);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_funzione_svuotamento_lista(void)
@@ -403,7 +403,7 @@ void verifica_funzione_svuotamento_lista(void)
 	int errore = 0;
 	struct turbina *puntatore = NULL;
 	puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 	TEST_ASSERT_EQUAL_PTR(NULL, puntatore);
 }
 
@@ -422,7 +422,7 @@ void verifica_funzione_conversione_bool_FF(void) //nel caso di char False-False
 	TEST_ASSERT_EQUAL_STRING("False", elemento_cercato->char_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_curves);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_funzione_conversione_bool_TT(void) //nel caso di char True-True
@@ -441,7 +441,7 @@ void verifica_funzione_conversione_bool_TT(void) //nel caso di char True-True
 	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_curves);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_coefficient);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 void verifica_funzione_conversione_bool_FT(void) //nel caso di char False-True
@@ -460,7 +460,7 @@ void verifica_funzione_conversione_bool_FT(void) //nel caso di char False-True
 	TEST_ASSERT_EQUAL_STRING("True", elemento_cercato->char_p_curves);
 	TEST_ASSERT_FALSE(elemento_cercato->bool_p_coefficient);
 	TEST_ASSERT_TRUE(elemento_cercato->bool_p_curves);
-	svuota_lista_turbine_data(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 //non ho trovato nessuna turbina per il caso TF

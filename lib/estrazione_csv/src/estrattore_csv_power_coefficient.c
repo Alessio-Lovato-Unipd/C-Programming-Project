@@ -8,22 +8,21 @@ void lettura_file_power_coefficient(struct turbina *const puntatore, char *perco
 {
 	struct turbina *temp = puntatore;
 	struct csv file;
+	char **fields = NULL;
+	
     *errore = csv_open(&file, percorso_file_power_coefficient_curves, SEPARATORE, NUMERO_COLONNE_POWER_COEFFICIENT_CURVES);
     if (*errore != CSV_OK){
 		controllo_csv(errore);
 		return;
 	}
 	
-	char **fields = NULL;
-	
 	csv_read_record(&file, &fields); //salvo le velocità del vento per avere corrispondenza con i coefficienti
 	if (*errore != CSV_OK){
 		controllo_csv(errore);
 		return;
 	}
-	for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT_CURVES; i++){	
+	for(int i = 1; i < NUMERO_COLONNE_POWER_COEFFICIENT_CURVES; i++)
 		array_vento[i - 1] = atof(fields[i]);
-	}
 	
 	temp = puntatore;
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {

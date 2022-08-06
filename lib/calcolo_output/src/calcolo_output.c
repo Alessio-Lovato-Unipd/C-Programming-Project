@@ -21,16 +21,16 @@ struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float
 }
 
 /******************* GENERAZIONE LISTA DI POTENZE **************/
-struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, float *array_vento, struct parametro *in, struct potenza_out *hp)
+struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, struct potenza_out *hp)
 {
 	float potenza;
+	struct turbina *elemento_turbina = head;
 	struct potenza_out *out = hp;
 
 	switch (curva){
 	case CURVA_POTENZA:
-		
 		for (struct parametro *p = in; p != NULL; p = p->next) {
-			potenza= calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, array_vento);
+			potenza = calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, array_vento);
 			out = aggiungi_potenza(out, potenza);
 		}
 		break;
@@ -46,8 +46,11 @@ struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo
 	return out;
 }
 
+
+
+
 /*******************CALCOLO DELLA POTENZA ISTANTANEA*************/
-float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float *array_vento)
+float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, const float *array_vento)
 {
 	struct turbina *temp = head;
 	float vel_min = 0;
@@ -76,7 +79,7 @@ float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *n
 	}
 }
 
-float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float densita_aria, float *array_vento)
+float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float densita_aria, const float *array_vento)
 {
 	struct turbina *temp = head;
 	float vel_min = 0;
@@ -111,7 +114,7 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	}
 }
 
-int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel_vento, int lunghezza_vettore, float *array_vento) //ritorna il valore in cui vel_vento = vel_max
+int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel_vento, int lunghezza_vettore, const float *array_vento) //ritorna il valore in cui vel_vento = vel_max
 {
 	int i;
 	for(i = 1; i <= lunghezza_vettore; i++){
@@ -125,7 +128,7 @@ int trova_vel_vento_per_interpolazione(float *vel_min, float *vel_max, float vel
 }
 
 //per ogni curva di interesse svolgerò un controllo dei valori mancanti e farò interpolazione
-void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt, float *array_vento)
+void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt, const float *array_vento)
 {
 	int i, j;
 	punt->power_curves[0] = 0.0;
@@ -155,7 +158,7 @@ void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, stru
 
 }
 
-void interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt, float *array_vento)
+void interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt, const float *array_vento)
 {
 	int i, j;
 	punt->power_coefficients[0] = 0.0;
