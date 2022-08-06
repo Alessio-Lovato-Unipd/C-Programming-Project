@@ -16,8 +16,6 @@
 	#define PERCORSO_POWER_CURVES "../../data/power_curves.csv"
     #define VALORE_ARGOMENTI_INSERIBILI 8
 
-    //typedef enum {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA} tipo_output_uscente;
-
     /*
     -----ARGOMENTI DA PASSARE AL PROGRAMMA MAIN-----
     Il programma main richiede 7 argomenti:

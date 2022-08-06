@@ -14,20 +14,34 @@ int main(int argc, char *argv[])
 
     if(argc != VALORE_ARGOMENTI_INSERIBILI)
     {
-        printf("Errore nell'inserimento degli argomenti. La sintassi corretta è riportata nel file app/include/main.h\n");
+        printf("\nErrore nell'inserimento degli argomenti. La sintassi corretta è:\n");
+        printf("\t- argv[1] ---> nome turbina desiderata\n");
+        printf("\t- argv[2] ---> {INTERPOLAZIONE_LINEARE_V, INTERPOLAZIONE_LOGARITMICA, PROFILO_LOGARITMICO, HELLMAN}, per il calcolo della velocità del vento\n");
+        printf("\t- argv[3] ---> {INTERPOLAZIONE_LINEARE_T, GRADIENTE_LINEARE}, per il calcolo della temperatura\n");
+        printf("\t- argv[4] ---> {BAROMETRICO, GAS_IDEALE}, per il calcolo della densità dell'aria\n");
+        printf("\t- argv[5] ---> {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA}, per la scelta se usare le curve di coefficienti di potenza oppure le curve di potenza\n");
+        printf("\t- argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output\n");
+        printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n\n");
         return(EXIT_FAILURE);
     }   
 
+    //stampa a schermo degli argomenti inseriti dall'utente
+    printf("\n\nTurbina scelta: %s\n\n", argv[1]);
+    printf("Output di potenza ottenuto come: %s\n\n", argv[5]);
+    printf("Metodo per il calcolo del vento impostato su %s\n", argv[2]);
+    printf("Metodo per il calcolo della temperatura impostato su %s\n", argv[3]);
+    printf("Metodo per il calcolo della densità dell'aria impostato su %s\n", argv[4]);
+    printf("Metodo di interpolazione per il calcolo dell'output: %s\n", argv[6]);
+    printf("Altezza ostacolo impostata a: %s metri\n", argv[7]);
+
     //inizio generazione lista turbine tramite la lettura da file
-    printf("Codice partito.\n");
     head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
     if (errore!=CSV_END)
     {
         return(EXIT_FAILURE);
     }
-    printf("fine estrazione.\n");
 
-/*temporaneo=head_turbina; <-----------------------------------per verificare il corretto salvataggio di tutte le turbine, OK
+    /*temporaneo=head_turbina; <-----------------------------------per verificare il corretto salvataggio di tutte le turbine, OK
     printf("*****   Stampa elementi lista   *****\n\n");
     while (!ultimo) {
         head_turbina=conversione_dati_in_booleano(temporaneo);
@@ -72,29 +86,19 @@ int main(int argc, char *argv[])
     }*/
     //fine esempio di stampa
 
-    printf("Lettura power_curves iniziata.\n");
     lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, array_vento_power_coefficient);
     lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, array_vento_power_curves);
     //fine generazione lista
 
     //inizio generazione lista dati meteorologici tramite la lettura da file
-    printf("Inizio salvataggio weather.\n");
-    struct csv file;
-    char** fields=NULL;
-
-    dati = apertura_file_weather(&file, fields, dati, PERCORSO_WEATHER, &errore);
     dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
     if (errore!=CSV_END)
     {
         return(EXIT_FAILURE);
     }
-
-    printf("Fine salvataggio weather.\n");
     //fine generazione lista
 
-
     //salvataggio degli argomenti necessari alla determinazione del metodo per calcolare la velocità del vento, la temperatura e la densità dell'aria
-    printf("salvataggio argomenti per tipo calcolo.\n");
     struct tipo_metodo *metodo_calcolo_parametri=NULL;
 
     metodo_calcolo_parametri = malloc(sizeof(struct tipo_metodo));
@@ -108,10 +112,6 @@ int main(int argc, char *argv[])
     metodo_calcolo_parametri->temperatura=INTERPOLAZIONE_LINEARE_T;
     metodo_calcolo_parametri->densita=BAROMETRICO;
 
-    printf("Valore argv[2]:%s\n", argv[2]);
-    printf("Valore argv[3]:%s\n", argv[3]);
-    printf("Valore argv[4]:%s\n", argv[4]);
-
     //salvataggio di argv[2] nella variabile vento 
     if(strcmp("INTERPOLAZIONE_LINEARE_V", argv[2])==0)
         metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->vento=HELLMAN;
     else
     {
-        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        printf("\nL'argomento inserito in argv[2] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_V, INTERPOLAZIONE_LOGARITMICA, PROFILO_LOGARITMICO, HELLMAN\n\n");
         exit(EXIT_FAILURE);
     }
     
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->temperatura=GRADIENTE_LINEARE;
     else
     {
-        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        printf("\nL'argomento inserito in argv[3] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_T, GRADIENTE_LINEARE\n\n");
         exit(EXIT_FAILURE);
     }
 
@@ -145,28 +145,28 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->densita=GAS_IDEALE;
     else
     {
-        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        printf("\nL'argomento inserito in argv[4] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: BAROMETRICO, GAS_IDEALE\n\n");
         exit(EXIT_FAILURE);
     } 
 
+    //per stampare a schermo gli interi, è una verifica del corretto salvataggio degli argomenti
+    /*
     printf("Valore vento :%u\n", metodo_calcolo_parametri->vento);
     printf("Valore temperatura:%u\n", metodo_calcolo_parametri->temperatura);
     printf("Valore densita :%u\n", metodo_calcolo_parametri->densita);
     printf("fine salvataggio argomenti.\n");
+    */
     
-
     //ricerca della turbina richiesta
-    printf("ricerca turbina.\n");
     turbina_cercata = cerca_dati_turbina(argv[1], 0.0, head_turbina); 
     if (turbina_cercata == NULL)
     {
-        printf("Modello turbina non trovato!\n\n\n");
+        printf("\nESITO RICERCA TURBINA: Modello turbina non trovato!\n\n");
     }else
     {
         //cose da fare se la turbina esiste
-        printf("Modello turbina trovato!\n\n\n");
+        printf("\nESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
 
-        
         //calcolo dei parametri a partire dai dati meteorologici
         struct parametro *parametri=NULL;
         struct parametro *head_parametri=NULL;
@@ -180,13 +180,9 @@ int main(int argc, char *argv[])
     
         altezza_ostacolo=atof(argv[7]);
         parametri=calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
-        printf("Altezza ostacolo: %f\n", altezza_ostacolo);
-        printf("Vento parametri: %f\n", parametri->vento);
-        printf("Densità aria parametri: %f\n", parametri->densita_aria);
         //fine calcolo parametri
 
         //salvataggio di argv[6]
-        printf("argv[6]: %s\n", argv[6]);
         tipo_calcolo_output var_argv6=INTERPOLAZIONE_LINEARE_O;
         if(strcmp("INTERPOLAZIONE_LINEARE_O", argv[6])==0)
             var_argv6=INTERPOLAZIONE_LINEARE_O;
@@ -194,11 +190,14 @@ int main(int argc, char *argv[])
             var_argv6=INTERPOLAZIONE_LOGARITMICA_O;
         else
         {
-            printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+            printf("\nL'argomento inserito in argv[6] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O\n\n");
             exit(EXIT_FAILURE);
         }
-        printf("var_argv6: %u\n", var_argv6);
 
+        //per verificare il corretto salvataggio 
+        /*
+        printf("var_argv6: %u\n", var_argv6);
+        */
 
         float potenza_in_uscita=0;
 
@@ -212,11 +211,15 @@ int main(int argc, char *argv[])
         }
         else
         {
-            printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+            printf("\nL'argomento inserito in argv[6] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA\n");
+            printf("Se l'errore persiste, controllare se la turbina cercata possiede le informazioni relative al tipo di curva voluta.\n");
             exit(EXIT_FAILURE);
         }
 
-        printf("Otteniamo: %f\n", potenza_in_uscita); 
+        printf("RISULTATI:\n");
+        printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+        printf("\tVelocità del vento: %f\n", parametri->vento);
+        printf("\tDensità dell'aria: %f\n\n\n", parametri->densita_aria); 
     }
 
     svuota_lista_turbine_data(head_turbina);
