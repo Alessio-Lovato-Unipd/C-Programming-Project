@@ -3,11 +3,14 @@
 int main(int argc, char *argv[])
 {
     struct turbina *head_turbina=NULL;
+    //struct turbina *temporaneo=NULL; //<----da eliminare
     struct turbina *turbina_cercata=NULL;
     struct dati_weather *dati = NULL;
     int errore=0;
-    float array_vento_power_coefficient=0;
-    float array_vento_power_curves=0;
+    float array_vento_power_coefficient[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1]={0};
+    float array_vento_power_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1]={0};
+    //bool penultimo=false; //<---da eliminare
+    //bool ultimo=false; //<---da eliminare
 
     if(argc != VALORE_ARGOMENTI_INSERIBILI)
     {
@@ -16,125 +19,15 @@ int main(int argc, char *argv[])
     }   
 
     //inizio generazione lista turbine tramite la lettura da file
+    printf("Codice partito.\n");
     head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
-    if (errore!=CSV_OK)
+    if (errore!=CSV_END)
     {
         return(EXIT_FAILURE);
     }
-    controllo_csv(&errore);
-    lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, &array_vento_power_coefficient);
-    lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, &array_vento_power_curves);
-    //fine generazione lista
+    printf("fine estrazione.\n");
 
-    //inizio generazione lista dati meteorologici tramite la lettura da file
-    dati = apertura_file_weather(&file, dati, PERCORSO_WEATHER, &errore);
-    dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
-    if (errore!=CSV_IO)
-    {
-        return(EXIT_FAILURE);
-    }
-    controllo_csv(&errore);
-    //fine generazione lista
-
-    //salvataggio degli argomenti necessari alla determinazione del metodo per calcolare la velocità del vento, la temperatura e la densità dell'aria
-    struct tipo_metodo *metodo_calcolo_parametri=NULL;
-
-    metodo_calcolo_parametri = malloc(sizeof(struct tipo_metodo));
-    if (metodo_calcolo_parametri == NULL) {
-        printf("Error: malloc() failed in insert()\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    metodo_calcolo_parametri->vento=argv[2]; //CONTROLLO PER VERIFICARE SE ESISTONO QUESTE STRINGHE?
-    metodo_calcolo_parametri->temperatura=argv[3];
-    metodo_calcolo_parametri->densita=argv[4];
-
-    //ricerca della turbina richiesta
-    turbina_cercata = cerca_dati_turbina("argv[1]", 0.0, head_turbina); 
-    if (turbina_cercata == NULL)
-    {
-        printf("Modello turbina non trovato!\n\n\n");
-    }else
-    {
-        //cose da fare se la turbina esiste
-
-        //calcolo dei parametri a partire dai dati meteorologici
-        struct parametro *parametri=NULL;
-        float altezza_ostacolo=0;
-
-        parametri = malloc(sizeof(struct parametro));
-        if (parametri == NULL) {
-            printf("Error: malloc() failed in insert()\n");
-            exit(EXIT_FAILURE);
-        }
-    
-        altezza_ostacolo=atof(argv[7]);
-        parametri=calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, parametri);
-        //fine calcolo parametri
-
-        float potenza_in_uscita=0;
-
-        if(strcmp(argv[5], "CURVE_DI_POTENZA")==0)
-        {
-            potenza_in_uscita=calcolo_potenza_curve_di_potenza(argv[6], argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, array_vento_power_curves);
-        }
-        if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0)
-        {
-            potenza_in_uscita=calcolo_potenza_curve_coefficienti(argv[6], argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita, array_vento_power_coefficient);
-        }
-        else
-        {
-            printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    svuota_lista_turbine_data(head_turbina);
-    svuota_dati_weather(dati);
-
-    return 0;
-}
-
-//RICODATI DI DEALLOCARE LA MEMORIA!!!!!!
-
-//--------------------------------------------------
-/*
-int main()
-{
-    #if(tipo_dati_stampa==0)
-
-    struct turbina *head_turbina=NULL; //definisco lista per il salvataggio delle turbine
-    struct turbina *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-	//struct csv file_coefficient;
-	//struct csv file_power;
-    bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
-    bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
-    int errore=0;
-	
-    //generazione lista con lettura da file
-    head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
-    if (errore==CSV_E_IO)
-    {
-        return(EXIT_FAILURE);
-    }
-	//reading_file_power_coefficient(&file_coefficient, head_turbina, PERCORSO_POWER_COEFFICIENT, &errore);
-	//reading_file_power_curves(&file_power, head_turbina, PERCORSO_POWER_CURVES, &errore);
-    // fine generazione lista
-
-    //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_turbina("AD116/5000", 0.0, head_turbina);
-    if (temporaneo == NULL)
-    {
-        printf("Modello turbina non trovato!\n\n\n");
-    }else{
-        printf("Ricerca modello: %s\n", temporaneo->nome);
-        printf("Potenza nominale: %d\n\n\n", temporaneo->potenza_nominale);
-		
-    }
-    //fine stampa elemento lista
-
-    //esempio stampa lista per verifica turbine_data.csv         
-    temporaneo=head_turbina;
+/*temporaneo=head_turbina; <-----------------------------------per verificare il corretto salvataggio di tutte le turbine, OK
     printf("*****   Stampa elementi lista   *****\n\n");
     while (!ultimo) {
         head_turbina=conversione_dati_in_booleano(temporaneo);
@@ -147,22 +40,22 @@ int main()
         printf(" Bool power_coefficient: %d\n", temporaneo->bool_p_coefficient);
         printf(" Char power_curves: %s\n", temporaneo->char_p_curves);
         printf(" Bool power_curves: %d\n", temporaneo->bool_p_curves);
-		printf(" Velocità vento: \n\n\n");
-/*	for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
-			printf("%f\t", temporaneo->wind_speed[i]);
-		printf("\n");
-		printf("Coefficienti di potenza: \n");
-		if(temporaneo->power_coefficients != NULL){
-			for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1); i++)
-				printf("%f\t", temporaneo->power_coefficients[i]);
-		}
-		printf("\n");
-		printf("Curva di potenza: \n");
-		if(temporaneo->power_curves != NULL){
-			for(int i = 0; i < (NUMERO_COLONNE_POWER_CURVES - 1); i++)
-				printf("%d\t", temporaneo->power_curves[i]);
-		}
-		printf("\n");
+        printf(" Velocità vento: \n\n\n");
+        for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
+            printf("%f\t", temporaneo->wind_speed[i]);
+        printf("\n");
+        printf("Coefficienti di potenza: \n");
+        if(temporaneo->power_coefficients != NULL){
+            for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1); i++)
+                printf("%f\t", temporaneo->power_coefficients[i]);
+        }
+        printf("\n");
+        printf("Curva di potenza: \n");
+        if(temporaneo->power_curves != NULL){
+            for(int i = 0; i < (NUMERO_COLONNE_POWER_CURVES - 1); i++)
+                printf("%d\t", temporaneo->power_curves[i]);
+        }
+        printf("\n");
         printf("----\n\n");  
 
         temporaneo=temporaneo->prev;
@@ -176,83 +69,160 @@ int main()
         {
             ultimo=true;
         }
-    }
-    //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
+    }*/
+    //fine esempio di stampa
 
+    printf("Lettura power_curves iniziata.\n");
+    lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, array_vento_power_coefficient);
+    lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, array_vento_power_curves);
+    //fine generazione lista
 
-    svuota_lista_turbine_data(head_turbina); //deallocazione memoria heap
+    //inizio generazione lista dati meteorologici tramite la lettura da file
+    printf("Inizio salvataggio weather.\n");
+    struct csv file;
+    char** fields=NULL;
 
-    return 0;
-
-    #endif
-
-    
-    
-#if(tipo_dati_stampa==1)
-
-    struct weather *temporaneo=NULL; //variabile temporanea per dimostrazione stampa <-------------------- DA ELIMINARE
-    struct dati_weather *dati = NULL;
-    int errore=0;
-
-    dati = apertura_file_weather(&file, dati, PERCORSO_WEATHER, &errore);
-	
-	bool penultimo=false; //variabile temporanea per dimostrazione stampa <------------------------------- DA ELIMINARE
-    bool ultimo=false; //variabile temporanea per dimostrazione stampa <---------------------------------- DA ELIMINARE
-
+    dati = apertura_file_weather(&file, fields, dati, PERCORSO_WEATHER, &errore);
     dati=estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
-    if (errore!=CSV_E_IO)
+    if (errore!=CSV_END)
     {
         return(EXIT_FAILURE);
     }
-	controllo_csv(&errore);
 
-    //stampa un elemento della lista            <------------------------------------------------------INIZIO CODICE DA ELIMINARE (ESEMPIO)
-    temporaneo = cerca_dati_weather("2010-01-01 09:00:00+01:00",dati->head_weather);
-    if (temporaneo == NULL)
+    printf("Fine salvataggio weather.\n");
+    //fine generazione lista
+
+
+    //salvataggio degli argomenti necessari alla determinazione del metodo per calcolare la velocità del vento, la temperatura e la densità dell'aria
+    printf("salvataggio argomenti per tipo calcolo.\n");
+    struct tipo_metodo *metodo_calcolo_parametri=NULL;
+
+    metodo_calcolo_parametri = malloc(sizeof(struct tipo_metodo));
+    if (metodo_calcolo_parametri == NULL) {
+        printf("Error: malloc() failed in insert()\n");
+        exit(EXIT_FAILURE);
+    }
+
+    //inizializzazione struttura metodo_calcolo_parametri
+    metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+    metodo_calcolo_parametri->temperatura=INTERPOLAZIONE_LINEARE_T;
+    metodo_calcolo_parametri->densita=BAROMETRICO;
+
+    printf("Valore argv[2]:%s\n", argv[2]);
+    printf("Valore argv[3]:%s\n", argv[3]);
+    printf("Valore argv[4]:%s\n", argv[4]);
+
+    //salvataggio di argv[2] nella variabile vento 
+    if(strcmp("INTERPOLAZIONE_LINEARE_V", argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LINEARE_V;
+    else if(strcmp("INTERPOLAZIONE_LOGARITMICA", argv[2])==0)
+        metodo_calcolo_parametri->vento=INTERPOLAZIONE_LOGARITMICA;
+    else if(strcmp("PROFILO_LOGARITMICO", argv[2])==0)
+        metodo_calcolo_parametri->vento=PROFILO_LOGARITMICO;
+    else if(strcmp("HELLMAN", argv[2])==0)
+        metodo_calcolo_parametri->vento=HELLMAN;
+    else
     {
-        printf("Giorno e ora non trovati!\n\n\n");
-    }else{
-        printf("Ordine temporale del dato: %s\n", temporaneo->orario);
-        printf("Pressione: %f\n", temporaneo->pressione);
-        printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
-        printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
-        printf("Rugosita': %f\n", temporaneo->rugosita);
-        printf("Temperatura ad altezza2: %f\n", temporaneo->temperatura2);
-        printf("Velocita' del vento ad altezza2: %f\n", temporaneo->velocita_vento2);
+        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        exit(EXIT_FAILURE);
     }
-    //fine stampa elemento lista
+    
+    //salvataggio di argv[3] nella variabile temperatura
+    if(strcmp("INTERPOLAZIONE_LINEARE_T", argv[3])==0)
+        metodo_calcolo_parametri->temperatura=INTERPOLAZIONE_LINEARE_T;
+    else if(strcmp("GRADIENTE_LINEARE", argv[3])==0)
+        metodo_calcolo_parametri->temperatura=GRADIENTE_LINEARE;
+    else
+    {
+        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        exit(EXIT_FAILURE);
+    }
 
-    //esempio stampa lista per verifica turbine_data.csv         
-    temporaneo=dati->head_weather;
-    printf("*****   Stampa elementi lista   *****\n\n");
-    while (!ultimo) {
-        printf("Ordine temporale del dato: %s\n", temporaneo->orario);
-        printf("Pressione: %f\n", temporaneo->pressione);
-        printf("Temperatura ad altezza1: %f\n", temporaneo->temperatura1);
-        printf("Velocita' del vento ad altezza1: %f\n", temporaneo->velocita_vento1);
-        printf("Rugosita': %f\n", temporaneo->rugosita);
-        printf("Temperatura ad altezza2: %f\n", temporaneo->temperatura2);
-        printf("Velocita' del vento ad altezza2: %f\n", temporaneo->velocita_vento2);
-        printf("----\n\n");
+    //salvataggio di argv[4] nella variabile densita 
+    if(strcmp("BAROMETRICO", argv[4])==0)
+        metodo_calcolo_parametri->densita=BAROMETRICO;
+    else if(strcmp("GAS_IDEALE", argv[4])==0)
+        metodo_calcolo_parametri->densita=GAS_IDEALE;
+    else
+    {
+        printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+        exit(EXIT_FAILURE);
+    } 
 
-        temporaneo=temporaneo->prev;
+    printf("Valore vento :%u\n", metodo_calcolo_parametri->vento);
+    printf("Valore temperatura:%u\n", metodo_calcolo_parametri->temperatura);
+    printf("Valore densita :%u\n", metodo_calcolo_parametri->densita);
+    printf("fine salvataggio argomenti.\n");
+    
 
-        if (temporaneo == NULL)
+    //ricerca della turbina richiesta
+    printf("ricerca turbina.\n");
+    turbina_cercata = cerca_dati_turbina(argv[1], 0.0, head_turbina); 
+    if (turbina_cercata == NULL)
+    {
+        printf("Modello turbina non trovato!\n\n\n");
+    }else
+    {
+        //cose da fare se la turbina esiste
+        printf("Modello turbina trovato!\n\n\n");
+
+        
+        //calcolo dei parametri a partire dai dati meteorologici
+        struct parametro *parametri=NULL;
+        struct parametro *head_parametri=NULL;
+        float altezza_ostacolo=0;
+
+        parametri = malloc(sizeof(struct parametro));
+        if (parametri == NULL) {
+            printf("Error: malloc() failed in insert()\n");
+            exit(EXIT_FAILURE);
+        }
+    
+        altezza_ostacolo=atof(argv[7]);
+        parametri=calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
+        printf("Altezza ostacolo: %f\n", altezza_ostacolo);
+        printf("Vento parametri: %f\n", parametri->vento);
+        printf("Densità aria parametri: %f\n", parametri->densita_aria);
+        //fine calcolo parametri
+
+        //salvataggio di argv[6]
+        printf("argv[6]: %s\n", argv[6]);
+        tipo_calcolo_output var_argv6=INTERPOLAZIONE_LINEARE_O;
+        if(strcmp("INTERPOLAZIONE_LINEARE_O", argv[6])==0)
+            var_argv6=INTERPOLAZIONE_LINEARE_O;
+        else if(strcmp("INTERPOLAZIONE_LOGARITMICA_O", argv[6])==0)
+            var_argv6=INTERPOLAZIONE_LOGARITMICA_O;
+        else
         {
-            penultimo=true;
+            printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+            exit(EXIT_FAILURE);
+        }
+        printf("var_argv6: %u\n", var_argv6);
+
+
+        float potenza_in_uscita=0;
+
+        if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
+        {
+            potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, array_vento_power_curves);
+        }
+        else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
+        {
+            potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita_aria, array_vento_power_coefficient);
+        }
+        else
+        {
+            printf("L'argomento inserito non è corretto. La sintassi corretta è riportata nel file app/include/main.h");
+            exit(EXIT_FAILURE);
         }
 
-        if (penultimo)
-        {
-            ultimo=true;
-        }
+        printf("Otteniamo: %f\n", potenza_in_uscita); 
     }
-    //fine esempio di stampa                <------------------------------------------------------------ FINE CODICE DA ELIMINARE
 
-    svuota_dati_weather(dati); //deallocazione memoria heap
+    svuota_lista_turbine_data(head_turbina);
+    svuota_dati_weather(dati);
 
     return 0;
+}
 
-    #endif
-
-}*/
+//RICODATI DI DEALLOCARE LA MEMORIA!!!!!!
