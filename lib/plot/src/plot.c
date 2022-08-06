@@ -117,10 +117,10 @@
 
 
 
-/************** PLOT  DELLE CURVE ****/
-void plot_curva_potenza(float *x_vento, const struct turbina *turbina)
+/************** PLOT  DELLE CURVE ***************/
+void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
 {
-    if ((x != NULL) && (turbina->power_curves != NULL)){
+    if ((array_vento != NULL) && (turbina->power_curves != NULL)){
         gnuplot_ctrl *gp = NULL; 
         char *titolo = malloc(sizeof(char) * (strlen("Curva di Potnza ") + strlen(turbina->nome) + 1 ));
         strcpy(titolo, "Curva di Potenza ");
@@ -137,16 +137,16 @@ void plot_curva_potenza(float *x_vento, const struct turbina *turbina)
         gnuplot_cmd(gp, "set grid back nopolar");
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
-        gnuplot_plot_xy(gp, x_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
+        gnuplot_plot_xy(gp, array_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
 
         gnuplot_close(gp); 
     }
     
 }
 
-void plot_curva_coefficienti(float *x_vento, const struct turbina *turbina)
+void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
 {
-    if ((x != NULL) && (turbina->power_coefficients != NULL)){
+    if ((array_vento != NULL) && (turbina->power_coefficients != NULL)){
         gnuplot_ctrl *gp = NULL;  
         char *titolo = malloc(sizeof(char) * (strlen("Curva coefficienti di potenza ") + strlen(turbina->nome) + 1 ));
         strcpy(titolo, "Curva coefficienti di potenza ");
@@ -164,12 +164,16 @@ void plot_curva_coefficienti(float *x_vento, const struct turbina *turbina)
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
 
-        gnuplot_plot_xy(gp, x_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
+        gnuplot_plot_xy(gp, array_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
 
         gnuplot_close(gp);   
     }
     
 }
+
+
+
+
 
 /*********************** FUNZIONE COSTRUITA SULLE LISTA CONCATENATE CREATE NELLE ALTRE LIBRERIE *******************/
 void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const struct potenza_out *y, int n_dati, const char *title)
