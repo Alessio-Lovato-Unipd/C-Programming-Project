@@ -1,4 +1,4 @@
-#include "../include/main.h"
+#include "main.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +21,10 @@ int main(int argc, char *argv[])
         printf("\t- argv[4] ---> {BAROMETRICO, GAS_IDEALE}, per il calcolo della densità dell'aria\n");
         printf("\t- argv[5] ---> {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA}, per la scelta se usare le curve di coefficienti di potenza oppure le curve di potenza\n");
         printf("\t- argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output\n");
-        printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n\n");
+        printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n");
+		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n\n");
+		//printf("\t- argv[9] ---> stringa di data e ora di partenza per l'analisi dei dati considerati\n");
+		
         return(EXIT_FAILURE);
     }   
 
@@ -33,6 +36,9 @@ int main(int argc, char *argv[])
     printf("Metodo per il calcolo della densità dell'aria impostato su %s\n", argv[4]);
     printf("Metodo di interpolazione per il calcolo dell'output: %s\n", argv[6]);
     printf("Altezza ostacolo impostata a: %s metri\n", argv[7]);
+	printf("Altezza del mozzo: %s\n", argv[8]);
+	//printf("Orario di partenza scelto: %s\n", argv[9]);
+	
 
     //inizio generazione lista turbine tramite la lettura da file
     head_turbina=estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
@@ -158,7 +164,8 @@ int main(int argc, char *argv[])
     */
     
     //ricerca della turbina richiesta
-    turbina_cercata = cerca_dati_turbina(argv[1], 0.0, head_turbina); 
+	float altezza_mozzo = atof(argv[8]);
+    turbina_cercata = cerca_dati_turbina(argv[1], altezza_mozzo, head_turbina);
     if (turbina_cercata == NULL)
     {
         printf("\nESITO RICERCA TURBINA: Modello turbina non trovato!\n\n");
@@ -168,25 +175,19 @@ int main(int argc, char *argv[])
         printf("\nESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
 
         //calcolo dei parametri a partire dai dati meteorologici
-        struct parametro *parametri=NULL;
-        struct parametro *head_parametri=NULL;
+		struct parametro *temp_parametri = NULL;
+        struct parametro *head_parametri = NULL;
         float altezza_ostacolo=0;
 
-        parametri = malloc(sizeof(struct parametro));
-        if (parametri == NULL) {
-            printf("Error: malloc() failed in insert()\n");
-            exit(EXIT_FAILURE);
-        }
-    
         altezza_ostacolo=atof(argv[7]);
-        parametri=calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
+        head_parametri = calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
         //fine calcolo parametri
 
         //salvataggio di argv[6]
         tipo_calcolo_output var_argv6=INTERPOLAZIONE_LINEARE_O;
-        if(strcmp("INTERPOLAZIONE_LINEARE_O", argv[6])==0)
+        if(strcmp("INTERPOLAZIONE_LINEARE_O", argv[6]) == 0)
             var_argv6=INTERPOLAZIONE_LINEARE_O;
-        else if(strcmp("INTERPOLAZIONE_LOGARITMICA_O", argv[6])==0)
+        else if(strcmp("INTERPOLAZIONE_LOGARITMICA_O", argv[6]) == 0)
             var_argv6=INTERPOLAZIONE_LOGARITMICA_O;
         else
         {
@@ -200,30 +201,40 @@ int main(int argc, char *argv[])
         */
 
         float potenza_in_uscita=0;
-
+		temp_parametri = head_parametri;
+		printf("RISULTATI:\n");
+		
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
-            potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, array_vento_power_curves);
-        }
+			while(temp_parametri != NULL){
+				potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
+				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
+				printf("\tDensità dell'aria: %f\n\n\n", temp_parametri->densita_aria); 
+				temp_parametri = temp_parametri->next;
+			}
+		}
         else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
-            potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, parametri->vento, parametri->densita_aria, array_vento_power_coefficient);
-        }
+			while(temp_parametri != NULL){
+				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
+				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
+				printf("\tDensità dell'aria: %f\n\n\n", temp_parametri->densita_aria); 
+				temp_parametri = temp_parametri->next;
+			}
+		}
         else
         {
             printf("\nL'argomento inserito in argv[6] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA\n");
             printf("Se l'errore persiste, controllare se la turbina cercata possiede le informazioni relative al tipo di curva voluta.\n");
             exit(EXIT_FAILURE);
         }
-
-        printf("RISULTATI:\n");
-        printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
-        printf("\tVelocità del vento: %f\n", parametri->vento);
-        printf("\tDensità dell'aria: %f\n\n\n", parametri->densita_aria); 
     }
 
     svuota_lista_turbine_data(head_turbina);
     svuota_dati_weather(dati);
+	free(metodo_calcolo_parametri);
 
     return 0;
 }
