@@ -6,7 +6,7 @@
 ******************************************************************************************************/
 
 
-void controllo_csv(int *errore)
+void controllo_csv(const int *const errore)
 {
 	char *error;
     if (*errore == CSV_E_IO) {
@@ -25,9 +25,9 @@ void controllo_csv(int *errore)
 ******************************************************************************************************/
 
 
-struct dati_weather *apertura_file_weather(struct csv *file, char **fields, struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
+struct dati_weather *apertura_file_weather(struct csv *const file, char **fields, struct dati_weather *puntatore_dati_weather, const char *const percorso_file_weather, int *const errore)
 {
-    *errore = csv_open(file, percorso_file_weather, SEPARATORE, NUMERO_COLONNE_WEATHER);
+    *errore = csv_open(file, (char *) percorso_file_weather, SEPARATORE, NUMERO_COLONNE_WEATHER);
     if (*errore != CSV_OK) {
 		controllo_csv(errore);
 		return NULL;
@@ -64,7 +64,7 @@ struct dati_weather *apertura_file_weather(struct csv *file, char **fields, stru
 }
 
 
-struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather, char *percorso_file_weather, int *errore)
+struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati_weather,const char *const percorso_file_weather, int *const errore)
 {
     struct csv file;
     char **fields = NULL;
@@ -92,7 +92,7 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
 }
 
 
-struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *puntatore_dati_weather)
+struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *const puntatore_dati_weather)
 {
     struct weather *nuova;
     nuova = malloc(sizeof(struct weather));
@@ -141,7 +141,7 @@ struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_wea
 
 
 
-struct weather *cerca_dati_weather(char *orario, const struct weather *head_weather)
+struct weather *cerca_dati_weather(const char *const orario, const struct weather *const head_weather)
 {
 	const struct weather *temporaneo_weather = head_weather;
         

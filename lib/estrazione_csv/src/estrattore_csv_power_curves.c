@@ -4,10 +4,10 @@
 ************************    GESTIONE FILE power_curves.csv      **************************************
 ******************************************************************************************************/
 
-void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_file_power_curves, int *errore, float *array_vento)
+void lettura_file_power_curves(struct turbina *const puntatore, const char *const percorso_file_power_curves, int *const errore, float *const array_vento)
 {
 	struct csv file;
-    *errore = csv_open(&file, percorso_file_power_curves, SEPARATORE, NUMERO_COLONNE_POWER_CURVES);
+    *errore = csv_open(&file, (char *) percorso_file_power_curves, SEPARATORE, NUMERO_COLONNE_POWER_CURVES);
     if (*errore != CSV_OK) {
 		controllo_csv(errore);
 		return;
@@ -47,7 +47,7 @@ void lettura_file_power_curves(struct turbina *const puntatore, char *percorso_f
 	csv_close(&file);
 }
 
-void inserimento_power_curves(float *array_dati, char **fields)
+void inserimento_power_curves(float *const array_dati, char **fields)
 {
 	for (int i = 1; i < NUMERO_COLONNE_POWER_CURVES; i++) {
 		if (strcmp(fields[i], "")!= 0)

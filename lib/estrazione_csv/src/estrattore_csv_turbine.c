@@ -4,10 +4,10 @@
 ************************    GESTIONE FILE turbine_data.csv      **************************************
 ******************************************************************************************************/
 
-struct turbina *estrazione_dati_turbine(struct turbina *puntatore, char *percorso_file_turbine_data, int *errore) 
+struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *const percorso_file_turbine_data, int *const errore) 
 {
     struct csv file;
-    *errore = csv_open(&file, percorso_file_turbine_data, SEPARATORE, NUMERO_COLONNE_TURBINA);
+    *errore = csv_open(&file, (char *) percorso_file_turbine_data, SEPARATORE, NUMERO_COLONNE_TURBINA);
     if (*errore != CSV_OK) {
 		controllo_csv(errore);
 		return NULL;
@@ -167,7 +167,7 @@ void elimina_nodo_turbina (struct turbina *nodo)
 	free(nodo);
 }
 
-struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altezza_mozzo, const struct turbina *head_turbina)
+struct turbina *cerca_dati_turbina(const char *const nome_modello_turbina, float altezza_mozzo, const struct turbina *const head_turbina)
 {
 	const struct turbina *temporaneo_turbina = head_turbina;
 	bool trovato = false;
@@ -189,14 +189,14 @@ struct turbina *cerca_dati_turbina(const char *nome_modello_turbina, float altez
 	return (struct turbina *) temporaneo_turbina;
 }
 
-struct turbina *scorri_lista_turbina(const struct turbina *puntatore)
+struct turbina *scorri_lista_turbina(const struct turbina *const puntatore)
 {
 	if (puntatore == NULL)
 		return NULL;
 	return puntatore->prev;
 }
 
-struct turbina *conversione_dati_in_booleano(struct turbina *elemento_attuale_turbina)
+struct turbina *conversione_dati_in_booleano(struct turbina *const elemento_attuale_turbina)
 {
 	if (strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1)==0)
 		elemento_attuale_turbina->bool_p_coefficient=false;
