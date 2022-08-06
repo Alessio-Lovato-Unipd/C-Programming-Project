@@ -118,7 +118,7 @@
 
 
 /************** PLOT  DELLE CURVE ****/
-void plot_curva_potenza(float *x, const struct turbina *turbina)
+void plot_curva_potenza(float *x_vento, const struct turbina *turbina)
 {
     if ((x != NULL) && (turbina->power_curves != NULL)){
         gnuplot_ctrl *gp = NULL; 
@@ -137,14 +137,14 @@ void plot_curva_potenza(float *x, const struct turbina *turbina)
         gnuplot_cmd(gp, "set grid back nopolar");
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
-        gnuplot_plot_xy(gp, x, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
+        gnuplot_plot_xy(gp, x_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
 
         gnuplot_close(gp); 
     }
     
 }
 
-void plot_curva_coefficienti(float *x, const struct turbina *turbina)
+void plot_curva_coefficienti(float *x_vento, const struct turbina *turbina)
 {
     if ((x != NULL) && (turbina->power_coefficients != NULL)){
         gnuplot_ctrl *gp = NULL;  
@@ -164,7 +164,7 @@ void plot_curva_coefficienti(float *x, const struct turbina *turbina)
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
 
-        gnuplot_plot_xy(gp, x, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
+        gnuplot_plot_xy(gp, x_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
 
         gnuplot_close(gp);   
     }

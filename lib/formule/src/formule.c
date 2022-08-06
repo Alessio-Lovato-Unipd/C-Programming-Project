@@ -14,8 +14,8 @@ float interpolazione_logaritmica(float x1, float y1, float x2, float y2, float x
 float profilo_logaritmico(float x1, float y1, float z0, float hOstacolo, float x)
 {
     float d = 0.7 * hOstacolo;
-    float numeratore =  log((x - d)/z0);
-    float denominatore = log((x1 - d)/z0);
+    float numeratore =  log((x - d) / z0);
+    float denominatore = log((x1 - d) / z0);
     return y1 * (numeratore / denominatore);
 }
 

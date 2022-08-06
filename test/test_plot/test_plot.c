@@ -63,11 +63,11 @@ void test_plot_curva_coefficienti()
 	svuota_lista_turbine_data(puntatore);	
 }
 
-/*
+
 void test_plot_potenza()
 {
 	struct turbina *head = NULL;
-	struct turbina *elemento_cercato = NULL;
+	//struct turbina *elemento_cercato = NULL;
 	int errore = 0;
 	float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
 	struct dati_weather *h_meteo = NULL;
@@ -77,7 +77,7 @@ void test_plot_potenza()
 	
 	head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
 	lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
-	elemento_cercato = cerca_dati_turbina("E-70/2300", 85, head);	
+	//elemento_cercato = cerca_dati_turbina("V164/9500", 0.0, head);
 
 	h_meteo = estrazione_dati_weather(h_meteo, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
 
@@ -87,14 +87,14 @@ void test_plot_potenza()
 
 	h_parametri = calcolo_parametri(h_meteo, metodo_calcolo, 0, 95, h_parametri);
 
-	h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, elemento_cercato->nome, head, 95, array_vento_curves, h_parametri, h_potenza);
-
+	//h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, elemento_cercato->nome, head, 95, array_vento_curves, h_parametri, h_potenza);
+	h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "V164/9500", head, 95, array_vento_curves, h_parametri, h_potenza);
 	plot_potenza(h_meteo->head_weather, h_potenza, 30);
 
 	svuota_lista_turbine_data(head);
 	svuota_dati_weather(h_meteo);
 }
-*/
+
 
 
 int main()
@@ -102,5 +102,5 @@ int main()
     test_plot_curva_potenza();
 	test_plot_curva_coefficienti();
 
-		
+	//test_plot_potenza();		
 }

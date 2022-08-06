@@ -1,9 +1,12 @@
+
 #include "unity.h"
 #include "calcolo_output.h"
 
 #define PERCORSO_TURBINE_DATA_CORRETTO "../../../data/turbine_data.csv"
 #define PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO "../../../data/power_coefficient_curves.csv"
 #define PERCORSO_POWER_CURVES_CORRETTO "../../../data/power_curves.csv"
+
+
 
 void ricerca_turbina(void)
 {
@@ -175,6 +178,7 @@ void prova_calcolo_valori_ai_limiti(void)
 	svuota_lista_turbine_data(head);
 }
 
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -186,4 +190,6 @@ int main(void)
 	RUN_TEST(prova_calcolo_potenza_interpolazione_logaritmica);
 	RUN_TEST(prova_calcolo_valori_ai_limiti);
 	return UNITY_END();
+
 }
+
