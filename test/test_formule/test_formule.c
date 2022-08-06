@@ -11,12 +11,30 @@ void test_interpolazione_lineare()
     int d = 4;
     y = interpolazione_lineare(a, b, c, d, 5);
     TEST_ASSERT_EQUAL_FLOAT(2.8, y);
+	y = interpolazione_lineare(1, 0 , 1.5, 0, 1.2);
+	TEST_ASSERT_EQUAL_FLOAT(0, y);
+	y = interpolazione_lineare(1.5, 1, 1, 0, 1.2); //test invertendo x1 e x2
+	TEST_ASSERT_EQUAL_FLOAT(0.4, y);
+}
+
+void test_interpolazione_lineare_limite()
+{
+	float y;
+	y = interpolazione_lineare(1.5, 12, 1.5, 12, 1.5); //interpolazione con x1 e x2 uguali
+	TEST_ASSERT_EQUAL_FLOAT(12, y); //non voglio un "nan"
 }
 
 void test_interpolazione_logaritmica()
 {
     float x = interpolazione_logaritmica(10, 5.32, 80, 7.81, 20);
     TEST_ASSERT_EQUAL_FLOAT(6.15, x);
+}
+
+void test_interpolazione_logaritmica_limite()
+{
+	float y;
+	y = interpolazione_logaritmica(0, 3, 1, 4, 0.5); //x1 = 0, problema di dominio del logaritmo
+	TEST_ASSERT_EQUAL_FLOAT(0.0, y);
 }
 
 void test_profilo_logaritmico()
