@@ -65,6 +65,8 @@ void test_profilo_logaritmico_input_errati()
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
     x = profilo_logaritmico(10, 5.32, 0.15, 20, 20);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = profilo_logaritmico(10, -5.32, 0.15, 5, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
 }
 
 void test_hellman()
@@ -80,6 +82,8 @@ void test_hellman_input_errati()
     x = hellman(10, 5.32, -0.04, 20);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
     x = hellman(10, 5.32, 0.15, -20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = hellman(10, -5.32, 0.15, 20);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
 }
 

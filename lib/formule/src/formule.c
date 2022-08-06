@@ -44,6 +44,10 @@ float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostac
         printf("Rugosità negativa: %f, essa ha dominio positivo\n", z0);
         return -1;
     }
+    else if (vel_vento < 0) {
+        printf("Velocità del vento negativa: %f\n", vel_vento);
+        return -1;
+    }
     else if ((h_dati <= d) || (h_mozzo <= d)) {
         printf("Altezza ostacolo troppo alta: %f\n", h_ostacolo);
         return -1;
@@ -68,6 +72,10 @@ float hellman(float h_dati, float vel_vento, float z0,float h_mozzo)
     }
     else if ( z0 < 0) {
         printf("Rugosità negativa: %f, essa ha dominio positivo\n", z0);
+        return -1;
+    }
+    else if (vel_vento < 0) {
+        printf("Velocità del vento negativa: %f\n", vel_vento);
         return -1;
     }
     else {
