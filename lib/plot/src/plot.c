@@ -230,7 +230,7 @@ void plot_potenza(const struct weather *tempo, const float *potenza, int giorni)
             gnuplot_cmd(gp, "set format x \"%m\"");//mese
         }
 
-        gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n tempo, potenza[kW]");//genero file csv di uscita
+        gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
         gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
 
         gnuplot_close(gp);  

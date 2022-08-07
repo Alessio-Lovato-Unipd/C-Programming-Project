@@ -1,5 +1,0 @@
-variable_name,pressure,temperature,wind_speed,roughness_length,temperature,wind_speed
-height,0,2,10,0,10,80
-00000,11.2,13.3,4,5,6,7
-2010-01-01 09:00:00+01:00,1,2,3,4,5,6
-00000,3,4,2,5,2,6

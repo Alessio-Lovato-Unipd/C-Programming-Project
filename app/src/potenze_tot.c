@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
     head_turbina = estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
     if (errore != CSV_END)
     {
-		svuota_lista_turbine_data(head_turbina);
         return(EXIT_FAILURE);
     }
 
@@ -101,7 +100,7 @@ int main(int argc, char *argv[])
     dati = estrazione_dati_weather(dati, PERCORSO_WEATHER, &errore);
     if (errore != CSV_END)
     {
-		svuota_dati_weather(dati);
+        svuota_lista_turbine_data(head_turbina);
         return(EXIT_FAILURE);
     }
     //fine generazione lista
@@ -195,6 +194,11 @@ int main(int argc, char *argv[])
 
         altezza_ostacolo=atof(argv[7]);
         head_parametri = calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
+        if (head_parametri == NULL) {
+            svuota_dati_weather(dati);
+            svuota_lista_turbine_data(head_turbina);
+            exit(EXIT_FAILURE);
+        }
         //fine calcolo parametri
 
         //salvataggio di argv[6]
