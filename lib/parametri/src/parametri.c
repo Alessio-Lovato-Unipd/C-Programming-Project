@@ -5,7 +5,7 @@
 
 /************************GESTIONE STRUTTURA PARAMETRI********************/
 
-struct parametro *aggiungi_elemento(struct parametro *elemento_attuale, float val_vento, float val_densita)
+struct parametro *aggiungi_elemento(const char *orario, struct parametro *elemento_attuale, float val_vento, float val_densita)
 {
     struct parametro *nuovo_elemento;
 
@@ -16,6 +16,8 @@ struct parametro *aggiungi_elemento(struct parametro *elemento_attuale, float va
     }
 
     //salvo i dati
+	nuovo_elemento->orario = malloc(sizeof(char) * (strlen(orario) + 1));
+	strcpy(nuovo_elemento->orario, orario);
     nuovo_elemento->vento = val_vento;
     nuovo_elemento->densita_aria = val_densita;
 
@@ -23,6 +25,16 @@ struct parametro *aggiungi_elemento(struct parametro *elemento_attuale, float va
     nuovo_elemento->next = elemento_attuale; 
 
     return nuovo_elemento;
+}
+
+struct parametro *cerca_nodo_parametri(const char *const orario, const struct parametro *const head_parametro)
+{
+	const struct parametro *temporaneo_par = head_parametro;
+        
+	while((temporaneo_par != NULL) && (strcmp(temporaneo_par->orario, orario) != 0))
+		temporaneo_par = temporaneo_par->next;
+
+	return (struct parametro *) temporaneo_par;
 }
 
 struct parametro *svuota_parametri(struct parametro *head)
@@ -34,6 +46,7 @@ struct parametro *svuota_parametri(struct parametro *head)
 	
     do {
         temp = head->next;
+		free(head->orario);
 		free(head);
         head = temp;
     } while (temp != NULL);
@@ -125,7 +138,7 @@ struct parametro *calcolo_parametri(const struct dati_weather *dati, const struc
         densita = calcolo_densita_aria(metodo->densita, dati->h_pressione, in->pressione, temperatura, altezza_mozzo);  
     
         //salvo i 3 parametri calcolati nell'elemento corrente
-        out = aggiungi_elemento(out, vento, densita);
+        out = aggiungi_elemento(in->orario, out, vento, densita);
     }
 
     return out;

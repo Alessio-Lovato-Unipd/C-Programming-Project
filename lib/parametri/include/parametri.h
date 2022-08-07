@@ -9,6 +9,7 @@
     typedef enum {BAROMETRICO, GAS_IDEALE} tipo_calcolo_densita;
 
     struct parametro{
+		char *orario;
         float vento;
         float densita_aria;
         struct parametro *next;
@@ -22,10 +23,13 @@
 
     /****GESTIONE LISTA PARAMETRI*****/
     //Aggiunge parametro alla lista
-    struct parametro *aggiungi_elemento(struct parametro *elemento_attuale, float val_vento, float val_densita);
+    struct parametro *aggiungi_elemento(const char *orario, struct parametro *elemento_attuale, float val_vento, float val_densita);
     
     //svuota lista parametri
     struct parametro *svuota_parametri(struct parametro *head);
+	
+	//ricerca orario corrispondente ai parametri
+	struct parametro *cerca_nodo_parametri(const char *const orario, const struct parametro *const head_parametro);
 
     //Funzioni di calcolo dei vari parametri
     float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo,float altezza_x);

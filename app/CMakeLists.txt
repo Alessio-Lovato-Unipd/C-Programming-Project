@@ -5,11 +5,11 @@ project( Applicazione_principale
          LANGUAGES C
          DESCRIPTION "creazione makefile per il file sorgente principale" )
 
-add_executable(main src/main.c)
+add_executable(potenze_tot src/potenze_tot.c)
 
-target_include_directories(main PRIVATE include) 
+target_include_directories(potenze_tot PRIVATE include) 
 
-target_link_libraries( main
+target_link_libraries( potenze_tot
 	PRIVATE 
 	lib::csv
 	lib::estrazione_csv
@@ -17,3 +17,17 @@ target_link_libraries( main
 	lib::parametri
 	lib::calcolo_output
 )
+
+add_executable(potenze_giorno src/potenze_giorno.c)
+
+target_include_directories(potenze_giorno PRIVATE include) 
+
+target_link_libraries( potenze_giorno
+	PRIVATE 
+	lib::csv
+	lib::estrazione_csv
+	lib::formule
+	lib::parametri
+	lib::calcolo_output
+)
+
