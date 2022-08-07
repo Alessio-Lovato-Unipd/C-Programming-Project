@@ -5,6 +5,7 @@
 #define PERCORSO_TURBINE_DATA_CORRETTO "../../../data/turbine_data.csv"
 #define PERCORSO_POWER_COEFFICIENT_CURVES_CORRETTO "../../../data/power_coefficient_curves.csv"
 #define PERCORSO_POWER_CURVES_CORRETTO "../../../data/power_curves.csv"
+#define PERCORSO_WEATHER_DATA_CORRETTO "../../../data/weather.csv"
 
 
 
@@ -179,8 +180,49 @@ void prova_calcolo_valori_ai_limiti(void)
 }
 
 
+void test_calcolo_potenza()
+{
+    struct turbina *head = NULL;
+
+    //struct turbina *elemento_cercato = NULL;
+    int errore = 0;
+    float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
+    struct dati_weather *h_meteo = NULL;
+    struct tipo_metodo *metodo_calcolo = malloc(sizeof(struct tipo_metodo*));
+    struct parametro *h_parametri = NULL;
+    struct potenza_out *h_potenza = NULL;
+    
+    head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+    lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
+    //elemento_cercato = cerca_dati_turbina("V164/9500", 0.0, head);
+
+    h_meteo = estrazione_dati_weather(h_meteo, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
+
+    metodo_calcolo->vento = INTERPOLAZIONE_LINEARE_V;
+    metodo_calcolo->temperatura = INTERPOLAZIONE_LINEARE_T;
+    metodo_calcolo->densita = BAROMETRICO;
+
+    h_parametri = calcolo_parametri(h_meteo, metodo_calcolo, 0, 95, h_parametri);
+
+    //h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, elemento_cercato->nome, head, 95, array_vento_curves, h_parametri, h_potenza);
+    h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 95, array_vento_curves, h_parametri, h_potenza);
+
+	printf("Potenze di E-101/3050");
+	struct potenza_out *temp = h_potenza;
+	for (int i = 0; i < 10; i ++) {
+		printf("%i^ Potenza: %f", i, temp->potenza);
+		temp = temp->next;
+	}
+
+    svuota_lista_turbine_data(head);
+    svuota_dati_weather(h_meteo);
+	svuota_parametri(h_parametri);
+	svuota_potenza(h_potenza);
+}
+
 int main(void)
 {
+	/*
 	UNITY_BEGIN();
 	RUN_TEST(ricerca_turbina);
 	RUN_TEST(lettura_interpolazione_curve_interpolazione_lineare);
@@ -189,7 +231,10 @@ int main(void)
 	RUN_TEST(prova_calcolo_potenza_interpolazione_lineare);
 	RUN_TEST(prova_calcolo_potenza_interpolazione_logaritmica);
 	RUN_TEST(prova_calcolo_valori_ai_limiti);
+	RUN_TEST(test_calcolo_potenza);
 	return UNITY_END();
+	*/
+	test_calcolo_potenza();
 
 }
 

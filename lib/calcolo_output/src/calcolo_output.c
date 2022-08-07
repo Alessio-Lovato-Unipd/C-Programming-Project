@@ -1,6 +1,6 @@
 #include "calcolo_output.h"
 
-/************************GESTIONE LISTA POTENZA********************/
+/************************ GESTIONE LISTA DI POTENZA ********************/
 
 struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p)
 {
@@ -20,7 +20,24 @@ struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float
     return nuovo_elemento;
 }
 
-/******************* GESTIONE LISTA DI POTENZE **************/
+
+struct potenza_out *svuota_potenza(struct potenza_out *head)
+{
+	struct potenza_out *temp = head;
+
+	if (head == NULL)
+		return NULL; 
+	
+    do {
+        temp = head->next;
+		free(head);
+        head = temp;
+    } while (temp != NULL);
+
+	return head;
+}
+
+
 struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, struct potenza_out *hp)
 {
 	float potenza;
@@ -45,14 +62,11 @@ struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo
 	return out;
 }
 
-struct potenza_out *svuota_potenza(struct potenza_out *head)
-{
-	struct potenza_out *tem = head;
-}
 
 
 
-/*******************CALCOLO DELLA POTENZA ISTANTANEA*************/
+
+/******************* CALCOLO DELLA POTENZA ISTANTANEA *************/
 float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, const float *array_vento)
 {
 	struct turbina *temp = head;

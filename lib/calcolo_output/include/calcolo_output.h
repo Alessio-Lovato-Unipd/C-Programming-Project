@@ -21,10 +21,11 @@
 	struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p);
 
 	//Svuota la lista dlle potenze
-	struct potenza_out *svuota_potenza(struct potenza_out *head)
+	struct potenza_out *svuota_potenza(struct potenza_out *head);
 
 	//Calcola e genera lista potenze in base ai dati weather
 	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, struct potenza_out *hp);
+
 
 	//funzioni che richiamano l'interpolazione delle curve grezze estratte dai file csv e calcolano l'output di potenza a partire da esse
 	//l'altezza del mozzo in queste funzioni serve solo ad identificare la turbina, non influisce nel calcolo dei parametri atmosferici
