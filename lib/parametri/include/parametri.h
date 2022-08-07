@@ -32,13 +32,15 @@
 	struct parametro *cerca_nodo_parametri(const char *const orario, const struct parametro *const head_parametro);
 
     //Funzioni di calcolo dei vari parametri
-    float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo,float altezza_x);
+    float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo, float altezza_x, int *errore);
 
-    float calcolo_temperatura_aria(tipo_calcolo_temperatura metodo, float altezza1, float temperatura1, float altezza2, float temperatura2, float altezza_x);
+    float calcolo_temperatura_aria(tipo_calcolo_temperatura metodo, float altezza1, float temperatura1, float altezza2, float temperatura2, float altezza_x, int *errore);
 
-    float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pressione1,float temperatura_x,float altezza_x);
+    float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pressione1,float temperatura_x,float altezza_x, int *errore);
 
     /*CREA E CALCOLA LISTA DI PARAMETRI (vento e densità aria) per calcolo output */
     struct parametro *calcolo_parametri(const struct dati_weather *dati, const struct tipo_metodo *metodo, float altezza_ostacolo, float altezza_mozzo, struct parametro *head);
-
+	
+	/*CONTROLLO ERRORI DI LIMITI NELLE FORMULE*/
+	void controllo_errori_parametri(int *errore);
 #endif
