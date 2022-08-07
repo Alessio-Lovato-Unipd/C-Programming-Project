@@ -13,8 +13,6 @@ void test_interpolazione_lineare()
     TEST_ASSERT_EQUAL_FLOAT(2.8, y);
 	y = interpolazione_lineare(1, 0 , 1.5, 0, 1.2);
 	TEST_ASSERT_EQUAL_FLOAT(0, y);
-	y = interpolazione_lineare(1.5, 1, 1, 0, 1.2); //test invertendo x1 e x2
-	TEST_ASSERT_EQUAL_FLOAT(0.4, y);
 }
 
 void test_interpolazione_lineare_limite()
@@ -22,19 +20,20 @@ void test_interpolazione_lineare_limite()
 	float y;
 	y = interpolazione_lineare(1.5, 12, 1.5, 12, 1.5); //interpolazione con x1 e x2 uguali
 	TEST_ASSERT_EQUAL_FLOAT(12, y); //non voglio un "nan"
+	y = interpolazione_lineare(1.5, 12, 1.6, 13, 1.4); //x<x1
+	TEST_ASSERT_EQUAL_FLOAT(-1, y);
+	y = interpolazione_lineare(1.5, 12, 1.6, 13, 1.7); //x>x2
+	TEST_ASSERT_EQUAL_FLOAT(-1, y);
+	y = interpolazione_lineare(1.5, 1, 1, 0, 1.2); //caso x1>x2
+	TEST_ASSERT_EQUAL_FLOAT(-1, y);
 }
 
 void test_interpolazione_logaritmica()
 {
     float x = interpolazione_logaritmica(10, 5.32, 80, 7.81, 20);
     TEST_ASSERT_EQUAL_FLOAT(6.15, x);
-}
-
-void test_interpolazione_logaritmica_limite()
-{
-	float y;
-	y = interpolazione_logaritmica(0, 3, 1, 4, 0.5); //x1 = 0, problema di dominio del logaritmo
-	TEST_ASSERT_EQUAL_FLOAT(0.0, y);
+	x = interpolazione_lineare(1.5, 12, 1.5, 12, 1.5); //interpolazione con x1 e x2 uguali
+	TEST_ASSERT_EQUAL_FLOAT(12, x); //non voglio un "nan"
 }
 
 void test_interpolazione_logaritmica_input_errati()
@@ -45,6 +44,10 @@ void test_interpolazione_logaritmica_input_errati()
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
     x = interpolazione_logaritmica(10, 5.32, 80, 7.81, -20);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+	x = interpolazione_lineare(1.5, 12, 1.6, 13, 1.4);
+	TEST_ASSERT_EQUAL_FLOAT(-1, x);
+	x = interpolazione_lineare(1.5, 12, 1.6, 13, 1.7);
+	TEST_ASSERT_EQUAL_FLOAT(-1, x);
 }
 
 void test_profilo_logaritmico()
@@ -151,6 +154,7 @@ int main()
     UNITY_BEGIN();
 
     RUN_TEST(test_interpolazione_lineare);
+	RUN_TEST(test_interpolazione_lineare_limite);
     RUN_TEST(test_interpolazione_logaritmica);
     RUN_TEST(test_interpolazione_logaritmica_input_errati);
     RUN_TEST(test_profilo_logaritmico);

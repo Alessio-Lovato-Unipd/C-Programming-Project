@@ -39,6 +39,6 @@
     float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pressione1,float temperatura_x,float altezza_x);
 
     /*CREA E CALCOLA LISTA DI PARAMETRI (vento e densità aria) per calcolo output */
-    struct parametro *calcolo_parametri(const struct dati_weather *dati, const struct tipo_metodo *metodo, float altezza_ostacolo,float altezza_mozzo, struct parametro *head);
+    struct parametro *calcolo_parametri(const struct dati_weather *dati, const struct tipo_metodo *metodo, float altezza_ostacolo, float altezza_mozzo, struct parametro *head);
 
 #endif

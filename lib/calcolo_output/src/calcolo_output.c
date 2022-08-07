@@ -60,6 +60,9 @@ float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *n
 	//interpolazione della curva
 	interpolazione_potenza_per_valori_mancanti(metodo, temp, array_vento);
 	
+	if(vel_vento == -1)
+		return -1;
+	
 	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, LUNGHEZZA_VETTORE_POWER_CURVES, array_vento);
 	if(indice == LUNGHEZZA_VETTORE_POWER_CURVES){
 		return temp->power_curves[indice];
@@ -91,6 +94,9 @@ float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char 
 	
 	//interpolazione della curva
 	interpolazione_coefficienti_per_valori_mancanti(metodo, temp, array_vento);
+	
+	if(vel_vento == -1)
+		return -1;
 	
 	indice = trova_vel_vento_per_interpolazione(&vel_min, &vel_max, vel_vento, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, array_vento);
 	if(indice == LUNGHEZZA_VETTORE_POWER_COEFFICIENT){

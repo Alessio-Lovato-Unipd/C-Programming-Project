@@ -54,8 +54,9 @@ void test_calcolo_densita_gas_ideale()
 void test_aggiungi_elemento()
 {
     struct parametro *p = NULL;
-    p = aggiungi_elemento(p, 5, 3);
+    p = aggiungi_elemento("data", p, 5, 3);
     TEST_ASSERT((p->vento == 5) && (p->densita_aria == 3));
+	svuota_parametri(p);
 }
 
 void test_calcolo_parametri()
@@ -71,6 +72,7 @@ void test_calcolo_parametri()
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, head_uscita->densita_aria);
 
     svuota_parametri(head_uscita);
+	svuota_dati_weather(puntatore_dati_weather);
 }
 
 int main()

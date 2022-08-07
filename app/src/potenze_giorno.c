@@ -220,6 +220,7 @@ int main(int argc, char *argv[])
         float potenza_in_uscita=0;
 		temp_parametri = cerca_nodo_parametri(DATA_SCELTA, head_parametri);
 		printf("RISULTATI:\n");
+		printf("Potenze o velocità del vento pari a -1 indicano un errore in fase di interpolazione\n");
 		
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
