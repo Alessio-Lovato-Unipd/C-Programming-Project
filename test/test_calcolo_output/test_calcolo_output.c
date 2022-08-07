@@ -205,12 +205,12 @@ void test_calcolo_potenza()
     h_parametri = calcolo_parametri(h_meteo, metodo_calcolo, 0, 95, h_parametri);
 
     //h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, elemento_cercato->nome, head, 95, array_vento_curves, h_parametri, h_potenza);
-    h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 95, array_vento_curves, h_parametri, h_potenza);
+    h_potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, array_vento_curves, h_parametri, h_potenza);
 
 	printf("Potenze di E-101/3050");
 	struct potenza_out *temp = h_potenza;
 	for (int i = 0; i < 10; i ++) {
-		printf("%i^ Potenza: %f", i, temp->potenza);
+		printf("%i^ Potenza: %f\n", i, temp->potenza);
 		temp = temp->next;
 	}
 
