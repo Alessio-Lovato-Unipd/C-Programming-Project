@@ -7,18 +7,20 @@
 	#include "formule.h"
 	#include "parametri.h"
 
-	struct potenza_out{
+	struct potenza_out
+	{
 		float potenza;
 		struct potenza_out *next;
 	};
+	
 	
 	typedef enum {CURVA_POTENZA, CURVA_COEFFICIENTI_POTENZA} tipo_curva;
 
 	typedef enum {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O} tipo_calcolo_output;
 
-	struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float p);
+	void alloca_potenza(struct parametro *head, float *array_pot);
 
-	struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, struct potenza_out *hp);
+	void calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, float *potenza);
 
 	//funzioni che richiamano l'interpolazione delle curve grezze estratte dai file csv e calcolano l'output di potenza a partire da esse
 	//l'altezza del mozzo in queste funzioni serve solo ad identificare la turbina, non influisce nel calcolo dei parametri atmosferici
