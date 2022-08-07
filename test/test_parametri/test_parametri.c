@@ -66,7 +66,7 @@ void test_calcolo_parametri()
     struct tipo_metodo metodi_calcolo = {INTERPOLAZIONE_LOGARITMICA, INTERPOLAZIONE_LINEARE_T, GAS_IDEALE};
     struct parametro *head_uscita = NULL;
 	puntatore_dati_weather = estrazione_dati_weather(puntatore_dati_weather, PERCORSO_WEATHER, &errore);
-    head_uscita = calcolo_parametri(puntatore_dati_weather, &metodi_calcolo, 5, 100, head_uscita);
+    head_uscita = calcolo_parametri(puntatore_dati_weather, &metodi_calcolo, 5, 20, head_uscita);
 
     TEST_ASSERT_FLOAT_WITHIN(0.01, 6.15, head_uscita->vento);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, head_uscita->densita_aria);
