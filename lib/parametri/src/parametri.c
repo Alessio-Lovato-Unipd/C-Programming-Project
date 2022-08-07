@@ -11,8 +11,9 @@ struct parametro *aggiungi_elemento(const char *orario, struct parametro *elemen
 
     nuovo_elemento = malloc(sizeof(struct parametro));
     if (nuovo_elemento == NULL) {
-        printf("Error: malloc() failed in insert()\n");
-		exit(EXIT_FAILURE);
+        printf("Errore: malloc() ha fallito nell'aggiunta di un parametro\n");
+        svuota_parametri(elemento_attuale);
+		return NULL;
     }
 
     //salvo i dati
@@ -140,11 +141,13 @@ struct parametro *calcolo_parametri(const struct dati_weather *dati, const struc
     
         //salvo i 3 parametri calcolati nell'elemento corrente
         out = aggiungi_elemento(in->orario, out, vento, densita);
+        if (out == NULL)
+            return NULL;
     }
 	controllo_errori_parametri(errore);
 
     for (int i = 0; i < NUMERO_ERRORI; i++)
-        if (errore[i] == 1)
+        if (errore[i] == 1 || errore_allocazione)
             return NULL;
 
     return out;
