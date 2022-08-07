@@ -1,6 +1,15 @@
 #include "unity.h"
 #include "formule.h"
+#include <stdbool.h>
 
+bool cerca_errore(const int *const errore)
+{
+    for (int i = 0; i < NUMERO_ERRORI; i++) {
+        if (errore[i] == 1)
+            return true;
+    }
+    return false;
+}
 
 void test_interpolazione_lineare()
 {
@@ -52,58 +61,106 @@ void test_interpolazione_logaritmica_input_errati()
 
 void test_profilo_logaritmico()
 {
-    float x = profilo_logaritmico(10, 5.32, 0.15, 5, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = profilo_logaritmico(10, 5.32, 0.15, 5, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.001, 6.63494, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
+
 }
 
 void test_profilo_logaritmico_input_errati()
 {
-    float x = profilo_logaritmico(-3, 5.32, 0.15, 5, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = profilo_logaritmico(-3, 5.32, 0.15, 5, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = profilo_logaritmico(10, 5.32, -0.14, 5, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_DATI] = 0;
+
+    x = profilo_logaritmico(10, 5.32, -0.14, 5, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = profilo_logaritmico(10, 5.32, 0.15, -3, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_RUGOSITA] = 0;
+
+    x = profilo_logaritmico(10, 5.32, 0.15, -3, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = profilo_logaritmico(10, 5.32, 0.15, 5, -20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_OSTACOLO] = 0;
+    
+    x = profilo_logaritmico(10, 5.32, 0.15, 5, -20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = profilo_logaritmico(10, 5.32, 0.15, 20, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_MOZZO] = 0;
+    
+    x = profilo_logaritmico(10, 5.32, 0.15, 20, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = profilo_logaritmico(10, -5.32, 0.15, 5, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_OSTACOLO] = 0;
+   
+    x = profilo_logaritmico(10, -5.32, 0.15, 5, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    
 }
 
 void test_hellman()
 {
-    float x = hellman(10, 5.32, 0.15, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = hellman(10, 5.32, 0.15, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.001, 6.129655, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_hellman_input_errati()
 {
-    float x = hellman(-10, 5.32, 0.15, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = hellman(-10, 5.32, 0.15, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = hellman(10, 5.32, -0.04, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_DATI] = 0;
+
+    x = hellman(10, 5.32, -0.04, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = hellman(10, 5.32, 0.15, -20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_RUGOSITA] = 0;
+
+    x = hellman(10, 5.32, 0.15, -20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = hellman(10, -5.32, 0.15, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_MOZZO] = 0;
+
+    x = hellman(10, -5.32, 0.15, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
 }
 
 void test_gradiente_lineare()
 {
-    float x = gradiente_lineare(2, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = gradiente_lineare(2, 267.6, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(267.483, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_gradiente_lineare_input_errati()
 {
-    float x = gradiente_lineare(-2, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = gradiente_lineare(-2, 267.6, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = gradiente_lineare(2, 0, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_DATI] = 0;
+
+    x = gradiente_lineare(2, 0, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = gradiente_lineare(2, 267.6, -30);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_TEMP] = 0;
+
+    x = gradiente_lineare(2, 267.6, -30, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
 }
 
 void test_calcolo_pressione()
@@ -114,38 +171,68 @@ void test_calcolo_pressione()
 
 void test_barometrico()
 {
-    float x = barometrico(0, 98405.7, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = barometrico(0, 98405.7, 267.6, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_barometrico_input_errati()
 {
-    float x = barometrico(-2, 98405.7, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = barometrico(-2, 98405.7, 267.6, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = barometrico(0, 0, 267.6, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_DATI] = 0;
+
+    x = barometrico(0, 0, 267.6, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = barometrico(0, 98405.7, 0, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_PRESS] = 0;
+
+    x = barometrico(0, 98405.7, 0, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = barometrico(0, 98405.7, 267.6, -20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_TEMP] = 0;
+
+    x = barometrico(0, 98405.7, 267.6, -20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
 }
 
 void test_gas_ideale()
 {
-    float x = gas_ideale(0, 98405.7, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = gas_ideale(0, 98405.7, 267.6, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_gas_ideale_iput_errati()
 {
-    float x = gas_ideale(-1, 98405.7, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+
+    float x = gas_ideale(-1, 98405.7, 267.6, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = gas_ideale(0, 0, 267.6, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_H_DATI] = 0;
+
+    x = gas_ideale(0, 0, 267.6, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = gas_ideale(0, 98405.7, 0, 20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_PRESS] = 0;
+
+    x = gas_ideale(0, 98405.7, 0, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
-    x = gas_ideale(0, 98405.7, 267.6, -20);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
+    errore[ERR_TEMP] = 0;
+
+    x = gas_ideale(0, 98405.7, 267.6, -20, errore);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    TEST_ASSERT_TRUE(cerca_errore(errore));
 }
 
 

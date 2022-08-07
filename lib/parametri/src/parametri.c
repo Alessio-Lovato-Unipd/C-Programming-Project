@@ -128,7 +128,7 @@ struct parametro *calcolo_parametri(const struct dati_weather *dati, const struc
 {
     float vento, temperatura, densita;
     struct parametro *out = head;
-	int errore[6] = {0};
+	int errore[NUMERO_ERRORI] = {0};
 
     //Calcolo tutti i parametri a partire dai dati weather
     for(struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
@@ -142,6 +142,10 @@ struct parametro *calcolo_parametri(const struct dati_weather *dati, const struc
         out = aggiungi_elemento(in->orario, out, vento, densita);
     }
 	controllo_errori_parametri(errore);
+
+    for (int i = 0; i < NUMERO_ERRORI; i++)
+        if (errore[i] == 1)
+            return NULL;
 
     return out;
     
@@ -161,4 +165,6 @@ void controllo_errori_parametri(int *errore){
 		printf("***ERRORE: Pressione negativa nei dati***\n\n");
 	if(errore[ERR_TEMP] == 1)
 		printf("***ERRORE: Temperatura errata nei dati***\n\n");
+    if(errore[ERR_VENTO] == 1)
+		printf("***ERRORE: Velocità del vento errata nei dati (negativa)***\n\n");    
 }

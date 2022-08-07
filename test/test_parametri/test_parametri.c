@@ -1,54 +1,80 @@
 #include "unity.h"
 #include "parametri.h"
+#include <stdbool.h>
 
 #define PERCORSO_WEATHER "../../../data/weather.csv"
 
+bool cerca_errore(const int *const errore)
+{
+    for (int i = 0; i < NUMERO_ERRORI; i++) {
+        if (errore[i] == 1)
+            return true;
+    }
+    return false;
+}
+
 void test_calcolo_vento_int_lin()
 {
-    float i = calcolo_vel_vento(INTERPOLAZIONE_LINEARE_V, 10, 5.32697, 80, 7.80697, 0.15, 5, 20);
-    TEST_ASSERT_FLOAT_WITHIN(0.1, 5.6812557, i);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_vel_vento(INTERPOLAZIONE_LINEARE_V, 10, 5.32697, 80, 7.80697, 0.15, 5, 20, errore);
+    TEST_ASSERT_FLOAT_WITHIN(0.1, 5.6812557, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_vento_int_log()
 {
-    float x = calcolo_vel_vento(INTERPOLAZIONE_LOGARITMICA, 10, 5.32697, 80, 7.80697, 0.15, 5, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_vel_vento(INTERPOLAZIONE_LOGARITMICA, 10, 5.32697, 80, 7.80697, 0.15, 5, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 6.15, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_vento_profilo_logaritmico()
 {
-    float x = calcolo_vel_vento(PROFILO_LOGARITMICO, 10, 5.32697, 80, 7.80697, 0.15, 5, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_vel_vento(PROFILO_LOGARITMICO, 10, 5.32697, 80, 7.80697, 0.15, 5, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 6.63494, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_vento_hellmann()
 {
-    float x = calcolo_vel_vento(HELLMAN, 10, 5.32697, 80, 7.80697, 0.15, 5, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_vel_vento(HELLMAN, 10, 5.32697, 80, 7.80697, 0.15, 5, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 6.129655, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_temperatura_int_lin()
 {
-    float x = calcolo_temperatura_aria(INTERPOLAZIONE_LINEARE_T, 2, 267.6, 10, 267.57, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_temperatura_aria(INTERPOLAZIONE_LINEARE_T, 2, 267.6, 10, 267.57, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 267.5325, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_temperatura_gradiente()
 {
-    float x = calcolo_temperatura_aria(GRADIENTE_LINEARE, 2, 267.6, 10, 267.57, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_temperatura_aria(GRADIENTE_LINEARE, 2, 267.6, 10, 267.57, 20, errore);
     TEST_ASSERT_EQUAL_FLOAT(267.483, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_densita_barometrico()
 {
-    float x = calcolo_densita_aria(BAROMETRICO, 0, 98405.7, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_densita_aria(BAROMETRICO, 0, 98405.7, 267.6, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_calcolo_densita_gas_ideale()
 {
-    float x = calcolo_densita_aria(GAS_IDEALE, 0, 98405.7, 267.6, 20);
+    int errore[NUMERO_ERRORI] = {0};
+    float x = calcolo_densita_aria(GAS_IDEALE, 0, 98405.7, 267.6, 20, errore);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, x);
+    TEST_ASSERT_FALSE(cerca_errore(errore));
 }
 
 void test_aggiungi_elemento()
