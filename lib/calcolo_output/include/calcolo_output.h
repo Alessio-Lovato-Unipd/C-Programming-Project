@@ -18,9 +18,9 @@
 
 	typedef enum {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O} tipo_calcolo_output;
 
-	void alloca_potenza(struct parametro *head, float *array_pot);
+	int conta_elementi(struct parametro *head_parametri);
 
-	void calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, float *potenza);
+	void *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in);
 
 	//funzioni che richiamano l'interpolazione delle curve grezze estratte dai file csv e calcolano l'output di potenza a partire da esse
 	//l'altezza del mozzo in queste funzioni serve solo ad identificare la turbina, non influisce nel calcolo dei parametri atmosferici

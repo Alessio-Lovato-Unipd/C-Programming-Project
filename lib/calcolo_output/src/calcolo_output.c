@@ -2,10 +2,16 @@
 
 
 /******************* GENERAZIONE POTENZE **************/
-void calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, float *potenza)
+void *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in)
 {
 	int i = 0;
-	alloca_potenza(in, potenza);
+	int numero_el_weather = conta_elementi(in);
+
+	float *potenza = malloc(sizeof(float) * numero_el_weather);
+	if (potenza == NULL) {
+        printf("Errore: malloc() ha fallito in calcolo_output\n");
+        exit(EXIT_FAILURE);
+    }
 
 	switch (curva){
 	case CURVA_POTENZA:
@@ -22,21 +28,18 @@ void calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione
 		}
 		break;
 	}
+
+	return potenza;
 }
 
-void alloca_potenza(struct parametro *head, float *array_pot)
+int conta_elementi(struct parametro *head_parametri)
 {
-	
 	int numero_elementi = 0;
-	for (struct parametro *temp = head; temp != NULL; temp = temp->next) {
+	for (struct parametro *temp = head_parametri; temp != NULL; temp = temp->next) {
 		numero_elementi++;
 	}
 
-	array_pot = malloc(sizeof(float) * numero_elementi);
-	 if (array_pot == NULL) {
-        printf("Errore: malloc() ha fallito in calcolo_output\n");
-        exit(EXIT_FAILURE);
-    }
+	return numero_elementi;
 }
 
 
