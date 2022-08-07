@@ -25,6 +25,24 @@ struct parametro *aggiungi_elemento(struct parametro *elemento_attuale, float va
     return nuovo_elemento;
 }
 
+struct parametro *svuota_parametri(struct parametro *head)
+{
+     struct parametro *temp = head;
+	
+	if (head == NULL)
+		return NULL; 
+	
+    do {
+        temp = head->next;
+		free(head);
+        head = temp;
+    } while (temp != NULL);
+
+	return head;
+}
+
+
+
 
 /**************************GESTIONE DEI CALCOLI*****************/
 float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo, float altezza_x)

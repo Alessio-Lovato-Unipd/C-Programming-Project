@@ -24,7 +24,6 @@ struct potenza_out *aggiungi_potenza(struct potenza_out *elemento_attuale, float
 struct potenza_out *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in, struct potenza_out *hp)
 {
 	float potenza;
-	struct turbina *elemento_turbina = head;
 	struct potenza_out *out = hp;
 
 	switch (curva){

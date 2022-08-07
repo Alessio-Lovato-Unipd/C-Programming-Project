@@ -37,10 +37,36 @@ void test_interpolazione_logaritmica_limite()
 	TEST_ASSERT_EQUAL_FLOAT(0.0, y);
 }
 
+void test_interpolazione_logaritmica_input_errati()
+{
+    float x = interpolazione_logaritmica(-3, 5.32, 80, 7.81, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = interpolazione_logaritmica(10, 5.32, -80, 7.81, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = interpolazione_logaritmica(10, 5.32, 80, 7.81, -20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+}
+
 void test_profilo_logaritmico()
 {
     float x = profilo_logaritmico(10, 5.32, 0.15, 5, 20);
     TEST_ASSERT_FLOAT_WITHIN(0.001, 6.63494, x);
+}
+
+void test_profilo_logaritmico_input_errati()
+{
+    float x = profilo_logaritmico(-3, 5.32, 0.15, 5, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = profilo_logaritmico(10, 5.32, -0.14, 5, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = profilo_logaritmico(10, 5.32, 0.15, -3, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = profilo_logaritmico(10, 5.32, 0.15, 5, -20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = profilo_logaritmico(10, 5.32, 0.15, 20, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = profilo_logaritmico(10, -5.32, 0.15, 5, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
 }
 
 void test_hellman()
@@ -49,10 +75,32 @@ void test_hellman()
     TEST_ASSERT_FLOAT_WITHIN(0.001, 6.129655, x);
 }
 
+void test_hellman_input_errati()
+{
+    float x = hellman(-10, 5.32, 0.15, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = hellman(10, 5.32, -0.04, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = hellman(10, 5.32, 0.15, -20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = hellman(10, -5.32, 0.15, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+}
+
 void test_gradiente_lineare()
 {
     float x = gradiente_lineare(2, 267.6, 20);
     TEST_ASSERT_EQUAL_FLOAT(267.483, x);
+}
+
+void test_gradiente_lineare_input_errati()
+{
+    float x = gradiente_lineare(-2, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = gradiente_lineare(2, 0, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = gradiente_lineare(2, 267.6, -30);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
 }
 
 void test_calcolo_pressione()
@@ -67,10 +115,34 @@ void test_barometrico()
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, x);
 }
 
+void test_barometrico_input_errati()
+{
+    float x = barometrico(-2, 98405.7, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = barometrico(0, 0, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = barometrico(0, 98405.7, 0, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = barometrico(0, 98405.7, 267.6, -20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+}
+
 void test_gas_ideale()
 {
     float x = gas_ideale(0, 98405.7, 267.6, 20);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, x);
+}
+
+void test_gas_ideale_iput_errati()
+{
+    float x = gas_ideale(-1, 98405.7, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = gas_ideale(0, 0, 267.6, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = gas_ideale(0, 98405.7, 0, 20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    x = gas_ideale(0, 98405.7, 267.6, -20);
+    TEST_ASSERT_EQUAL_FLOAT(-1, x);
 }
 
 
@@ -80,12 +152,18 @@ int main()
 
     RUN_TEST(test_interpolazione_lineare);
     RUN_TEST(test_interpolazione_logaritmica);
+    RUN_TEST(test_interpolazione_logaritmica_input_errati);
     RUN_TEST(test_profilo_logaritmico);
+    RUN_TEST(test_profilo_logaritmico_input_errati);
     RUN_TEST(test_hellman);
+    RUN_TEST(test_hellman_input_errati);
     RUN_TEST(test_gradiente_lineare);
+    RUN_TEST(test_gradiente_lineare_input_errati);
     RUN_TEST(test_calcolo_pressione);
     RUN_TEST(test_barometrico);
+    RUN_TEST(test_barometrico_input_errati);
     RUN_TEST(test_gas_ideale);
+    RUN_TEST(test_gas_ideale_iput_errati);
 
     return UNITY_END();
 }

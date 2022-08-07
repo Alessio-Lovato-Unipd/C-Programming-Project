@@ -69,6 +69,8 @@ void test_calcolo_parametri()
 
     TEST_ASSERT_FLOAT_WITHIN(0.01, 6.15, head_uscita->vento);
     TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, head_uscita->densita_aria);
+
+    svuota_parametri(head_uscita);
 }
 
 int main()
