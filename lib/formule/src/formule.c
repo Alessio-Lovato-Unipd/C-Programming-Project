@@ -2,8 +2,6 @@
 
 float interpolazione_lineare(float x1, float y1, float x2, float y2, float x)
 {
-	if((x<x1) || (x>x2))
-		return -1;
 	if(x1 == x2)
 		return y1;
     return ((y2 - y1) / (x2 - x1)) * (x - x1) + y1;
@@ -16,15 +14,13 @@ float interpolazione_logaritmica(float x1, float y1, float x2, float y2, float x
         return -1;
     }
     else if (x1 <= 0) {
-        printf("X1=%f <= 0, non valido per interpolazione logaritmica\n", x1);
-        return -1;
+        printf("X1=%f <= 0, non sarebbe valido per interpolazione logaritmica, viene mantenuto il valore precedente\n", x1);
+        return y1;
     }
     else if (x2 <= 0) {
         printf("X2=%f <= 0, non valido per interpolazione logaritmica\n", x2);
         return -1;
     }
-	if((x<x1) || (x>x2))
-		return -1;
 	if(x1 == x2)
 		return y1;
     float numeratore = (log(x) * (y2 - y1)) - y2 * log(x1) + y1 * log(x2);
