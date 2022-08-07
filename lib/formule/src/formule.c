@@ -14,7 +14,6 @@ float interpolazione_logaritmica(float x1, float y1, float x2, float y2, float x
         return -1;
     }
     else if (x1 <= 0) {
-        printf("X1=%f <= 0, non sarebbe valido per interpolazione logaritmica, viene mantenuto il valore precedente\n", x1);
         return y1;
     }
     else if (x2 <= 0) {
@@ -27,33 +26,32 @@ float interpolazione_logaritmica(float x1, float y1, float x2, float y2, float x
     return numeratore / (log(x2) - log(x1)); 
 }
 
-float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostacolo, float h_mozzo)
+float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostacolo, float h_mozzo, int *errore)
 {
     float d = 0.7 * h_ostacolo; 
 
     if (d < 0){
-        printf("Altezza ostacolo negativa: %f \n", h_ostacolo);
+        errore[ERR_OSTACOLO] = 1;
         return -1;
     }
     
     if (h_dati < 0) {
-        printf("Altezza dati negativa: %f \n", h_dati);
+        errore[ERR_H_DATI] = 1;
         return -1;
     }
     else if (h_mozzo < 0) {
-        printf("Altezza mozzo negativa: %f \n", h_mozzo);
+        errore[ERR_H_MOZZO] = 1;
         return -1;
     }
     else if ( z0 < 0) {
-        printf("Rugosità negativa: %f, essa ha dominio positivo\n", z0);
+        errore[ERR_RUGOSITA] = 1;
         return -1;
     }
     else if (vel_vento < 0) {
-        printf("Velocità del vento negativa: %f\n", vel_vento);
         return -1;
     }
     else if ((h_dati <= d) || (h_mozzo <= d)) {
-        printf("Altezza ostacolo troppo alta: %f\n", h_ostacolo);
+        errore[ERR_OSTACOLO] = 1;
         return -1;
     }
     else {
@@ -64,22 +62,21 @@ float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostac
     
 }
 
-float hellman(float h_dati, float vel_vento, float z0,float h_mozzo)
+float hellman(float h_dati, float vel_vento, float z0, float h_mozzo, int *errore)
 {
     if (h_dati < 0) {
-        printf("Altezza dati negativa: %f \n", h_dati);
+        errore[ERR_H_DATI] = 1;
         return -1;
     }
     else if (h_mozzo < 0) {
-        printf("Altezza mozzo negativa: %f \n", h_mozzo);
+        errore[ERR_H_MOZZO] = 1;
         return -1;
     }
     else if ( z0 < 0) {
-        printf("Rugosità negativa: %f, essa ha dominio positivo\n", z0);
+        errore[ERR_RUGOSITA] = 1;
         return -1;
     }
     else if (vel_vento < 0) {
-        printf("Velocità del vento negativa: %f\n", vel_vento);
         return -1;
     }
     else {
@@ -90,18 +87,18 @@ float hellman(float h_dati, float vel_vento, float z0,float h_mozzo)
 }
 
 //calcolo temperatura altezza mozzo
-float gradiente_lineare(float h_dati, float T_aria, float h_mozzo)
+float gradiente_lineare(float h_dati, float T_aria, float h_mozzo, int *errore)
 {
     if (h_dati < 0) {
-        printf("Altezza dati negativa: %f \n", h_dati);
+        errore[ERR_H_DATI] = 1;
         return -1;
     }
     else if (h_mozzo < 0) {
-        printf("Altezza mozzo negativa: %f \n", h_mozzo);
+        errore[ERR_H_MOZZO] = 1;
         return -1;
     }
     else if (T_aria <= 0){
-        printf("Temperatura in K=%f <= 0\n", T_aria);
+        errore[ERR_TEMP] = 1;
         return -1;
     }
     return T_aria - (GRADIENTE_TEMPERATURA * (h_mozzo - h_dati));
@@ -114,43 +111,43 @@ float p_x(float p1, float h_dati, float h_mozzo)//calcola la pressione a livello
 }
 
 //calcolo densità dell'aria a livello del mozzo
-float barometrico(float h_dati, float p1, float T_mozzo, float h_mozzo)//T_x (mozzo) la passo per paramtri perchè non posso sapere quale metodo di calcolo va usato
+float barometrico(float h_dati, float p1, float T_mozzo, float h_mozzo, int *errore)//T_x (mozzo) la passo per paramtri perchè non posso sapere quale metodo di calcolo va usato
 {
     if (h_dati < 0) {
-        printf("Altezza dati negativa: %f \n", h_dati);
+        errore[ERR_H_DATI] = 1;
         return -1;
     }
     else if (h_mozzo < 0) {
-        printf("Altezza mozzo negativa: %f \n", h_mozzo);
+        errore[ERR_H_MOZZO] = 1;
         return -1;
     }
     else if (p1 <= 0) {
-        printf("Pressione=%f <= 0\n", p1);
+        errore[ERR_PRESS] = 1;
         return -1;
     }
     else if (T_mozzo <= 0) {
-        printf("Temperatura aria all'altezza del mozzo in K=%f <= 0\n", T_mozzo);
+        errore[ERR_TEMP] = 1;
         return -1;
     }
     return p_x(p1, h_dati, h_mozzo) * ((DENSITA_AMBIENTE_STANDARD * TEMPERATURA_ABIENTE_STANDARD) / (PRESSIONE_AMBIENTE_STANDARD_PA * T_mozzo)); 
 }
 
-float gas_ideale(float h_dati, float p1, float T_mozzo, float h_mozzo)
+float gas_ideale(float h_dati, float p1, float T_mozzo, float h_mozzo, int *errore)
 {
     if (h_dati < 0) {
-        printf("Altezza dati negativa: %f \n", h_dati);
+        errore[ERR_H_DATI] = 1;
         return -1;
     }
     else if (h_mozzo < 0) {
-        printf("Altezza mozzo negativa: %f \n", h_mozzo);
+        errore[ERR_H_MOZZO] = 1;
         return -1;
     }
     else if (p1 <= 0) {
-        printf("Pressione=%f <= 0\n", p1);
+        errore[ERR_PRESS] = 1;
         return -1;
     }
     else if (T_mozzo <= 0) {
-        printf("Temperatura aria all'altezza del mozzo in K=%f <= 0\n", T_mozzo);
+        errore[ERR_TEMP] = 1;
         return -1;
     }
     return p_x(p1, h_dati, h_mozzo) / (COSTANTE_GAS_IDEALE * T_mozzo);

@@ -58,7 +58,7 @@ struct parametro *svuota_parametri(struct parametro *head)
 
 
 /**************************GESTIONE DEI CALCOLI*****************/
-float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo, float altezza_x)
+float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocita1, float altezza2, float velocita2, float rugosita, float h_ostacolo, float altezza_x, int *errore)
 {
     switch (metodo)
     {
@@ -71,11 +71,11 @@ float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocit
         break;
 
     case PROFILO_LOGARITMICO:
-        return profilo_logaritmico(altezza1, velocita1, rugosita, h_ostacolo, altezza_x);
+        return profilo_logaritmico(altezza1, velocita1, rugosita, h_ostacolo, altezza_x, errore);
         break;
 
     case HELLMAN: 
-        return hellman(altezza1, velocita1, rugosita, altezza_x);
+        return hellman(altezza1, velocita1, rugosita, altezza_x, errore);
         break;
 
     default:
@@ -85,7 +85,7 @@ float calcolo_vel_vento(tipo_calcolo_vento metodo, float altezza1, float velocit
     
 }
 
-float calcolo_temperatura_aria(tipo_calcolo_temperatura metodo, float altezza1, float temperatura1, float altezza2, float temperatura2, float altezza_x)
+float calcolo_temperatura_aria(tipo_calcolo_temperatura metodo, float altezza1, float temperatura1, float altezza2, float temperatura2, float altezza_x, int *errore)
 {
     switch (metodo)
     {
@@ -94,7 +94,7 @@ float calcolo_temperatura_aria(tipo_calcolo_temperatura metodo, float altezza1, 
         break;
     
     case GRADIENTE_LINEARE:
-        return gradiente_lineare(altezza1, temperatura1, altezza_x);
+        return gradiente_lineare(altezza1, temperatura1, altezza_x, errore);
         break;
 
     default:
@@ -104,20 +104,20 @@ float calcolo_temperatura_aria(tipo_calcolo_temperatura metodo, float altezza1, 
     
 }
 
-float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pressione1,float temperatura_x,float altezza_x)
+float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pressione1, float temperatura_x, float altezza_x, int *errore)
 {
     switch (metodo)
     {
     case BAROMETRICO:
-        return barometrico(altezza1, pressione1, temperatura_x, altezza_x);
+        return barometrico(altezza1, pressione1, temperatura_x, altezza_x, errore);
         break;
     
     case GAS_IDEALE:
-        return gas_ideale(altezza1, pressione1, temperatura_x, altezza_x);
+        return gas_ideale(altezza1, pressione1, temperatura_x, altezza_x, errore);
         break;
 
     default:
-        return gas_ideale(altezza1, pressione1, temperatura_x, altezza_x);
+        return gas_ideale(altezza1, pressione1, temperatura_x, altezza_x, errore);
         break;
     }
 }
@@ -128,19 +128,37 @@ struct parametro *calcolo_parametri(const struct dati_weather *dati, const struc
 {
     float vento, temperatura, densita;
     struct parametro *out = head;
+	int errore[6] = {0};
 
     //Calcolo tutti i parametri a partire dai dati weather
     for(struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
 
         //calcolo i 3 parametri
-        vento = calcolo_vel_vento(metodo->vento, dati->h_vel1, in->velocita_vento1, dati->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo,altezza_mozzo);
-        temperatura = calcolo_temperatura_aria(metodo->temperatura, dati->h_t1, in->temperatura1, dati->h_t2, in->temperatura2, altezza_mozzo);
-        densita = calcolo_densita_aria(metodo->densita, dati->h_pressione, in->pressione, temperatura, altezza_mozzo);  
+        vento = calcolo_vel_vento(metodo->vento, dati->h_vel1, in->velocita_vento1, dati->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo, altezza_mozzo, errore);
+        temperatura = calcolo_temperatura_aria(metodo->temperatura, dati->h_t1, in->temperatura1, dati->h_t2, in->temperatura2, altezza_mozzo, errore);
+        densita = calcolo_densita_aria(metodo->densita, dati->h_pressione, in->pressione, temperatura, altezza_mozzo, errore);  
     
         //salvo i 3 parametri calcolati nell'elemento corrente
         out = aggiungi_elemento(in->orario, out, vento, densita);
     }
+	controllo_errori_parametri(errore);
 
     return out;
     
+}
+
+
+void controllo_errori_parametri(int *errore){
+	if(errore[ERR_OSTACOLO] == 1)
+		printf("***ERRORE: Altezza ostacolo errata o troppo elevata per questa turbina***\n\n");
+	if(errore[ERR_H_MOZZO] == 1)
+		printf("***ERRORE: Altezza mozzo errata***\n\n");
+	if(errore[ERR_H_DATI] == 1)
+		printf("***ERRORE: Altezze dati misurati negative***\n\n");
+	if(errore[ERR_RUGOSITA] == 1)
+		printf("***ERRORE: Rugosità negativa***\n\n");
+	if(errore[ERR_PRESS] == 1)
+		printf("***ERRORE: Pressione negativa nei dati***\n\n");
+	if(errore[ERR_TEMP] == 1)
+		printf("***ERRORE: Temperatura errata nei dati***\n\n");
 }

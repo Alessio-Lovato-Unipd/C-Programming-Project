@@ -9,6 +9,13 @@
     #define DENSITA_AMBIENTE_STANDARD 1.292
     #define TEMPERATURA_ABIENTE_STANDARD 273.15
     #define COSTANTE_GAS_IDEALE 287.058
+	//posizioni vettore errore nei calcoli
+	#define ERR_OSTACOLO 0
+	#define ERR_H_MOZZO 1
+	#define ERR_H_DATI 2
+	#define ERR_RUGOSITA 3
+	#define ERR_PRESS 4
+	#define ERR_TEMP 5
 
     //interpolazione lineare tra due punti
     float interpolazione_lineare(float x1, float y1, float x2, float y2, float x);
@@ -16,13 +23,13 @@
     float interpolazione_logaritmica(float x1, float y1, float x2, float y2, float x);
     
     /***FORMULE  VELOCITÁ VENTO***/
-    float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostacolo, float h_mozzo);
+    float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostacolo, float h_mozzo, int *errore);
 
     //Calcolo velocità vento
-    float hellman(float h_dati, float vel_vento, float z0,float h_mozzo);
+    float hellman(float h_dati, float vel_vento, float z0,float h_mozzo, int *errore);
 
     //Calcolo temperatura all'altezza mozzo
-    float gradiente_lineare(float h_dati, float T_aria, float h_mozzo);
+    float gradiente_lineare(float h_dati, float T_aria, float h_mozzo, int *errore);
 
 
     /*FORMULE PER CALCOLO DENSITÁ ARIA altezza mozzo*/
@@ -31,10 +38,10 @@
     float p_x(float p1, float h_dati, float h_mozzo);
 
     //Calcolo densità con barometrico
-    float barometrico(float h_dati, float p1, float T_mozzo, float h_mozzo);
+    float barometrico(float h_dati, float p1, float T_mozzo, float h_mozzo, int *errore);
 
     //Calcolo densità aria all'altezza mozzo con gas ideale
-    float gas_ideale(float h_dati, float p1, float T_mozzo, float h_mozzo);
+    float gas_ideale(float h_dati, float p1, float T_mozzo, float h_mozzo, int *errore);
 	
 
     //Calcolo della potenza
