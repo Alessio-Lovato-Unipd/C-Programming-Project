@@ -21,11 +21,11 @@ void test_interpolazione_lineare_limite()
 	y = interpolazione_lineare(1.5, 12, 1.5, 12, 1.5); //interpolazione con x1 e x2 uguali
 	TEST_ASSERT_EQUAL_FLOAT(12, y); //non voglio un "nan"
 	y = interpolazione_lineare(1.5, 12, 1.6, 13, 1.4); //x<x1
-	TEST_ASSERT_EQUAL_FLOAT(-1, y);
+	TEST_ASSERT_EQUAL_FLOAT(11, y);
 	y = interpolazione_lineare(1.5, 12, 1.6, 13, 1.7); //x>x2
-	TEST_ASSERT_EQUAL_FLOAT(-1, y);
+	TEST_ASSERT_EQUAL_FLOAT(14, y);
 	y = interpolazione_lineare(1.5, 1, 1, 0, 1.2); //caso x1>x2
-	TEST_ASSERT_EQUAL_FLOAT(-1, y);
+	TEST_ASSERT_EQUAL_FLOAT(0.4, y);
 }
 
 void test_interpolazione_logaritmica()
@@ -39,15 +39,15 @@ void test_interpolazione_logaritmica()
 void test_interpolazione_logaritmica_input_errati()
 {
     float x = interpolazione_logaritmica(-3, 5.32, 80, 7.81, 20);
-    TEST_ASSERT_EQUAL_FLOAT(-1, x);
+    TEST_ASSERT_EQUAL_FLOAT(5.32, x);
     x = interpolazione_logaritmica(10, 5.32, -80, 7.81, 20);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
     x = interpolazione_logaritmica(10, 5.32, 80, 7.81, -20);
     TEST_ASSERT_EQUAL_FLOAT(-1, x);
 	x = interpolazione_lineare(1.5, 12, 1.6, 13, 1.4);
-	TEST_ASSERT_EQUAL_FLOAT(-1, x);
+	TEST_ASSERT_FLOAT_WITHIN(0.1, 10.93, x);
 	x = interpolazione_lineare(1.5, 12, 1.6, 13, 1.7);
-	TEST_ASSERT_EQUAL_FLOAT(-1, x);
+	TEST_ASSERT_FLOAT_WITHIN(0.1, 13.94, x);
 }
 
 void test_profilo_logaritmico()
