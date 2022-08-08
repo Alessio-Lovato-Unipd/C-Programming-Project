@@ -15,26 +15,35 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
 	int errore[NUMERO_ERRORI] = {0};
 
     //Calcolo tutti i parametri a partire dai dati weather
-    for (struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
+    if(dati == NULL){
+        printf("Errore: dati in input errati\n");
+        return NULL;
+    }
+    else{
+        for (struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
 
         //calcolo i 3 parametri
         vento = calcolo_vel_vento(metodo->vento, dati->h_vel1, in->velocita_vento1, dati->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo, altezza_mozzo, errore);
         temperatura = calcolo_temperatura_aria(metodo->temperatura, dati->h_t1, in->temperatura1, dati->h_t2, in->temperatura2, altezza_mozzo, errore);
         densita = calcolo_densita_aria(metodo->densita, dati->h_pressione, in->pressione, temperatura, altezza_mozzo, errore);  
-    
+
         //salvo i 3 parametri calcolati nell'elemento corrente
         out = aggiungi_elemento(in->orario, out, vento, densita);
         if (out == NULL)
             return NULL;
     }
+
 	controllo_errori_parametri(errore);
 
     for (int i = 0; i < NUMERO_ERRORI; i++)
-        if (errore[i] == 1)
+        if (errore[i] == 1){
+            svuota_parametri(out);
             return NULL;
+        }
+        
 
     return out;
-    
+    }
 }
 
 
@@ -166,7 +175,7 @@ float calcolo_densita_aria(tipo_calcolo_densita metodo, float altezza1, float pr
 /****************** CONTROLLO ERRORI ******************/
 void controllo_errori_parametri(const int *const errore){
 	if(errore[ERR_OSTACOLO] == 1)
-		printf("***ERRORE: Altezza ostacolo errata o troppo elevata per questa turbina***\n\n");
+        printf("***ERRORE: Altezza ostacolo errata o troppo elevata per questa turbina***\n\n");
 	if(errore[ERR_H_MOZZO] == 1)
 		printf("***ERRORE: Altezza mozzo errata***\n\n");
 	if(errore[ERR_H_DATI] == 1)
