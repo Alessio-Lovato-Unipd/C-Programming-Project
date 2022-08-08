@@ -6,7 +6,7 @@
 
 struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *const percorso_file_turbine_data, int *const errore) 
 {
-    struct csv file;
+    struct csv file, backup;
     *errore = csv_open(&file, (char *) percorso_file_turbine_data, SEPARATORE, NUMERO_COLONNE_TURBINA);
     if (*errore != CSV_OK) {
 		controllo_csv(errore);
@@ -25,20 +25,58 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		controllo_csv(errore);
 		return NULL;
 	}
-        
-	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
 
-		if (puntatore == NULL)
-			break; // 	Ho avuto un errore da malloc nella creazione di un nuovo nodo
 
-		if (puntatore->altezza_mozzo == 0) {
+
+    do {
+		int colonne = NUMERO_COLONNE_TURBINA;
+		backup = file;
+        *errore = csv_read_record(&file, &fields);
+
+		if (*errore == CSV_E_TOO_FEW_FIELDS) {
+        	file = backup;
+			while ((*errore = csv_read_record(&file, &fields)) != CSV_OK) {
+				colonne++;
+				file.field_count = colonne;
+				free(file.fields);
+				file.fields = NULL;
+				file.fields = calloc(colonne, sizeof(char*));
+			}
+			int conteggio = 0;
+			while (strchr(fields[conteggio], '\"')
+				conteggio++;
+			int dimensione_stringa = 0;
+			for (int i = conteggio; i <= conteggio + (colonne - NUMERO_COLONNE_TURBINA); i++)
+				dimensione_stringa = strlen(fields[i]);
+			char *temporaneo = malloc(sizeof(char) * (dimensione_stringa +1);
+			realloc(fields[8], sizeof(temporaneo));
+			strcpy(fields[8], temporaneo);
+			//ciclo di spostamento puntatori
+			for (int i = conteggio + 1; i < (NUMERO_COLONNE_TURBINA - (colonne - NUMERO_COLONNE_TURBINA + 1)); i++)
+				&fields[i]=&fields[i + (colonne - NUMERO_COLONNE_TURBINA)];
+		}
+			//non ho virgole in più
+			puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
+
+			if (puntatore == NULL)
+				break; // 	Ho avuto un errore da malloc nella creazione di un nuovo nodo
+			
+			if (puntatore->altezza_mozzo == 0) {
 				//un valore di altezza nullo quindi elimino il nodo della lista
 				struct turbina *elemento_successivo = puntatore->prev;
 				elimina_nodo_turbina(puntatore);
 				puntatore = elemento_successivo;
 			}
-	}
+    
+	} while ((*errore == CSV_OK) || (*errore == CSV_E_TOO_FEW_FIELDS)) ;
+
+
+
+
+
+
+
+
 
 	csv_close(&file);
 
