@@ -15,7 +15,7 @@
     #define PERCORSO_WEATHER "../../data/weather.csv"
     #define PERCORSO_POWER_COEFFICIENT "../../data/power_coefficient_curves.csv"
 	#define PERCORSO_POWER_CURVES "../../data/power_curves.csv"
-    #define VALORE_ARGOMENTI_INSERIBILI 9
+    #define VALORE_ARGOMENTI_INSERIBILI 10
 
     /*
     -----ARGOMENTI DA PASSARE AL PROGRAMMA MAIN-----
@@ -29,6 +29,7 @@
         - argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output
         - argv[7] ---> valore di altezza_ostacolo, mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]
         - argv[8] ---> altezza del mozzo considerata
+        - argv[9] ---> numero giorni da visualizzare nel grafico di potenza generata
 
         Esempio: ./main E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1
     */

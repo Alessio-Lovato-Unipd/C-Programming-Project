@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
         printf("\t- argv[5] ---> {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA}, per la scelta se usare le curve di coefficienti di potenza oppure le curve di potenza\n");
         printf("\t- argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output\n");
         printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n");
-		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n\n");
-		//printf("\t- argv[9] ---> stringa di data e ora di partenza per l'analisi dei dati considerati\n");
+		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n");
+		printf("\t- argv[9] ---> numero giorni da visualizzare nel grafico di potenza generata\n\n");
 		
         return(EXIT_FAILURE);
     }   
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     printf("Metodo di interpolazione per il calcolo dell'output: %s\n", argv[6]);
     printf("Altezza ostacolo impostata a: %s metri\n", argv[7]);
 	printf("Altezza del mozzo: %s\n", argv[8]);
-	//printf("Orario di partenza scelto: %s\n", argv[9]);
+	printf("Giorni visualizzati nel grafico di potenza: %s\n", argv[9]);
 	
 
     //inizio generazione lista turbine tramite la lettura da file
@@ -162,13 +162,16 @@ int main(int argc, char *argv[])
         }
 
         float potenza_in_uscita=0;
+        float *potenza = NULL;
 		temp_parametri = head_parametri;
 		printf("RISULTATI:\n");
 		printf("Potenze o velocità del vento pari a -1 indicano un errore in fase di interpolazione\n");
 		
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
-			while(temp_parametri != NULL){
+            potenza = calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_curves, temp_parametri);
+			
+            while(temp_parametri != NULL){
 				potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
@@ -176,11 +179,13 @@ int main(int argc, char *argv[])
 				temp_parametri = temp_parametri->next;
 			}
             plot_curva_potenza(array_vento_power_curves, turbina_cercata);
-            printf("\nNOTA: curva_di_potenza.png disponibile in build/app\n\n\n");
+            printf("\nNOTA: curva_di_potenza.png disponibile in build/app\n\n\n");      
 		}
         else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
-			while(temp_parametri != NULL){
+            potenza = calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_coefficient, temp_parametri);
+			
+            while(temp_parametri != NULL){
 				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
@@ -188,7 +193,7 @@ int main(int argc, char *argv[])
 				temp_parametri = temp_parametri->next;
 			}
             plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata);
-            printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n\n\n");
+            printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n\n\n");   
 		}
         else
         {
@@ -200,7 +205,18 @@ int main(int argc, char *argv[])
 			svuota_parametri(head_parametri);
             exit(EXIT_FAILURE);
         }
+
+        int giorni = atoi(argv[9]);
+        plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni); 
+        printf("\nNOTA: potenza.png disponibile in build/app\n\n\n");
+
+        free(potenza);
+
     }
+
+
+    
+
 
     svuota_lista_turbine_data(head_turbina);
     svuota_dati_weather(dati);
