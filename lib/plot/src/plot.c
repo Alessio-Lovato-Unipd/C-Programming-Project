@@ -272,7 +272,7 @@ void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int g
 }
 
 
-void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, const float *potenza, int giorni)
+void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni)
 {
     if ((giorni > 0) && (potenza != NULL)){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
@@ -306,8 +306,8 @@ void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, con
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"potenza.png\"");
 
-        gnuplot_write_xy_csv("potenza.csv", x, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
-        gnuplot_plot_atmpfile(gp, "potenza.csv", titolo);
+        gnuplot_write_xtime_y_csv("potenza.csv", head_tempo, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
+        gnuplot_plot_xy(gp, x, potenza, lunghezza_vettore, titolo);
 
         gnuplot_close(gp);  
 
