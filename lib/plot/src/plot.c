@@ -123,6 +123,11 @@ void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
     if ((array_vento != NULL) && (turbina->power_curves != NULL)){
         gnuplot_ctrl *gp = NULL; 
         char *titolo = malloc(sizeof(char) * (strlen("Curva di Potenza ") + strlen(turbina->nome) + 1 ));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_curva_potenza\n");
+            exit(EXIT_FAILURE);
+        }
+
         strcpy(titolo, "Curva di Potenza ");
         strcat(titolo, turbina->nome);
 
@@ -152,6 +157,11 @@ void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
     if ((array_vento != NULL) && (turbina->power_coefficients != NULL)){
         gnuplot_ctrl *gp = NULL;  
         char *titolo = malloc(sizeof(char) * (strlen("Curva coefficienti di potenza ") + strlen(turbina->nome) + 1 ));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_curva_coefficienti\n");
+            exit(EXIT_FAILURE);
+        }
+
         strcpy(titolo, "Curva coefficienti di potenza ");
         strcat(titolo, turbina->nome);
 
@@ -268,6 +278,11 @@ void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, con
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
         float x[lunghezza_vettore];
         char *titolo = malloc(sizeof(char) * (strlen("Potenza elettrica generata dalla turbina nel tempo") + strlen(nome_turbina) + 1));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_potenza\n");
+            exit(EXIT_FAILURE);
+        }
+
         strcpy(titolo, "Potenza generata dalla turbina ");
         strcat(titolo, nome_turbina);
         strcat(titolo, " nel tempo");

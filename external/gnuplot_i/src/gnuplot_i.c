@@ -200,6 +200,11 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
 {
     if (type != NULL) {
         char *set_ltype = malloc(sizeof(char) * (strlen(type) + strlen(" lt ") + 1));
+        if (set_ltype == NULL) {
+            printf("Errore: malloc() ha fallito in gnuplot_set_line\n");
+            exit(EXIT_FAILURE);
+        }
+
         strcpy(set_ltype, " lt ");
         strcat(set_ltype, type);  
         strcat(h->pstyle, set_ltype);
@@ -208,6 +213,11 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
 
     if (color != NULL) {
         char *set_color = malloc(sizeof(char) * (strlen(color) + strlen(" lc \"\" ") + 1 ));
+        if (set_color == NULL) {
+            printf("Errore: malloc() ha fallito in gnuplot_set_line\n");
+            exit(EXIT_FAILURE);
+        }
+
         strcpy(set_color, " lc \"");
         strcat(set_color, color);
         strcat(set_color, "\" ");
@@ -217,6 +227,11 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
 
     if (width != NULL) {
         char *set_width = malloc(sizeof(char) * (strlen(width) + strlen(" lw ") + 1 ));
+        if (set_width == NULL) {
+            printf("Errore: malloc() ha fallito in gnuplot_set_line\n");
+            exit(EXIT_FAILURE);
+        }
+
         strcpy(set_width, " lw ");
         strcat(set_width, width);
         strcat(h->pstyle, set_width); 
@@ -228,6 +243,10 @@ void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size)// da
 {
     if (type != NULL) {
         char *set_ptype = malloc(sizeof(char) * (strlen(type) + strlen(" pt ") + 1));  
+        if (set_ptype == NULL) {
+            printf("Errore: malloc() ha fallito in gnuplot_set_point\n");
+            exit(EXIT_FAILURE);
+        }
         strcpy(set_ptype, " pt ");
         strcat(set_ptype, type);  
         strcat(h->pstyle, set_ptype);
@@ -236,6 +255,10 @@ void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size)// da
     
     if (size != NULL) {
         char *set_psize = malloc(sizeof(char) * (strlen(size) + strlen(" ps ") + 1));
+        if (set_psize == NULL) {
+            printf("Errore: malloc() ha fallito in gnuplot_set_point\n");
+            exit(EXIT_FAILURE);
+        }
         strcpy(set_psize, " ps ");
         strcat(set_psize, size);
         strcat(h->pstyle, set_psize);
