@@ -463,6 +463,15 @@ void verifica_funzione_conversione_bool_FT(void) //nel caso di char False-True
 	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
+void stampa(void)
+{
+	    struct turbina *puntatore = NULL;
+    int errore = 0;
+    puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
+    stampa_lista_turbine(puntatore);
+	puntatore = svuota_lista_turbine_data(puntatore);
+}
+
 //non ho trovato nessuna turbina per il caso TF
 
 int main()
@@ -487,6 +496,7 @@ int main()
 	RUN_TEST(verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola);
 	RUN_TEST(verifica_ricerca_turbina_estremi);
 	RUN_TEST(verifica_ricerca_turbina_falso);
-	
+	RUN_TEST(stampa);
+
     return UNITY_END();
 }

@@ -19,21 +19,78 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		controllo_csv(errore);
 		return NULL;
 	}
-        
-	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
 
-		if (puntatore == NULL)
-			break; // 	Ho avuto un errore da malloc nella creazione di un nuovo nodo
+	// Gestione dinamica numero colonne file
+	char **fields_appoggio = NULL;	// Variabile appoggio fields
+	struct csv file_appoggio; // Variabile appoggio file
+	char *stringa_altezze = NULL;
 
-		if (puntatore->altezza_mozzo == 0) {
-				//un valore di altezza nullo quindi elimino il nodo della lista
-				struct turbina *elemento_successivo = puntatore->prev;
-				elimina_nodo_turbina(puntatore);
-				puntatore = elemento_successivo;
+    do {
+        int colonne = NUMERO_COLONNE_TURBINA; // Numero colonne necessarie, il numero base è quello standard
+		file_appoggio = file;
+        *errore = csv_read_record(&file, &fields);
+
+		if (*errore == CSV_E_TOO_MANY_FIELDS) {
+			// Sono nel caso in cui necessito di utilizzare dinamicamente la lettura del file
+			char **fields_iniziale = fields;	// Variabile salvataggio stato iniziale
+
+			file = file_appoggio; // Salvataggio dello stato del file
+			while ((*errore = csv_read_record(&file, &fields)) == CSV_E_TOO_MANY_FIELDS) {
+				//	Ciclo modifica dimensioni colonne
+				file = file_appoggio;
+				colonne++;
+				file.field_count = colonne;
+				fields_appoggio = realloc(fields_appoggio, colonne * sizeof(char*));
+				if (fields_appoggio == NULL)
+					return NULL;
+				file.fields = fields_appoggio;
 			}
-	}
+			
+			int conteggio = 1;	// Variabile che rappresenta in numero di colonne aggiunte
+			while (strchr(fields[COLONNA_ALTEZZA_MOZZO + conteggio], '\"') == NULL)
+				conteggio++;
 
+			int dimensione_stringa = 0; // Variabile che rappresenta la dimensione della nuova stringa da allocare
+			for (int i = COLONNA_ALTEZZA_MOZZO; i <= conteggio + COLONNA_ALTEZZA_MOZZO; i++)
+				dimensione_stringa = dimensione_stringa + strlen(fields[i]) + 1; // +1 perchè inserisco un punto tra una stringa e l'altra
+			
+			stringa_altezze = realloc(stringa_altezze, sizeof(char) * (dimensione_stringa +1));
+			if (stringa_altezze == NULL)
+				return NULL;
+			strcpy(stringa_altezze, fields[COLONNA_ALTEZZA_MOZZO]);
+			
+			for (int i = COLONNA_ALTEZZA_MOZZO +1; i <= conteggio + COLONNA_ALTEZZA_MOZZO; i++) {
+				strcat(stringa_altezze, ".");	//sostituisco la virgola del csv con un punto
+				strcat(stringa_altezze, fields[i]);
+			}
+			// Ciclo di spostamento puntatori per uniformare alle colonne standard
+			for (int i = COLONNA_ALTEZZA_MOZZO + 1; i < NUMERO_COLONNE_TURBINA - 1; i++)
+				fields[i] = fields[i + conteggio];
+				
+			puntatore = nuovo_elemento_turbina(puntatore, fields, stringa_altezze);
+			
+			// Ripristino dimensione standard csv
+			file.field_count = NUMERO_COLONNE_TURBINA;
+			file.fields = fields_iniziale;
+
+		} else if (*errore == CSV_OK) {
+			// Caso di numero colonne rilevato = NUMERO_COLONNE_TURBINA
+			puntatore = nuovo_elemento_turbina(puntatore, fields, fields[COLONNA_ALTEZZA_MOZZO]);
+		}
+
+		if (puntatore == NULL) // Ho avuto un errore da malloc nella creazione di un nuovo nodo
+			break;
+		
+		if (puntatore->altezza_mozzo == 0) {
+			// Un valore di altezza nullo quindi elimino il nodo della lista
+			struct turbina *elemento_successivo = puntatore->prev;
+			elimina_nodo_turbina(puntatore);
+			puntatore = elemento_successivo;
+		}
+	} while ((*errore == CSV_OK) || (*errore == CSV_E_TOO_MANY_FIELDS)) ;
+
+	free(fields_appoggio);
+	free(stringa_altezze);
 	csv_close(&file);
 
 	if (*errore != CSV_END) {
@@ -46,7 +103,8 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 	} 
 }
 
-struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *punto_virgola)
+
+struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *stringa_altezze)
 {
     struct turbina *nuova = NULL;
     nuova = malloc(sizeof(struct turbina));
@@ -59,7 +117,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     }
 
     //salvataggio dati
-	nuova->nome = malloc(sizeof(char) * (strlen(fields[0]) +1 ));
+	nuova->nome = malloc(sizeof(char) * (strlen(fields[0]) + 1));
 	if (nuova->nome == NULL) {
         printf("Errore: malloc() ha fallito in allocazione char nome\n");
         svuota_lista_turbine_data(elemento_attuale_turbina);
@@ -99,27 +157,29 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	
 	//estraggo i valori numerici dell'altezza del mozzo
 	int num_caratteri = 0;
-	char *punto_virgola_temp = NULL;
+	char *inizio = NULL;
+	const char *const fine = stringa_altezze;
 	bool ultima_copia = true;
-	char carattere = (char) *punto_virgola; // Inizializzo carattere uguale al il primo carattere della stringa
+	char carattere = (char) *stringa_altezze; // Inizializzo carattere uguale al il primo carattere della stringa
 	nuova->altezza_mozzo = 0.0; //inizializzo la variabile, in questo modo se non trovo un'altezza mozzo numerica posso cancellare il nodo
 	
 	while (((carattere < '0') || (carattere > '9')) && (carattere != 0)) {	//elimino elementi non numerici prima del valore
-			punto_virgola++;
-			carattere = (char) *punto_virgola;
+			stringa_altezze++;
+			carattere = (char) *stringa_altezze;
 		}
-	punto_virgola_temp = punto_virgola;
+	inizio = stringa_altezze;
 
-	carattere = (char) *punto_virgola;
-	while (((carattere >= '0') && (carattere <= '9'))|| carattere == '.') {	//elimino elementi non numerici dopo del valore
-		punto_virgola++;
-		carattere = (char) *punto_virgola;
+	carattere = (char) *stringa_altezze;
+	while (((carattere >= '0') && (carattere <= '9') )|| carattere == '.') {	//elimino elementi non numerici dopo del valore
+		stringa_altezze++;
+		carattere = (char) *stringa_altezze;
+
 	}
 	
 	if (carattere == 0) {
-		num_caratteri = (strlen(punto_virgola_temp));
+		num_caratteri = (strlen(inizio));
 	} else {
-		num_caratteri = (strlen(punto_virgola_temp) - strlen(punto_virgola));
+		num_caratteri = (strlen(inizio) - strlen(stringa_altezze));
 		ultima_copia = false;
 	}
 
@@ -130,10 +190,10 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 		svuota_lista_turbine_data(elemento_attuale_turbina);
 		return NULL;
 	}
-	strncpy(altezza, punto_virgola_temp, num_caratteri);
+	strncpy(altezza, inizio, num_caratteri);
 	nuova->altezza_mozzo = atof(altezza);
 
-	if (ultima_copia && (punto_virgola_temp == fields[8])) {
+	if (ultima_copia && (inizio == fine)) {
 		//non creo copie
 		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + 1));
 		if (nuova->id == NULL) {
@@ -162,7 +222,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	free(altezza);
 
 	if (!ultima_copia) {
-			elemento_attuale_turbina = nuovo_elemento_turbina(elemento_attuale_turbina, fields, punto_virgola);
+			elemento_attuale_turbina = nuovo_elemento_turbina(elemento_attuale_turbina, fields, stringa_altezze);
 
 		if (elemento_attuale_turbina == NULL) { // Se ho un errore di allocazione in cascata genero puntatori nulli
 			elimina_nodo_turbina(nuova);
