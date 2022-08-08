@@ -244,10 +244,11 @@ void plot_time_potenza(const struct weather *tempo, const float *potenza, int gi
 
 void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni)
 {
-    char *titolo_g = malloc(sizeof(char) * ( strlen("A partire da ") + strlen(head_tempo->orario) + strlen(" per  giorni") + 1));
     char temp[3];
+    char *titolo_g = malloc(sizeof(char) * ( strlen("A partire da ") + strlen(head_tempo->orario) + strlen(" per  giorni") + strlen(temp) + 1));
+    
 
-    strcat(titolo_g, "A partire da ");
+    strcpy(titolo_g, "A partire da ");
     strcat(titolo_g, head_tempo->orario);
     strcat(titolo_g, " per ");
     sprintf(temp,"%d", giorni);

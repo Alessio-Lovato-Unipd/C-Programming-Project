@@ -206,7 +206,7 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
     }
 
     if (color != NULL) {
-        char *set_color = malloc(sizeof(char) * (strlen(color) + strlen(" lc \"\"") + 1 ));
+        char *set_color = malloc(sizeof(char) * (strlen(color) + strlen(" lc \"\" ") + 1 ));
         strcpy(set_color, " lc \"");
         strcat(set_color, color);
         strcat(set_color, "\" ");
@@ -677,7 +677,7 @@ char const * gnuplot_tmpfile(gnuplot_ctrl * handle)
         return NULL;
     }
 
-    tmp_filename = (char*) malloc(tmp_filelen+1);
+    tmp_filename = (char*) malloc(tmp_filelen + 1);
     if (tmp_filename == NULL)
     {
         return NULL;
