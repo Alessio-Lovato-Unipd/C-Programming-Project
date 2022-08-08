@@ -161,7 +161,20 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        float potenza_in_uscita=0;
+        //float potenza_in_uscita=0;
+        float *potenza_generata=NULL;
+
+        potenza_generata=malloc(sizeof(float) * (NUMERO_ORE_IN_UN_GIORNO));
+        
+        if (potenza_generata == NULL) {
+            printf("Error: malloc() ha fallito con potenza_generata.\n");
+			svuota_dati_weather(dati);
+			svuota_lista_turbine_data(head_turbina);
+			free(metodo_calcolo_parametri);
+			svuota_parametri(head_parametri);
+            exit(EXIT_FAILURE);
+			}
+
 		temp_parametri = cerca_nodo_parametri(argv[9], head_parametri);
 		if(temp_parametri == NULL){
 			printf("Data e orario inseriti errati, fare riferimento al file weather.csv o verificare di aver utilizzato le virgolette\n");
@@ -177,28 +190,34 @@ int main(int argc, char *argv[])
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
 			for(int i = 0; i < 24; i++){
-				potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
+				//potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
+                potenza_generata= calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_curves, head_parametri);
 				printf("\tOrario misure: %s\n", temp_parametri->orario);
-				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+				//printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
 				printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
 				temp_parametri = temp_parametri->next;
 			}
             plot_curva_potenza(array_vento_power_curves, turbina_cercata);
-            printf("\nNOTA: curva_di_potenza.png disponibile in build/app\n\n\n");
+            plot_potenza(dati->head_weather, turbina_cercata->nome, potenza_generata, 1);
+            printf("\nNOTA: curva_di_potenza.png disponibile in build/app\n");
+            printf("NOTA: potenza.png disponibile in build/app\n\n\n");
 		}
         else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
 			for(int i = 0; i < 24; i++){
-				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
-				printf("\tOrario misure: %s\n", temp_parametri->orario);
-				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+				//potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
+				potenza_generata= calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_coefficient, head_parametri);
+                printf("\tOrario misure: %s\n", temp_parametri->orario);
+				//printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
 				printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
 				temp_parametri = temp_parametri->next;
 			}
             plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata);
-            printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n\n\n");
+            plot_potenza(dati->head_weather, turbina_cercata->nome, potenza_generata, 1);
+            printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n");
+            printf("NOTA: potenza.png disponibile in build/app\n\n\n");
 		}
         else
         {
@@ -216,6 +235,8 @@ int main(int argc, char *argv[])
     svuota_dati_weather(dati);
 	free(metodo_calcolo_parametri);
 	svuota_parametri(head_parametri);
+
+    
 
     return 0;
 }

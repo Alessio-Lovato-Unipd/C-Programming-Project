@@ -16,6 +16,7 @@
     #define PERCORSO_POWER_COEFFICIENT "../../data/power_coefficient_curves.csv"
 	#define PERCORSO_POWER_CURVES "../../data/power_curves.csv"
     #define VALORE_ARGOMENTI_INSERIBILI 10
+    #define NUMERO_ORE_IN_UN_GIORNO 24
 
     /*
     -----ARGOMENTI DA PASSARE AL PROGRAMMA MAIN-----
