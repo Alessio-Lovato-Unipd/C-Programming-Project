@@ -209,4 +209,6 @@
     */
     void controllo_csv(const int *const errore);
 
+    void stampa_lista_turbine(struct turbina *head_turbina);
+
 #endif

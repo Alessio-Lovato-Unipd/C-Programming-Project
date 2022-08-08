@@ -19,12 +19,6 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		controllo_csv(errore);
 		return NULL;
 	}
-	
-	*errore=csv_read_record(&file, &fields); //salto seconda intestazione
-    if (*errore != CSV_OK) {
-		controllo_csv(errore);
-		return NULL;
-	}
         
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
         puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
@@ -265,4 +259,21 @@ struct turbina *conversione_dati_in_booleano(struct turbina *const elemento_attu
 		elemento_attuale_turbina->bool_p_curves = true;
 
 	return elemento_attuale_turbina;
+}
+
+void stampa_lista_turbine(struct turbina *head_turbina)
+{
+	struct turbina *temp = head_turbina;
+	do {
+		printf("************\nModello: %s\n", temp->nome);
+		printf("id: %s\n", temp->id);
+		printf("potenza: %i\n", temp->potenza_nominale);
+		printf("rotore: %i\n", temp->diametro_rotore);
+		printf("mozzo: %f\n", temp->altezza_mozzo);
+		printf("char_coeff: %s\n", temp->char_p_coefficient);
+		printf("char_curve: %s\n", temp->char_p_curves);
+		printf("bool_coeff: %i\n", temp->bool_p_coefficient);
+		printf("bool_curve: %i\n\n\n", temp->bool_p_curves);
+		temp=scorri_lista_turbina(temp);
+	} while (temp != NULL);
 }
