@@ -170,7 +170,14 @@ int main(int argc, char *argv[])
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
             potenza = calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_curves, temp_parametri);
-			
+			if (potenza == NULL) {
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                free(metodo_calcolo_parametri);
+                free(potenza);
+                exit(EXIT_FAILURE);
+            }
+
             while(temp_parametri != NULL){
 				potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
@@ -184,7 +191,14 @@ int main(int argc, char *argv[])
         else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
             potenza = calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_coefficient, temp_parametri);
-			
+			if (potenza == NULL) {
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                free(metodo_calcolo_parametri);
+                free(potenza);
+                exit(EXIT_FAILURE);
+            }
+
             while(temp_parametri != NULL){
 				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
