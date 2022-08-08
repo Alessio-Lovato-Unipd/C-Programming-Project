@@ -19,8 +19,10 @@
     //genera grafico e csv dell'andamento di potenza in un arco temporale di giorni impostati
     void plot_time_potenza(const struct weather *tempo, const float *potenza, int giorni);
 
+    void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni);
+
     //genera grafico potenza con x = array di numeri naturali
-    void plot_potenza(char *nome_turbina, const float *potenza, int giorni);
+    void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, const float *potenza, int giorni);
     
 #endif
 

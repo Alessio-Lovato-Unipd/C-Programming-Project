@@ -123,7 +123,7 @@ void test_plot_potenza()
 
     potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, array_vento_curves, h_parametri);
 
-	plot_potenza("E-101/3050", potenza, 30);
+	plot_potenza(h_meteo->head_weather, "E-101/3050", potenza, 10);
 
 	svuota_lista_turbine_data(head);
     svuota_dati_weather(h_meteo);
