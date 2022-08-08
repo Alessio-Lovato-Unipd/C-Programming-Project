@@ -122,9 +122,19 @@ void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
 {
     if ((array_vento != NULL) && (turbina->power_curves != NULL)){
         gnuplot_ctrl *gp = NULL; 
-        char *titolo = malloc(sizeof(char) * (strlen("Curva di Potnza ") + strlen(turbina->nome) + 1 ));
+        char *titolo = malloc(sizeof(char) * (strlen("Curva di Potenza ") + strlen(turbina->nome) + 1 ));
         strcpy(titolo, "Curva di Potenza ");
         strcat(titolo, turbina->nome);
+
+        char *nome_png = malloc(sizeof(char) * (strlen("curva_di_potenza_") + strlen(turbina->nome) + strlen(".png") +1 ));
+        strcpy(nome_png, "\"curva_di_potenza_");
+        strcat(nome_png, turbina->nome);
+        strcat(nome_png, ".png\"");
+
+        char *comando_nome_png = malloc(sizeof(char) * (strlen(nome_png) + strlen("set output \"") + strlen("\"") + 1));
+        strcpy(comando_nome_png, "set output \"");
+        strcat(comando_nome_png, nome_png);
+        strcat(comando_nome_png, "\"");
 
         gp = gnuplot_init(); 
         gnuplot_setstyle(gp, "linespoints");
@@ -136,7 +146,7 @@ void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
         //comandi diretti a gnuplot
         gnuplot_cmd(gp, "set grid back nopolar");
         gnuplot_cmd(gp, "set terminal png");
-        gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
+        gnuplot_cmd(gp, comando_nome_png);
         gnuplot_plot_xy(gp, array_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
 
         gnuplot_close(gp); 
@@ -199,7 +209,7 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
 }
 
 
-void plot_potenza(const struct weather *tempo, const float *potenza, int giorni)//quanti giorni voglio visualizzare?
+void plot_time_potenza(const struct weather *tempo, const float *potenza, int giorni)//quanti giorni voglio visualizzare?
 {
     if ((giorni > 0) && (tempo != NULL) && (potenza != NULL)){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
@@ -230,6 +240,9 @@ void plot_potenza(const struct weather *tempo, const float *potenza, int giorni)
             gnuplot_cmd(gp, "set format x \"%m\"");//mese
         }
 
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"time_potenza.png\"");
+
         gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
         gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
 
@@ -239,5 +252,38 @@ void plot_potenza(const struct weather *tempo, const float *potenza, int giorni)
 }
 
 
+void plot_potenza(char *nome_turbina, const float *potenza, int giorni)
+{
+    if ((giorni > 0) && (potenza != NULL)){
+        int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
+        float x[lunghezza_vettore];
+        char *titolo = malloc(sizeof(char) * (strlen("Potenza elettrica generata dalla turbina nel tempo") + strlen(nome_turbina) + 1));
+        strcpy(titolo, "Potenza generata dalla turbina ");
+        strcat(titolo, nome_turbina);
+        strcat(titolo, " nel tempo");
+
+        for (int i = 0; i < lunghezza_vettore; i++ ){
+            x[i] = i;
+        }
+
+        gnuplot_ctrl *gp = NULL;
+        gp = gnuplot_init();
+
+        gnuplot_setstyle(gp, "lines");
+        gnuplot_set_line(gp, "1", "orange", "1");
+        gnuplot_set_point(gp, NULL, NULL);
+
+        gnuplot_set_xlabel(gp, "Tempo [h]");
+        gnuplot_set_ylabel(gp, "Potenza [kW]");
+        
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"potenza.png\"");
+
+        gnuplot_write_xy_csv("potenza.csv", x, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
+        gnuplot_plot_atmpfile(gp, "potenza.csv", titolo);
+
+        gnuplot_close(gp);  
+    }
+}
 
 

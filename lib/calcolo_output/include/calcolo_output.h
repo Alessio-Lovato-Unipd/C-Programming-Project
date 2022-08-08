@@ -6,13 +6,6 @@
 	#include "estrattore_csv.h"
 	#include "formule.h"
 	#include "parametri.h"
-
-	struct potenza_out
-	{
-		float potenza;
-		struct potenza_out *next;
-	};
-	
 	
 	typedef enum {CURVA_POTENZA, CURVA_COEFFICIENTI_POTENZA} tipo_curva;
 
