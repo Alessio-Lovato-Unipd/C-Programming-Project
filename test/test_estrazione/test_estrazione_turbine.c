@@ -479,7 +479,7 @@ int main()
     UNITY_BEGIN();
 	
     RUN_TEST(verifica_presenza_file_csv_percorso_corretto);
-   /* RUN_TEST(verifica_presenza_file_csv_percorso_errato);
+    RUN_TEST(verifica_presenza_file_csv_percorso_errato);
 	RUN_TEST(verifica_funzione_svuotamento_lista);
 	RUN_TEST(verifica_funzione_conversione_bool_FF);
 	RUN_TEST(verifica_funzione_conversione_bool_TT);
@@ -495,7 +495,7 @@ int main()
 	RUN_TEST(verifica_turbina_altezza_mozzo_testuale);
 	RUN_TEST(verifica_turbina_altezza_mozzo_con_separatore_non_punto_virgola);
 	RUN_TEST(verifica_ricerca_turbina_estremi);
-	RUN_TEST(verifica_ricerca_turbina_falso);*/
+	RUN_TEST(verifica_ricerca_turbina_falso);
 	RUN_TEST(stampa);
 
     return UNITY_END();

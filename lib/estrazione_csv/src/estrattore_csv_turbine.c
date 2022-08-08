@@ -19,15 +19,10 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		controllo_csv(errore);
 		return NULL;
 	}
-	
-	*errore=csv_read_record(&file, &fields); //salto seconda intestazione
-    if (*errore != CSV_OK) {
-		controllo_csv(errore);
-		return NULL;
-	}
 
 	//gestione dinamica numero colonne file
 	char **fields_dinamico = NULL, **fields_backup = fields;
+	char *stringa_altezze = NULL;
     do {
 		int colonne = NUMERO_COLONNE_TURBINA;
 		backup = file;
@@ -47,22 +42,23 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 				conteggio++;
 			int dimensione_stringa = 0;
 			for ( int i = 8; i <= conteggio + 8; i++)
-				dimensione_stringa = dimensione_stringa + strlen(fields[i]);
-			char *temporaneo = malloc(sizeof(char) * (dimensione_stringa +1));
+				dimensione_stringa = dimensione_stringa + strlen(fields[i]) + 1; //Inserisco uno spazio tra una stringa e l'altra
+			stringa_altezze = realloc(stringa_altezze, sizeof(char) * (dimensione_stringa +1));
 
-			strcpy(temporaneo, fields[8]);
-			for ( int i = 8 +1; i <= conteggio + 8; i++)
-				strcat(temporaneo, fields[i]);
+			strcpy(stringa_altezze, fields[8]);
+			for ( int i = 8 +1; i <= conteggio + 8; i++) {
+				strcat(stringa_altezze, ".");	//sostituisco la vrigola del csv con un punto
+				strcat(stringa_altezze, fields[i]);
+			}
 			//ciclo di spostamento puntatori
-			for (int i = 8 + 1; i < 8+conteggio; i++)
-				fields[i] = fields[i + (colonne - NUMERO_COLONNE_TURBINA)];
+			for (int i = 8 + 1; i < NUMERO_COLONNE_TURBINA - 1; i++)
+				fields[i] = fields[i + conteggio];
 			
-			printf("fields[8]: %s\n", temporaneo);
-			puntatore = nuovo_elemento_turbina(puntatore, fields, temporaneo);
+			printf("fields[8]: %s\n", stringa_altezze);
+			puntatore = nuovo_elemento_turbina(puntatore, fields, stringa_altezze);
 			file.field_count = NUMERO_COLONNE_TURBINA;
 			file.fields = fields_backup;
-			free(fields_dinamico);
-			free(temporaneo);
+			
 		} else if (*errore == CSV_OK) {
 			puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
 		}
@@ -79,7 +75,8 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
     
 	} while ((*errore == CSV_OK) || (*errore == CSV_E_TOO_MANY_FIELDS)) ;
 
-
+	free(fields_dinamico);
+	free(stringa_altezze);
 	csv_close(&file);
 
 	if (*errore != CSV_END) {
@@ -311,9 +308,8 @@ struct turbina *conversione_dati_in_booleano(struct turbina *const elemento_attu
 void stampa_lista_turbine(struct turbina *head_turbina)
 {
 	struct turbina *temp = head_turbina;
-	while (temp != NULL) {
+	do {
 		printf("************\nModello: %s\n", temp->nome);
-		printf("Modello: %s\n", temp->nome);
 		printf("id: %s\n", temp->id);
 		printf("potenza: %i\n", temp->potenza_nominale);
 		printf("rotore: %i\n", temp->diametro_rotore);
@@ -323,5 +319,5 @@ void stampa_lista_turbine(struct turbina *head_turbina)
 		printf("bool_coeff: %i\n", temp->bool_p_coefficient);
 		printf("bool_curve: %i\n\n\n", temp->bool_p_curves);
 		temp=scorri_lista_turbina(temp);
-	}
+	} while (temp != NULL);
 }
