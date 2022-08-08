@@ -3,14 +3,11 @@
 int main(int argc, char *argv[])
 {
     struct turbina *head_turbina=NULL;
-    //struct turbina *temporaneo=NULL; //<----da eliminare
     struct turbina *turbina_cercata=NULL;
     struct dati_weather *dati = NULL;
     int errore=0;
     float array_vento_power_coefficient[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1]={0};
     float array_vento_power_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1]={0};
-    //bool penultimo=false; //<---da eliminare
-    //bool ultimo=false; //<---da eliminare
 
     if(argc != VALORE_ARGOMENTI_INSERIBILI)
     {
@@ -45,51 +42,6 @@ int main(int argc, char *argv[])
     {
         return(EXIT_FAILURE);
     }
-
-    /*temporaneo=head_turbina; <-----------------------------------per verificare il corretto salvataggio di tutte le turbine, OK
-    printf("*****   Stampa elementi lista   *****\n\n");
-    while (!ultimo) {
-        head_turbina=conversione_dati_in_booleano(temporaneo);
-        printf(" Modello turbina: %s\n", temporaneo->nome);
-        printf(" ID: %s\n", temporaneo->id);
-        printf(" Potenza nominale: %d\n", temporaneo->potenza_nominale);
-        printf(" Diametro del rotore: %d\n", temporaneo->diametro_rotore);
-        printf(" Altezza del mozzo: %f\n", temporaneo->altezza_mozzo);
-        printf(" Char power_coefficient: %s\n", temporaneo->char_p_coefficient);
-        printf(" Bool power_coefficient: %d\n", temporaneo->bool_p_coefficient);
-        printf(" Char power_curves: %s\n", temporaneo->char_p_curves);
-        printf(" Bool power_curves: %d\n", temporaneo->bool_p_curves);
-        printf(" Velocità vento: \n\n\n");
-        for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES- 1); i++)
-            printf("%f\t", temporaneo->wind_speed[i]);
-        printf("\n");
-        printf("Coefficienti di potenza: \n");
-        if(temporaneo->power_coefficients != NULL){
-            for(int i = 0; i < (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1); i++)
-                printf("%f\t", temporaneo->power_coefficients[i]);
-        }
-        printf("\n");
-        printf("Curva di potenza: \n");
-        if(temporaneo->power_curves != NULL){
-            for(int i = 0; i < (NUMERO_COLONNE_POWER_CURVES - 1); i++)
-                printf("%d\t", temporaneo->power_curves[i]);
-        }
-        printf("\n");
-        printf("----\n\n");  
-
-        temporaneo=temporaneo->prev;
-
-        if (temporaneo == NULL)
-        {
-            penultimo=true;
-        }
-
-        if (penultimo)
-        {
-            ultimo=true;
-        }
-    }*/
-    //fine esempio di stampa
 
     lettura_file_power_coefficient(head_turbina, PERCORSO_POWER_COEFFICIENT, &errore, array_vento_power_coefficient);
     lettura_file_power_curves(head_turbina, PERCORSO_POWER_CURVES, &errore, array_vento_power_curves);
@@ -164,15 +116,7 @@ int main(int argc, char *argv[])
 		svuota_lista_turbine_data(head_turbina);
 		free(metodo_calcolo_parametri);
         exit(EXIT_FAILURE);
-    } 
-
-    //per stampare a schermo gli interi, è una verifica del corretto salvataggio degli argomenti
-    /*
-    printf("Valore vento :%u\n", metodo_calcolo_parametri->vento);
-    printf("Valore temperatura:%u\n", metodo_calcolo_parametri->temperatura);
-    printf("Valore densita :%u\n", metodo_calcolo_parametri->densita);
-    printf("fine salvataggio argomenti.\n");
-    */
+    }
     
     //ricerca della turbina richiesta
 	float altezza_mozzo = atof(argv[8]);
@@ -185,7 +129,6 @@ int main(int argc, char *argv[])
         printf("\nESITO RICERCA TURBINA: Modello turbina non trovato!\n\n");
     }else
     {
-        //cose da fare se la turbina esiste
         printf("\nESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
 
         //calcolo dei parametri a partire dai dati meteorologici
@@ -216,11 +159,6 @@ int main(int argc, char *argv[])
 			svuota_parametri(head_parametri);
             exit(EXIT_FAILURE);
         }
-
-        //per verificare il corretto salvataggio 
-        /*
-        printf("var_argv6: %u\n", var_argv6);
-        */
 
         float potenza_in_uscita=0;
 		temp_parametri = cerca_nodo_parametri(DATA_SCELTA, head_parametri);
