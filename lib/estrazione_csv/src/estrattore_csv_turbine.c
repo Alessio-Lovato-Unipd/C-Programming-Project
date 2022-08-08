@@ -6,7 +6,7 @@
 
 struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *const percorso_file_turbine_data, int *const errore) 
 {
-    struct csv file, backup;
+    struct csv file;
     *errore = csv_open(&file, (char *) percorso_file_turbine_data, SEPARATORE, NUMERO_COLONNE_TURBINA);
     if (*errore != CSV_OK) {
 		controllo_csv(errore);
@@ -20,62 +20,76 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		return NULL;
 	}
 
-	//gestione dinamica numero colonne file
-	char **fields_dinamico = NULL, **fields_backup = fields;
+	// Gestione dinamica numero colonne file
+	char **fields_appoggio = NULL;	// Variabile appoggio fields
+	struct csv file_appoggio; // Variabile appoggio file
 	char *stringa_altezze = NULL;
+
     do {
-		int colonne = NUMERO_COLONNE_TURBINA;
-		backup = file;
+        int colonne = NUMERO_COLONNE_TURBINA; // Numero colonne necessarie, il numero base è quello standard
+		file_appoggio = file;
         *errore = csv_read_record(&file, &fields);
 
 		if (*errore == CSV_E_TOO_MANY_FIELDS) {
-        	file = backup;
+			// Sono nel caso in cui necessito di utilizzare dinamicamente la lettura del file
+			char **fields_iniziale = fields;	// Variabile salvataggio stato iniziale
+
+			file = file_appoggio; // Salvataggio dello stato del file
 			while ((*errore = csv_read_record(&file, &fields)) == CSV_E_TOO_MANY_FIELDS) {
-				file = backup;
+				//	Ciclo modifica dimensioni colonne
+				file = file_appoggio;
 				colonne++;
 				file.field_count = colonne;
-				fields_dinamico = realloc(fields_dinamico, colonne * sizeof(char*));
-				file.fields = fields_dinamico;
+				fields_appoggio = realloc(fields_appoggio, colonne * sizeof(char*));
+				if (fields_appoggio == NULL)
+					return NULL;
+				file.fields = fields_appoggio;
 			}
-			int conteggio = 1;
-			while (strchr(fields[8+conteggio], '\"') == NULL)
+			
+			int conteggio = 1;	// Variabile che rappresenta in numero di colonne aggiunte
+			while (strchr(fields[COLONNA_ALTEZZA_MOZZO + conteggio], '\"') == NULL)
 				conteggio++;
-			int dimensione_stringa = 0;
-			for ( int i = 8; i <= conteggio + 8; i++)
-				dimensione_stringa = dimensione_stringa + strlen(fields[i]) + 1; //Inserisco uno spazio tra una stringa e l'altra
-			stringa_altezze = realloc(stringa_altezze, sizeof(char) * (dimensione_stringa +1));
 
-			strcpy(stringa_altezze, fields[8]);
-			for ( int i = 8 +1; i <= conteggio + 8; i++) {
-				strcat(stringa_altezze, ".");	//sostituisco la vrigola del csv con un punto
+			int dimensione_stringa = 0; // Variabile che rappresenta la dimensione della nuova stringa da allocare
+			for (int i = COLONNA_ALTEZZA_MOZZO; i <= conteggio + COLONNA_ALTEZZA_MOZZO; i++)
+				dimensione_stringa = dimensione_stringa + strlen(fields[i]) + 1; // +1 perchè inserisco un punto tra una stringa e l'altra
+			
+			stringa_altezze = realloc(stringa_altezze, sizeof(char) * (dimensione_stringa +1));
+			if (stringa_altezze == NULL)
+				return NULL;
+			strcpy(stringa_altezze, fields[COLONNA_ALTEZZA_MOZZO]);
+			
+			for (int i = COLONNA_ALTEZZA_MOZZO +1; i <= conteggio + COLONNA_ALTEZZA_MOZZO; i++) {
+				strcat(stringa_altezze, ".");	//sostituisco la virgola del csv con un punto
 				strcat(stringa_altezze, fields[i]);
 			}
-			//ciclo di spostamento puntatori
-			for (int i = 8 + 1; i < NUMERO_COLONNE_TURBINA - 1; i++)
+			// Ciclo di spostamento puntatori per uniformare alle colonne standard
+			for (int i = COLONNA_ALTEZZA_MOZZO + 1; i < NUMERO_COLONNE_TURBINA - 1; i++)
 				fields[i] = fields[i + conteggio];
-			
-			printf("fields[8]: %s\n", stringa_altezze);
+				
 			puntatore = nuovo_elemento_turbina(puntatore, fields, stringa_altezze);
-			file.field_count = NUMERO_COLONNE_TURBINA;
-			file.fields = fields_backup;
 			
+			// Ripristino dimensione standard csv
+			file.field_count = NUMERO_COLONNE_TURBINA;
+			file.fields = fields_iniziale;
+
 		} else if (*errore == CSV_OK) {
-			puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
+			// Caso di numero colonne rilevato = NUMERO_COLONNE_TURBINA
+			puntatore = nuovo_elemento_turbina(puntatore, fields, fields[COLONNA_ALTEZZA_MOZZO]);
 		}
 
-		if (puntatore == NULL)
-			break; // 	Ho avuto un errore da malloc nella creazione di un nuovo nodo
+		if (puntatore == NULL) // Ho avuto un errore da malloc nella creazione di un nuovo nodo
+			break;
 		
 		if (puntatore->altezza_mozzo == 0) {
-			//un valore di altezza nullo quindi elimino il nodo della lista
+			// Un valore di altezza nullo quindi elimino il nodo della lista
 			struct turbina *elemento_successivo = puntatore->prev;
 			elimina_nodo_turbina(puntatore);
 			puntatore = elemento_successivo;
 		}
-    
 	} while ((*errore == CSV_OK) || (*errore == CSV_E_TOO_MANY_FIELDS)) ;
 
-	free(fields_dinamico);
+	free(fields_appoggio);
 	free(stringa_altezze);
 	csv_close(&file);
 
@@ -88,6 +102,7 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		return puntatore;
 	} 
 }
+
 
 struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *stringa_altezze)
 {
@@ -102,7 +117,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     }
 
     //salvataggio dati
-	nuova->nome = malloc(sizeof(char) * (strlen(fields[0]) +1 ));
+	nuova->nome = malloc(sizeof(char) * (strlen(fields[0]) + 1));
 	if (nuova->nome == NULL) {
         printf("Errore: malloc() ha fallito in allocazione char nome\n");
         svuota_lista_turbine_data(elemento_attuale_turbina);
@@ -128,7 +143,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     }
 	strcpy(nuova->char_p_coefficient, fields[16]);
 
-	nuova->char_p_curves = malloc(sizeof(char) * (strlen(fields[15]) +1 ));
+	nuova->char_p_curves = malloc(sizeof(char) * (strlen(fields[15]) + 1));
 	if (nuova->char_p_curves == NULL) {
         printf("Errore: malloc() ha fallito in allocazione char p_curves\n");
         elimina_nodo_turbina(nuova);
@@ -179,7 +194,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	if (ultima_copia && (inizio == fine)) {
 		//non creo copie
-		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + 1 ));
+		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + 1));
 		if (nuova->id == NULL) {
 			printf("Errore: malloc() ha fallito in allocazione char id\n");
 			elimina_nodo_turbina(nuova);
@@ -190,7 +205,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 		strcpy(nuova->id, fields[1]);
 	} else {
 		//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
-		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2 )); //Aggiungo spazio per "_" e "/0"
+		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2)); //Aggiungo spazio per "_" e "/0"
 		if (nuova->id == NULL) {
 			printf("Errore: malloc() ha fallito in allocazione char id 2\n");
 			elimina_nodo_turbina(nuova);

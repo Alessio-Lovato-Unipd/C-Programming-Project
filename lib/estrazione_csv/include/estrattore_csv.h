@@ -15,6 +15,7 @@
     #define LUNGHEZZA_VETTORE_POWER_CURVES 77
 	#define SEPARATORE ','
     #define ERRORE_MALLOC 20 //numero casuale
+    #define COLONNA_ALTEZZA_MOZZO 8
 
     /* 
      * Struttura per la creazione di nodi in una lista concatenata.
@@ -115,6 +116,12 @@
     */
     struct turbina *conversione_dati_in_booleano(struct turbina *const elemento_attuale_turbina);
 
+    /*
+     * Funzione per stampare tutta la lista delle turbine.
+     * Comincia a stampare dal puntatore dato per argomento
+     * fino all'inizio della lista (a ritroso).
+    */
+    void stampa_lista_turbine(struct turbina *head_turbina);
 
 
 
@@ -208,9 +215,5 @@
      * NOTA: per non creare un file .c in più, è stata inserita in estrattore_csv_weather.c.
     */
     void controllo_csv(const int *const errore);
-
-
-
-    void stampa_lista_turbine(struct turbina *head_turbina);
 
 #endif
