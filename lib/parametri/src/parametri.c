@@ -8,7 +8,7 @@
 
 /****************** CALCOLO DEI PARAMETRI ******************/
 
-struct parametro *calcolo_parametri(const struct dati_weather *const dati, const struct tipo_metodo *const metodo, float altezza_ostacolo,float altezza_mozzo, struct parametro *const head)
+struct parametro *calcolo_parametri(const struct dati_weather *const dati, const struct tipo_metodo *const metodo, float altezza_ostacolo, float altezza_mozzo, struct parametro *const head)
 {
     float vento, temperatura, densita;
     struct parametro *out = head;
@@ -31,19 +31,20 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
         out = aggiungi_elemento(in->orario, out, vento, densita);
         if (out == NULL)
             return NULL;
+		
+		}
     }
 
 	controllo_errori_parametri(errore);
 
-    for (int i = 0; i < NUMERO_ERRORI; i++)
+    for (int i = 0; i < NUMERO_ERRORI; i++){
         if (errore[i] == 1){
             svuota_parametri(out);
             return NULL;
         }
-        
+    }
 
     return out;
-    }
 }
 
 

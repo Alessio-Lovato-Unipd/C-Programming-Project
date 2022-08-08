@@ -7,7 +7,7 @@
     #define GRADIENTE_PRESSIONE 0.125
     #define PRESSIONE_AMBIENTE_STANDARD_PA 101325 
     #define DENSITA_AMBIENTE_STANDARD 1.292
-    #define TEMPERATURA_ABIENTE_STANDARD 273.15
+    #define TEMPERATURA_AMBIENTE_STANDARD 273.15
     #define COSTANTE_GAS_IDEALE 287.058
 
 	//Posizioni vettore errore nei calcoli
@@ -22,7 +22,8 @@
 
 
 
-
+	/***** FORMULE MATEMATICHE GENERICHE *****/
+	
     /*
      * Funzione che esegue un'interpolazione lineare tra due punti [1] e [2]
     */
@@ -40,7 +41,7 @@
     /****** FORMULE CALCOLO VELOCITÁ VENTO *****/
 
     /*
-     *
+     *Calcolo della velocità del vento in presenza di un ostacolo
     */
     float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostacolo, float h_mozzo, int *const errore);
 
@@ -49,8 +50,11 @@
     */
     float hellman(float h_dati, float vel_vento, float z0,float h_mozzo, int *const errore);
 
+
+
+	/****** FORMULA CALCOLO TEMPERATURA ALL'ALTEZZA DEL MOZZO *****/
     /*
-     * Calcolo temperatura all'altezza mozzo
+     * Calcolo temperatura
     */
     float gradiente_lineare(float h_dati, float T_aria, float h_mozzo, int *const errore);
 

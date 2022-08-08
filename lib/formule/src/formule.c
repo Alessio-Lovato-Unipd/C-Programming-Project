@@ -2,7 +2,7 @@
 
 float interpolazione_lineare(float x1, float y1, float x2, float y2, float x)
 {
-	if( x1 == x2)
+	if(x1 == x2)
 		return y1;
     return ((y2 - y1) / (x2 - x1)) * (x - x1) + y1;
 }
@@ -66,7 +66,7 @@ float hellman(float h_dati, float vel_vento, float z0, float h_mozzo, int *const
     } else if (h_mozzo < 0) {
         errore[ERR_H_MOZZO] = 1;
         return -1;
-    } else if ( z0 < 0) {
+    } else if (z0 < 0) {
         errore[ERR_RUGOSITA] = 1;
         return -1;
     } else if (vel_vento < 0) {
@@ -118,7 +118,7 @@ float barometrico(float h_dati, float p1, float T_mozzo, float h_mozzo, int *con
         errore[ERR_TEMP] = 1;
         return -1;
     }
-    return p_x(p1, h_dati, h_mozzo) * ((DENSITA_AMBIENTE_STANDARD * TEMPERATURA_ABIENTE_STANDARD) / (PRESSIONE_AMBIENTE_STANDARD_PA * T_mozzo)); 
+    return p_x(p1, h_dati, h_mozzo) * ((DENSITA_AMBIENTE_STANDARD * TEMPERATURA_AMBIENTE_STANDARD) / (PRESSIONE_AMBIENTE_STANDARD_PA * T_mozzo)); 
 }
 
 

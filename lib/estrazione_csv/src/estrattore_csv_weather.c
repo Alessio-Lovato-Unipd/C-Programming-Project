@@ -162,7 +162,7 @@ struct weather *cerca_dati_weather(const char *const orario, const struct weathe
 {
 	const struct weather *temporaneo_weather = head_weather;
         
-	while((temporaneo_weather != NULL) && (strcmp(temporaneo_weather->orario, orario)!=0))
+	while((temporaneo_weather != NULL) && (strcmp(temporaneo_weather->orario, orario) != 0))
 		temporaneo_weather = temporaneo_weather->prev;
 
 	return (struct weather *) temporaneo_weather;

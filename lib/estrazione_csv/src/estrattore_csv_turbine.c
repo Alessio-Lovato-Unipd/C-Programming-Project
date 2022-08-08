@@ -82,7 +82,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	nuova->char_p_curves = NULL;
 	nuova->char_p_coefficient = NULL;
 
-	nuova->char_p_coefficient = malloc(sizeof(char) * (strlen(fields[16]) +1 ));
+	nuova->char_p_coefficient = malloc(sizeof(char) * (strlen(fields[16]) + 1));
 	if (nuova->char_p_coefficient == NULL) {
         printf("Errore: malloc() ha fallito in allocazione char p_coefficient\n");
 		elimina_nodo_turbina(nuova);
@@ -91,7 +91,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
     }
 	strcpy(nuova->char_p_coefficient, fields[16]);
 
-	nuova->char_p_curves = malloc(sizeof(char) * (strlen(fields[15]) +1 ));
+	nuova->char_p_curves = malloc(sizeof(char) * (strlen(fields[15]) + 1));
 	if (nuova->char_p_curves == NULL) {
         printf("Errore: malloc() ha fallito in allocazione char p_curves\n");
         elimina_nodo_turbina(nuova);
@@ -117,7 +117,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	punto_virgola_temp = punto_virgola;
 
 	carattere = (char) *punto_virgola;
-	while (((carattere >= '0') && (carattere <= '9') )|| carattere == '.') {	//elimino elementi non numerici dopo del valore
+	while (((carattere >= '0') && (carattere <= '9'))|| carattere == '.') {	//elimino elementi non numerici dopo del valore
 		punto_virgola++;
 		carattere = (char) *punto_virgola;
 	}
@@ -141,7 +141,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 
 	if (ultima_copia && (punto_virgola_temp == fields[8])) {
 		//non creo copie
-		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + 1 ));
+		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + 1));
 		if (nuova->id == NULL) {
 			printf("Errore: malloc() ha fallito in allocazione char id\n");
 			elimina_nodo_turbina(nuova);
@@ -152,7 +152,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 		strcpy(nuova->id, fields[1]);
 	} else {
 		//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
-		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2 )); //Aggiungo spazio per "_" e "/0"
+		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2)); //Aggiungo spazio per "_" e "/0"
 		if (nuova->id == NULL) {
 			printf("Errore: malloc() ha fallito in allocazione char id 2\n");
 			elimina_nodo_turbina(nuova);
@@ -199,7 +199,7 @@ struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina)
         temporaneo_turbina = head_turbina->prev;
 		elimina_nodo_turbina(head_turbina);
         head_turbina = temporaneo_turbina;
-    } while (temporaneo_turbina!=NULL);
+    } while (temporaneo_turbina != NULL);
 
 	return head_turbina;
 }
@@ -228,12 +228,12 @@ struct turbina *cerca_dati_turbina(const char *const nome_modello_turbina, float
 
 	if (altezza_mozzo == 0.0) {
 		//viene ricercata la prima occorrenza del modello della turbina
-		while ((temporaneo_turbina != NULL) && (strcmp(temporaneo_turbina->nome, nome_modello_turbina)!= 0))
+		while ((temporaneo_turbina != NULL) && (strcmp(temporaneo_turbina->nome, nome_modello_turbina) != 0))
 			temporaneo_turbina = scorri_lista_turbina(temporaneo_turbina);
 	} else {
 		//viene ricercata l'occorrenza con l'altezza del mozzo specifica
 		while ((temporaneo_turbina != NULL) && (!trovato)) {
-			if ((strcmp(temporaneo_turbina->nome, nome_modello_turbina)== 0) && (temporaneo_turbina->altezza_mozzo == altezza_mozzo))
+			if ((strcmp(temporaneo_turbina->nome, nome_modello_turbina) == 0) && (temporaneo_turbina->altezza_mozzo == altezza_mozzo))
 				trovato = true;
 			if (!trovato)
 				temporaneo_turbina = scorri_lista_turbina(temporaneo_turbina);
@@ -252,17 +252,17 @@ struct turbina *scorri_lista_turbina(const struct turbina *const puntatore)
 
 struct turbina *conversione_dati_in_booleano(struct turbina *const elemento_attuale_turbina)
 {
-	if (strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1)==0)
-		elemento_attuale_turbina->bool_p_coefficient=false;
+	if (strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1) == 0)
+		elemento_attuale_turbina->bool_p_coefficient = false;
 
-	if(strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1)!=0)
-		elemento_attuale_turbina->bool_p_coefficient=true;
+	if(strncmp(elemento_attuale_turbina->char_p_coefficient, "F", 1) != 0)
+		elemento_attuale_turbina->bool_p_coefficient = true;
 
-	if (strncmp(elemento_attuale_turbina->char_p_curves, "F", 1)==0)
-		elemento_attuale_turbina->bool_p_curves=false;
+	if (strncmp(elemento_attuale_turbina->char_p_curves, "F", 1) == 0)
+		elemento_attuale_turbina->bool_p_curves = false;
 
-	if (strncmp(elemento_attuale_turbina->char_p_curves, "F", 1)!=0)
-		elemento_attuale_turbina->bool_p_curves=true;
+	if (strncmp(elemento_attuale_turbina->char_p_curves, "F", 1) != 0)
+		elemento_attuale_turbina->bool_p_curves = true;
 
 	return elemento_attuale_turbina;
 }
