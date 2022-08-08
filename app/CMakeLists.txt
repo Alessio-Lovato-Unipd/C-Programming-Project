@@ -12,10 +12,12 @@ target_include_directories(potenze_tot PRIVATE include)
 target_link_libraries( potenze_tot
 	PRIVATE 
 	lib::csv
+	lib::gnuplot_i
 	lib::estrazione_csv
 	lib::formule
 	lib::parametri
 	lib::calcolo_output
+	lib::plot
 )
 
 add_executable(potenze_giorno src/potenze_giorno.c)
@@ -25,9 +27,11 @@ target_include_directories(potenze_giorno PRIVATE include)
 target_link_libraries( potenze_giorno
 	PRIVATE 
 	lib::csv
+	lib::gnuplot_i
 	lib::estrazione_csv
 	lib::formule
 	lib::parametri
 	lib::calcolo_output
+	lib::plot
 )
 

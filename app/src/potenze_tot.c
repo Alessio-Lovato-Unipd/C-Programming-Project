@@ -172,9 +172,11 @@ int main(int argc, char *argv[])
 				potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
-				printf("\tDensità dell'aria: %f\n\n\n", temp_parametri->densita_aria); 
+				printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
 				temp_parametri = temp_parametri->next;
 			}
+            plot_curva_potenza(array_vento_power_curves, turbina_cercata);
+            printf("\nNOTA: curva_di_potenza.png disponibile in build/app\n\n\n");
 		}
         else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
@@ -182,9 +184,11 @@ int main(int argc, char *argv[])
 				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
-				printf("\tDensità dell'aria: %f\n\n\n", temp_parametri->densita_aria); 
+				printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
 				temp_parametri = temp_parametri->next;
 			}
+            plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata);
+            printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n\n\n");
 		}
         else
         {

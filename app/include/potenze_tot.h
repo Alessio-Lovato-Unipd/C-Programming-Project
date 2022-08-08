@@ -9,6 +9,7 @@
     #include "formule.h"
     #include "parametri.h"
     #include "calcolo_output.h"
+    #include "plot.h"
 
     #define PERCORSO_TURBINE_DATA "../../data/turbine_data.csv"
     #define PERCORSO_WEATHER "../../data/weather.csv"
