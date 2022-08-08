@@ -14,10 +14,10 @@
     void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina);
 
     //genera file csv con tempo e potenza corrispondente
-    void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const struct potenza_out *y, int n_dati, const char *title);
+    void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const float *y, int n_dati, const char *title);
 
     //genera grafico e csv dell'andamento di potenza in un arco temporale di giorni impostati
-    void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza, int giorni);
+    void plot_potenza(const struct weather *tempo, const float *potenza, int giorni);
     
 #endif
 

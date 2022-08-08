@@ -176,7 +176,7 @@ void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
 
 
 /*********************** FUNZIONE COSTRUITA SULLE LISTA CONCATENATE CREATE NELLE ALTRE LIBRERIE *******************/
-void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const struct potenza_out *y, int n_dati, const char *title)
+void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const float *y, int n_dati, const char *title)
 {
     FILE *data_file;
 
@@ -189,9 +189,8 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
 
         //scrivi i dati
         for (int i = 0; (i < n_dati) || time != NULL; i++){
-            fprintf(data_file, "%s, %f\n", time->orario, y->potenza);
+            fprintf(data_file, "%s, %f\n", time->orario, y[i]);
             time = time->prev;
-            y = y->next;
         }
 
         fclose(data_file);
@@ -200,7 +199,7 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
 }
 
 
-void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza, int giorni)//quanti giorni voglio visualizzare?
+void plot_potenza(const struct weather *tempo, const float *potenza, int giorni)//quanti giorni voglio visualizzare?
 {
     if ((giorni > 0) && (tempo != NULL) && (potenza != NULL)){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
@@ -231,7 +230,7 @@ void plot_potenza(const struct weather *tempo, const struct potenza_out *potenza
             gnuplot_cmd(gp, "set format x \"%m\"");//mese
         }
 
-        gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n tempo, potenza[kW]");//genero file csv di uscita
+        gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
         gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
 
         gnuplot_close(gp);  
