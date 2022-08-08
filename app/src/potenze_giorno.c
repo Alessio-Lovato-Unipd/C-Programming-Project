@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
         printf("\t- argv[5] ---> {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA}, per la scelta se usare le curve di coefficienti di potenza oppure le curve di potenza\n");
         printf("\t- argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output\n");
         printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n");
-		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n\n");
+		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n");
+		printf("\t- argv[9] ---> data e orario di inizio analisi dati, inserire tra le virgolette \n\n");
 		
         return(EXIT_FAILURE);
     }   
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
     printf("Metodo di interpolazione per il calcolo dell'output: %s\n", argv[6]);
     printf("Altezza ostacolo impostata a: %s metri\n", argv[7]);
 	printf("Altezza del mozzo: %s\n", argv[8]);
-	printf("Orario di partenza scelto: %s\n", DATA_SCELTA); //data scelta da header
+	printf("Orario di partenza scelto: %s\n", argv[9]); //data scelta da header
 	
 
     //inizio generazione lista turbine tramite la lettura da file
@@ -161,9 +162,17 @@ int main(int argc, char *argv[])
         }
 
         float potenza_in_uscita=0;
-		temp_parametri = cerca_nodo_parametri(DATA_SCELTA, head_parametri);
+		temp_parametri = cerca_nodo_parametri(argv[9], head_parametri);
+		if(temp_parametri == NULL){
+			printf("Data e orario inseriti errati, fare riferimento al file weather.csv o verificare di aver utilizzato le virgolette\n");
+			svuota_dati_weather(dati);
+			svuota_lista_turbine_data(head_turbina);
+			free(metodo_calcolo_parametri);
+			svuota_parametri(head_parametri);
+			exit(EXIT_FAILURE);
+		}
 		printf("RISULTATI:\n");
-		printf("Potenze o velocità del vento pari a -1 indicano un errore in fase di interpolazione\n");
+		printf("Potenze o velocità del vento pari a -1 indicano un errore in fase di interpolazione\n\n");
 		
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
