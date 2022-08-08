@@ -18,8 +18,7 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
     if(dati == NULL){
         printf("Errore: dati in input errati\n");
         return NULL;
-    }
-    else{
+    } else {
         for (struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
 
         //calcolo i 3 parametri
@@ -65,6 +64,11 @@ struct parametro *aggiungi_elemento(const char *const orario, struct parametro *
 
     //salvo i dati
 	nuovo_elemento->orario = malloc(sizeof(char) * (strlen(orario) + 1));
+    if (nuovo_elemento->orario == NULL){
+        printf("Errore: malloc() ha fallito nell'aggiunta dell'orario di un parametro\n");
+        svuota_parametri(elemento_attuale);
+        return NULL;
+    }
 	strcpy(nuovo_elemento->orario, orario);
     nuovo_elemento->vento = val_vento;
     nuovo_elemento->densita_aria = val_densita;
