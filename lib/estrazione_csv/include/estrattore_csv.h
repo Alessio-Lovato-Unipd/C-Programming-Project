@@ -211,6 +211,6 @@
 
 
 
-    void print_lista_turbine(struct turbina *head_turbina);
+    void stampa_lista_turbine(struct turbina *head_turbina);
 
 #endif

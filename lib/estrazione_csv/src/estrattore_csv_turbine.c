@@ -26,6 +26,8 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 		return NULL;
 	}
 
+	//gestione dinamica numero colonne file
+	char **fields_dinamico = NULL, **fields_backup = fields;
     do {
 		int colonne = NUMERO_COLONNE_TURBINA;
 		backup = file;
@@ -37,9 +39,8 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 				file = backup;
 				colonne++;
 				file.field_count = colonne;
-				//free(fields);
-				file.fields = NULL;
-				file.fields = calloc(colonne, sizeof(char*));
+				fields_dinamico = realloc(fields_dinamico, colonne * sizeof(char*));
+				file.fields = fields_dinamico;
 			}
 			int conteggio = 1;
 			while (strchr(fields[8+conteggio], '\"') == NULL)
@@ -59,11 +60,10 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 			printf("fields[8]: %s\n", temporaneo);
 			puntatore = nuovo_elemento_turbina(puntatore, fields, temporaneo);
 			file.field_count = NUMERO_COLONNE_TURBINA;
-			/*free(file.fields);
-			file.fields = NULL;
-			file.fields = malloc(sizeof(char*) *  NUMERO_COLONNE_TURBINA);*/
+			file.fields = fields_backup;
+			free(fields_dinamico);
 			free(temporaneo);
-		} else {
+		} else if (*errore == CSV_OK) {
 			puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
 		}
 
@@ -308,20 +308,20 @@ struct turbina *conversione_dati_in_booleano(struct turbina *const elemento_attu
 	return elemento_attuale_turbina;
 }
 
-void print_lista_turbine(struct turbina *head_turbina)
+void stampa_lista_turbine(struct turbina *head_turbina)
 {
 	struct turbina *temp = head_turbina;
-	while (head_turbina != NULL) {
+	while (temp != NULL) {
 		printf("************\nModello: %s\n", temp->nome);
 		printf("Modello: %s\n", temp->nome);
-		printf("Modello: %s\n", temp->id);
-		printf("Modello: %i\n", temp->potenza_nominale);
-		printf("Modello: %i\n", temp->diametro_rotore);
-		printf("Modello: %f\n", temp->altezza_mozzo);
-		printf("Modello: %s\n", temp->char_p_coefficient);
-		printf("Modello: %s\n", temp->char_p_curves);
-		printf("Modello: %i\n", temp->bool_p_coefficient);
-		printf("Modello: %i\n\n\n", temp->bool_p_curves);
+		printf("id: %s\n", temp->id);
+		printf("potenza: %i\n", temp->potenza_nominale);
+		printf("rotore: %i\n", temp->diametro_rotore);
+		printf("mozzo: %f\n", temp->altezza_mozzo);
+		printf("char_coeff: %s\n", temp->char_p_coefficient);
+		printf("char_curve: %s\n", temp->char_p_curves);
+		printf("bool_coeff: %i\n", temp->bool_p_coefficient);
+		printf("bool_curve: %i\n\n\n", temp->bool_p_curves);
 		temp=scorri_lista_turbina(temp);
 	}
 }
