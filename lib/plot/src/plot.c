@@ -141,6 +141,8 @@ void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
         gnuplot_plot_xy(gp, array_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
 
         gnuplot_close(gp); 
+
+        free(titolo);
     }
     
 }
@@ -167,7 +169,9 @@ void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
 
         gnuplot_plot_xy(gp, array_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
 
-        gnuplot_close(gp);   
+        gnuplot_close(gp);  
+
+        free(titolo); 
     }
     
 }
@@ -291,6 +295,8 @@ void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, con
         gnuplot_plot_atmpfile(gp, "potenza.csv", titolo);
 
         gnuplot_close(gp);  
+
+        free(titolo);
     }
 }
 

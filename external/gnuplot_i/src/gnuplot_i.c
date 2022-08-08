@@ -203,6 +203,7 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
         strcpy(set_ltype, " lt ");
         strcat(set_ltype, type);  
         strcat(h->pstyle, set_ltype);
+        free(set_ltype);
     }
 
     if (color != NULL) {
@@ -211,6 +212,7 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
         strcat(set_color, color);
         strcat(set_color, "\" ");
         strcat(h->pstyle, set_color); 
+        free(set_color);
     }
 
     if (width != NULL) {
@@ -218,6 +220,7 @@ void gnuplot_set_line(gnuplot_ctrl *h, const char *type, const char *color, cons
         strcpy(set_width, " lw ");
         strcat(set_width, width);
         strcat(h->pstyle, set_width); 
+        free(set_width);
     }
 }
 
@@ -228,6 +231,7 @@ void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size)// da
         strcpy(set_ptype, " pt ");
         strcat(set_ptype, type);  
         strcat(h->pstyle, set_ptype);
+        free(set_ptype);
     }
     
     if (size != NULL) {
@@ -235,6 +239,7 @@ void gnuplot_set_point(gnuplot_ctrl *h, const char *type, const char *size)// da
         strcpy(set_psize, " ps ");
         strcat(set_psize, size);
         strcat(h->pstyle, set_psize);
+        free(set_psize);
     }
     
 }
