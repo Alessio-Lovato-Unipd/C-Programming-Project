@@ -14,8 +14,10 @@ void controllo_csv(const int *const errore)
         printf("\tturbine_data.csv\n\tweather.csv\n\tpower_curves.csv\n\tpower_coefficient_curves.csv\n\n");
         printf("non si trovano nella cartella \"../../data/\" rispetto a dove è stato lanciato l'eseguibile\n\n");
     } else {
-        csv_error_string(*errore, &error);
-        printf("ERROR: %s\n", error);
+        if (*errore != ERRORE_MALLOC) {
+            csv_error_string(*errore, &error);
+            printf("ERROR: %s\n", error);
+        }
     }
     return;
 }
@@ -48,8 +50,8 @@ struct dati_weather *apertura_file_weather(struct csv *const file, char **fields
 	puntatore_dati_weather = malloc(sizeof(struct dati_weather));
 	//verifico riuscita allocazione
     if (puntatore_dati_weather == NULL) {
-        printf("Errore: malloc() ha fallito in estrazione_dati_weather\n");
-        exit(EXIT_FAILURE);
+        printf("Errore: malloc() ha fallito in apertura_dati_weather\n");
+        return NULL;
     }
     
 	puntatore_dati_weather->h_pressione = atof(fields[1]);
@@ -71,18 +73,26 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
 
     puntatore_dati_weather = apertura_file_weather(&file, fields, puntatore_dati_weather, percorso_file_weather, errore);
 
-    if (puntatore_dati_weather == NULL)
+    if (puntatore_dati_weather == NULL && *errore != CSV_E_IO) {
+        csv_close(&file);
         return NULL;
+    } else if (puntatore_dati_weather == NULL) {
+        return NULL;
+    }
 	
     while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
-        if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) // verifico che non esista un elemento con stesso identificativo
+        if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) { // verifico che non esista un elemento con stesso identificativo
             puntatore_dati_weather->head_weather = nuovo_elemento_weather(fields, puntatore_dati_weather);
-   }
+            if (puntatore_dati_weather->head_weather == NULL)
+                break;
+        }
+    }
 
     csv_close(&file);
 
     if (*errore != CSV_END) {
-        controllo_csv(errore);
+        if (*errore != CSV_OK)
+            controllo_csv(errore);
         svuota_dati_weather(puntatore_dati_weather);
         return NULL;
     } else {
@@ -94,17 +104,22 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
 
 struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *const puntatore_dati_weather)
 {
-    struct weather *nuova;
+    struct weather *nuova = NULL;
     nuova = malloc(sizeof(struct weather));
 
     //verifico riuscita allocazione
     if (nuova == NULL) {
         printf("Errore: malloc() ha fallito in nuovo_elemento\n");
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     //salvataggio dati
-    nuova->orario = malloc(sizeof(char) * (strlen(fields[0]) +1 ));
+    nuova->orario = malloc(sizeof(char) * (strlen(fields[0]) + 1));
+    if (nuova->orario == NULL) {
+        free(nuova);
+        printf("Errore: malloc() ha fallito in allocazione spazio stringa orario\n");
+        return NULL;
+    }
 
     strcpy(nuova->orario, fields[0]);
     nuova->pressione = atof(fields[1]); // conversione del dato da stringa a float tramite funzione atof()
@@ -125,14 +140,16 @@ struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_wea
     if(puntatore_dati_weather == NULL)
 		return NULL;
     struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
-		
-	do {
-        temporaneo_weather = puntatore_dati_weather->head_weather->prev;
-        free(puntatore_dati_weather->head_weather->orario);
-        free(puntatore_dati_weather->head_weather);
-        puntatore_dati_weather->head_weather = temporaneo_weather;
 
-    } while (temporaneo_weather != NULL);
+    if (temporaneo_weather != NULL) {	
+        do {
+            temporaneo_weather = puntatore_dati_weather->head_weather->prev;
+            free(puntatore_dati_weather->head_weather->orario);
+            free(puntatore_dati_weather->head_weather);
+            puntatore_dati_weather->head_weather = temporaneo_weather;
+
+        } while (temporaneo_weather != NULL);
+    }
     free(puntatore_dati_weather);
     puntatore_dati_weather = NULL;
     

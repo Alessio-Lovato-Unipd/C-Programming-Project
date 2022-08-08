@@ -28,16 +28,18 @@ void lettura_file_power_coefficient(struct turbina *const puntatore, const char 
 			if (strcmp(temp->nome, fields[0]) == 0) {
 				temp->power_coefficients = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_COEFFICIENT_CURVES - 1));
 				if (temp->power_coefficients == NULL) {
-					printf("Errore: malloc() ha fallito nel salvataggio_power_coefficient\n");
-					svuota_lista_turbine_data(puntatore);
-					exit(EXIT_FAILURE);
+					printf("Errore: malloc() ha fallito nel salvataggio_power_curves\n");
+					*errore = ERRORE_MALLOC;
+					break;
 				}
 				inserimento_power_coefficients(temp->power_coefficients, fields);
 			}
 			temp = scorri_lista_turbina(temp);
 		}
+		if (*errore == ERRORE_MALLOC)
+			break;
 		temp = puntatore;
-	}
+    }
 	
 	if (*errore != CSV_END) {
 		controllo_csv(errore);

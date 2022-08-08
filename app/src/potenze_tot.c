@@ -197,6 +197,7 @@ int main(int argc, char *argv[])
         if (head_parametri == NULL) {
             svuota_dati_weather(dati);
             svuota_lista_turbine_data(head_turbina);
+            free(metodo_calcolo_parametri);
             exit(EXIT_FAILURE);
         }
         //fine calcolo parametri

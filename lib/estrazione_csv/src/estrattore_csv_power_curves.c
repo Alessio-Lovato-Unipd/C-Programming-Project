@@ -29,13 +29,15 @@ void lettura_file_power_curves(struct turbina *const puntatore, const char *cons
 				temp->power_curves = malloc(sizeof(float) * (NUMERO_COLONNE_POWER_CURVES - 1));
 				if (temp->power_curves == NULL) {
 					printf("Errore: malloc() ha fallito nel salvataggio_power_curves\n");
-					svuota_lista_turbine_data(puntatore);
-					exit(EXIT_FAILURE);
+					*errore = ERRORE_MALLOC;
+					break;
 				}
 				inserimento_power_curves(temp->power_curves, fields);
 			}
 			temp = scorri_lista_turbina(temp);
 		}
+		if (*errore == ERRORE_MALLOC)
+			break;
 		temp = puntatore;
     }
 	

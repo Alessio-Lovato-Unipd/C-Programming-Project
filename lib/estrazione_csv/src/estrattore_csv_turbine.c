@@ -29,18 +29,22 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 	while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
         puntatore = nuovo_elemento_turbina(puntatore, fields, fields[8]);
 
-		if(puntatore->altezza_mozzo == 0) {
+		if (puntatore == NULL)
+			break; // 	Ho avuto un errore da malloc nella creazione di un nuovo nodo
+
+		if (puntatore->altezza_mozzo == 0) {
 				//un valore di altezza nullo quindi elimino il nodo della lista
 				struct turbina *elemento_successivo = puntatore->prev;
 				elimina_nodo_turbina(puntatore);
 				puntatore = elemento_successivo;
 			}
-		}
+	}
 
 	csv_close(&file);
 
 	if (*errore != CSV_END) {
-		controllo_csv(errore);
+		if (*errore != CSV_OK)
+			controllo_csv(errore);
 		svuota_lista_turbine_data(puntatore);
 		return NULL;
 	} else {
@@ -50,29 +54,50 @@ struct turbina *estrazione_dati_turbine(struct turbina *puntatore, const char *c
 
 struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina, char **fields, char *punto_virgola)
 {
-    struct turbina *nuova;
+    struct turbina *nuova = NULL;
     nuova = malloc(sizeof(struct turbina));
 
     //verifico riuscita allocazione
     if (nuova == NULL) {
         printf("Errore: malloc() ha fallito in nuovo_elemento\n");
         svuota_lista_turbine_data(elemento_attuale_turbina);
-        exit(EXIT_FAILURE);
+        return NULL;
     }
 
     //salvataggio dati
 	nuova->nome = malloc(sizeof(char) * (strlen(fields[0]) +1 ));
+	if (nuova->nome == NULL) {
+        printf("Errore: malloc() ha fallito in allocazione char nome\n");
+        svuota_lista_turbine_data(elemento_attuale_turbina);
+		free(nuova);
+        return NULL;
+    }
 	strcpy(nuova->nome, fields[0]);
 
     nuova->potenza_nominale = atoi(fields[5]); // conversione del dato da stringa a intero tramite funzione atoi()
 	nuova->diametro_rotore = atoi(fields[6]);
+	nuova->id = NULL;
 	nuova->power_coefficients = NULL;
 	nuova->power_curves = NULL;
+	nuova->char_p_curves = NULL;
+	nuova->char_p_coefficient = NULL;
 
 	nuova->char_p_coefficient = malloc(sizeof(char) * (strlen(fields[16]) +1 ));
+	if (nuova->char_p_coefficient == NULL) {
+        printf("Errore: malloc() ha fallito in allocazione char p_coefficient\n");
+		elimina_nodo_turbina(nuova);
+		svuota_lista_turbine_data(elemento_attuale_turbina);
+        return NULL;
+    }
 	strcpy(nuova->char_p_coefficient, fields[16]);
 
 	nuova->char_p_curves = malloc(sizeof(char) * (strlen(fields[15]) +1 ));
+	if (nuova->char_p_curves == NULL) {
+        printf("Errore: malloc() ha fallito in allocazione char p_curves\n");
+        elimina_nodo_turbina(nuova);
+		svuota_lista_turbine_data(elemento_attuale_turbina);
+        return NULL;
+    }
 	strcpy(nuova->char_p_curves, fields[15]);
 
 	//allocazione memoria wind_speed in base alla presenza delle curve
@@ -105,16 +130,36 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	}
 
 	char *altezza = calloc((num_caratteri + 1), sizeof(char));
+	if (altezza == NULL) {
+		printf("Errore: calloc() ha fallito in allocazione altezza\n");
+		elimina_nodo_turbina(nuova);
+		svuota_lista_turbine_data(elemento_attuale_turbina);
+		return NULL;
+	}
 	strncpy(altezza, punto_virgola_temp, num_caratteri);
 	nuova->altezza_mozzo = atof(altezza);
 
 	if (ultima_copia && (punto_virgola_temp == fields[8])) {
 		//non creo copie
 		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + 1 ));
+		if (nuova->id == NULL) {
+			printf("Errore: malloc() ha fallito in allocazione char id\n");
+			elimina_nodo_turbina(nuova);
+			svuota_lista_turbine_data(elemento_attuale_turbina);
+			free(altezza);
+			return NULL;
+		}
 		strcpy(nuova->id, fields[1]);
 	} else {
 		//ciclo di salvataggio dell'ID nel caso non ci fosse un elemento unico
 		nuova->id = malloc(sizeof(char) * (strlen(fields[1]) + num_caratteri + 2 )); //Aggiungo spazio per "_" e "/0"
+		if (nuova->id == NULL) {
+			printf("Errore: malloc() ha fallito in allocazione char id 2\n");
+			elimina_nodo_turbina(nuova);
+			svuota_lista_turbine_data(elemento_attuale_turbina);
+			free(altezza);
+			return NULL;
+    	}
 		strcpy(nuova->id, fields[1]);
 		strcat(nuova->id, "_");
 		strcat(nuova->id, altezza);
@@ -123,14 +168,19 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 	free(altezza);
 
 	if (!ultima_copia) {
-		elemento_attuale_turbina = nuovo_elemento_turbina(elemento_attuale_turbina, fields, punto_virgola);
+			elemento_attuale_turbina = nuovo_elemento_turbina(elemento_attuale_turbina, fields, punto_virgola);
+
+		if (elemento_attuale_turbina == NULL) { // Se ho un errore di allocazione in cascata genero puntatori nulli
+			elimina_nodo_turbina(nuova);
+			return NULL;
+		}
 		if (elemento_attuale_turbina->altezza_mozzo == 0.0) {
 			//un valore di altezza era nullo e ha reso l'id nullo, quindi elimino il nodo della lista
 			struct turbina *elemento_successivo = elemento_attuale_turbina->prev;
 			elimina_nodo_turbina(elemento_attuale_turbina);
 			elemento_attuale_turbina = elemento_successivo;
 		}
-	}	
+	}
     //salvo posizione elemento precedente
     nuova->prev = elemento_attuale_turbina;
 
@@ -156,10 +206,14 @@ struct turbina *svuota_lista_turbine_data(struct turbina *head_turbina)
 
 void elimina_nodo_turbina (struct turbina *nodo)
 {
-	free(nodo->nome);
-	free(nodo->id);
-	free(nodo->char_p_coefficient);
-	free(nodo->char_p_curves);
+	if (nodo->nome != NULL)
+		free(nodo->nome);
+	if (nodo->id != NULL)
+		free(nodo->id);
+	if (nodo->char_p_coefficient != NULL)
+		free(nodo->char_p_coefficient);
+	if (nodo->char_p_curves != NULL)
+		free(nodo->char_p_curves);
 	if (nodo->power_coefficients != NULL)
 		free(nodo->power_coefficients);
 	if (nodo->power_curves != NULL)

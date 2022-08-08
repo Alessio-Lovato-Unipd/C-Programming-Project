@@ -14,6 +14,7 @@
     #define LUNGHEZZA_VETTORE_POWER_COEFFICIENT 58
     #define LUNGHEZZA_VETTORE_POWER_CURVES 77
 	#define SEPARATORE ','
+    #define ERRORE_MALLOC 20 //numero casuale
 
     /* 
      * Struttura per la creazione di nodi in una lista concatenata.
