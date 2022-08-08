@@ -183,6 +183,8 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
 
     data_file = fopen(file_name, "w+");
     if (data_file != NULL){
+
+        int lunghezza_sringa = strlen("2010-12-31 23:00");
         // scrivi il titolo come commento
         if (title != NULL) {
             fprintf(data_file, "# %s\n", title);
@@ -190,6 +192,11 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
 
         //scrivi i dati
         for (int i = 0; (i < n_dati) || time != NULL; i++){
+            char *temp = malloc(sizeof(char) * lunghezza_sringa);
+            for (int j = 0; j < lunghezza_sringa; j++) {
+                temp[j] = time->orario[j];
+            }
+
             fprintf(data_file, "%s, %f\n", time->orario, y[i]);
             time = time->prev;
         }
@@ -219,7 +226,7 @@ void plot_time_potenza(const struct weather *tempo, const float *potenza, int gi
         gnuplot_cmd(gp, "set timefmt \"%y-%m-%d %H\" ");
 
         if (giorni == 1) {
-            gnuplot_cmd(gp, "set format x \"%H\" ");//ore
+            gnuplot_cmd(gp, "set format x \"%H:%M\" ");//ore
         }
         else if (giorni <= 7){
             gnuplot_cmd(gp, "set format x \"%a %d\"");//giorno settimana/giorno mese
@@ -244,18 +251,10 @@ void plot_time_potenza(const struct weather *tempo, const float *potenza, int gi
 
 void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni)
 {
-    char temp[3];
-    char *titolo_g = malloc(sizeof(char) * ( strlen("A partire da ") + strlen(head_tempo->orario) + strlen(" per  giorni") + strlen(temp) + 1));
-    
+    char temp[5];
+    sprintf(temp, "%d", giorni);
 
-    strcpy(titolo_g, "A partire da ");
-    strcat(titolo_g, head_tempo->orario);
-    strcat(titolo_g, " per ");
-    sprintf(temp,"%d", giorni);
-    strcat(titolo_g, temp);
-    strcat(titolo_g, " giorni");
-
-    gnuplot_cmd(h, "set title \"%s\"", titolo_g) ;
+    gnuplot_cmd(h, "set title \"A partire da %s per %s giorni\"", head_tempo->orario, temp);
 }
 
 

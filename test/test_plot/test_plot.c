@@ -105,7 +105,7 @@ void test_plot_potenza()
     int errore = 0;
     float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
     struct dati_weather *h_meteo = NULL;
-    struct tipo_metodo *metodo_calcolo = malloc(sizeof(struct tipo_metodo*));
+    struct tipo_metodo metodo_calcolo = {INTERPOLAZIONE_LINEARE_V, INTERPOLAZIONE_LINEARE_T, BAROMETRICO};
     struct parametro *h_parametri = NULL;
 	float *potenza = NULL;
     
@@ -115,15 +115,11 @@ void test_plot_potenza()
 
     h_meteo = estrazione_dati_weather(h_meteo, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
 
-    metodo_calcolo->vento = INTERPOLAZIONE_LINEARE_V;
-    metodo_calcolo->temperatura = INTERPOLAZIONE_LINEARE_T;
-    metodo_calcolo->densita = BAROMETRICO;
-
-    h_parametri = calcolo_parametri(h_meteo, metodo_calcolo, 0, 95, h_parametri);
+    h_parametri = calcolo_parametri(h_meteo, &metodo_calcolo, 0, 95, h_parametri);
 
     potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, array_vento_curves, h_parametri);
 
-	plot_potenza(h_meteo->head_weather, "E-101/3050", potenza, 10);
+	plot_potenza(h_meteo->head_weather, "E-101/3050", potenza, 25);
 
 	svuota_lista_turbine_data(head);
     svuota_dati_weather(h_meteo);
