@@ -184,7 +184,6 @@ void test_calcolo_potenza()
 {
     struct turbina *head = NULL;
 
-    //struct turbina *elemento_cercato = NULL;
     int errore = 0;
     float array_vento_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
     struct dati_weather *h_meteo = NULL;
@@ -194,18 +193,18 @@ void test_calcolo_potenza()
     
     head = estrazione_dati_turbine(head, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
     lettura_file_power_curves(head, PERCORSO_POWER_CURVES_CORRETTO, &errore, array_vento_curves);
-    //elemento_cercato = cerca_dati_turbina("V164/9500", 0.0, head);
+    struct turbina *elemento_cercato = cerca_dati_turbina("E-101/3050", 0.0, head);
 
     h_meteo = estrazione_dati_weather(h_meteo, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
 
-    h_parametri = calcolo_parametri(h_meteo, &metodo_calcolo, 0, 95, h_parametri);
+    h_parametri = calcolo_parametri(h_meteo, &metodo_calcolo, 0, elemento_cercato->altezza_mozzo, h_parametri);
 
-    potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, array_vento_curves, h_parametri);
+    potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, elemento_cercato->nome, head, elemento_cercato->altezza_mozzo, array_vento_curves, h_parametri);
 	
-	TEST_ASSERT_EQUAL_FLOAT(1200856.7, potenza[0]);
-	TEST_ASSERT_EQUAL_FLOAT(1183901.6, potenza[1]);
-	TEST_ASSERT_EQUAL_FLOAT(778079.6, potenza[2]);
-	TEST_ASSERT_EQUAL_FLOAT(770999.9, potenza[3]);
+	TEST_ASSERT_EQUAL_FLOAT(1809221.3, potenza[0]);
+	TEST_ASSERT_EQUAL_FLOAT(1827245.9, potenza[1]);
+	TEST_ASSERT_EQUAL_FLOAT(2293612, potenza[2]);
+	TEST_ASSERT_EQUAL_FLOAT(1817028.4, potenza[3]);
 
     svuota_lista_turbine_data(head);
     svuota_dati_weather(h_meteo);
