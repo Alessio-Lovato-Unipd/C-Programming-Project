@@ -190,7 +190,7 @@ struct turbina *nuovo_elemento_turbina(struct turbina *elemento_attuale_turbina,
 		svuota_lista_turbine_data(elemento_attuale_turbina);
 		return NULL;
 	}
-	strncpy(altezza, inizio, (sizeof(*altezza)/sizeof(char))-1);
+	memcpy(altezza, inizio, num_caratteri);
 	nuova->altezza_mozzo = atof(altezza);
 
 	if (ultima_copia && (inizio == fine)) {
