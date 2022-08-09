@@ -19,7 +19,7 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
         printf("Errore: dati in input errati\n");
         return NULL;
     } else {
-        for (struct weather *in = dati->head_weather; in != NULL; in = in->prev) {
+        for (struct weather *in = dati->head_weather; in != NULL; in = in->next) {
 
         //calcolo i 3 parametri
         vento = calcolo_vel_vento(metodo->vento, dati->h_vel1, in->velocita_vento1, dati->h_vel2, in->velocita_vento2, in->rugosita, altezza_ostacolo, altezza_mozzo, errore);

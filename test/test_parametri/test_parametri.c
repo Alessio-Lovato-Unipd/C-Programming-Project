@@ -94,8 +94,8 @@ void test_calcolo_parametri()
 	puntatore_dati_weather = estrazione_dati_weather(puntatore_dati_weather, PERCORSO_WEATHER, &errore);
     head_uscita = calcolo_parametri(puntatore_dati_weather, &metodi_calcolo, 5, 20, head_uscita);
 
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 6.15, head_uscita->vento);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 1.277, head_uscita->densita_aria);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 4.89, head_uscita->vento);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 1.31, head_uscita->densita_aria);
 
     svuota_parametri(head_uscita);
 	svuota_dati_weather(puntatore_dati_weather);

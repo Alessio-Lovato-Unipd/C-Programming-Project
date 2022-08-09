@@ -47,7 +47,7 @@
         float rugosita;
         float temperatura2; //ad altezza = 10m
         float velocita_vento2; //ad altezza = 80m
-        struct weather *prev;
+        struct weather *next;
     };
 
     /* 
@@ -155,7 +155,7 @@
     /*
      * Funzione per la creazione di nuovo elemento della lista head_weather.
     */
-    struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *const puntatore_dati_weather);
+    struct weather *nuovo_elemento_weather(char **fields, struct weather *const elemento_attuale);
 
      /*
      * Funzione per ricercare i dati di un orario nella lista weather.
@@ -170,6 +170,13 @@
     */
 	struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_weather);
 
+
+    /*
+     * Funzione per stampare tutta la lista degli orari weather.
+     * Comincia a stampare dal puntatore dato per argomento
+     * fino alla fine della lista.
+    */
+    void stampa_lista_weather(struct weather *head_weather);
 
 
 
@@ -216,6 +223,6 @@
     */
     void controllo_csv(const int *const errore);
 
-    void stampa_lista_turbine(struct turbina *head_turbina);
+
 
 #endif

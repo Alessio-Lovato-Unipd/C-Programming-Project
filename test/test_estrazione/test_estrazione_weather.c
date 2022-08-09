@@ -90,6 +90,16 @@ void verifica_estremi_weather(void)
 	puntatore = svuota_dati_weather(puntatore);
 }
 
+void stampa(void)
+{
+	struct dati_weather *puntatore = NULL;
+    int errore = 0;
+    puntatore = estrazione_dati_weather(puntatore, PERCORSO_WEATHER_DATA_CORRETTO, &errore);
+    stampa_lista_weather(puntatore->head_weather);
+	puntatore = svuota_dati_weather(puntatore);
+}
+
+
 
 int main (void)
 {
@@ -100,6 +110,7 @@ int main (void)
 	RUN_TEST(verifica_presenza_file_csv_percorso_errato);
 	RUN_TEST(verifica_ricerca_data_ora_weather);
 	RUN_TEST(verifica_estremi_weather);
+	RUN_TEST(stampa);
 	
 	return UNITY_END();
 }

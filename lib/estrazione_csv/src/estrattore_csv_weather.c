@@ -80,11 +80,15 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
         return NULL;
     }
 	
+    struct weather *elemento_attuale = puntatore_dati_weather->head_weather;
     while ((*errore = csv_read_record(&file, &fields)) == CSV_OK) {
         if (cerca_dati_weather(fields[0], puntatore_dati_weather->head_weather) == NULL) { // verifico che non esista un elemento con stesso identificativo
-            puntatore_dati_weather->head_weather = nuovo_elemento_weather(fields, puntatore_dati_weather);
+            elemento_attuale = nuovo_elemento_weather(fields, elemento_attuale);
             if (puntatore_dati_weather->head_weather == NULL)
+                puntatore_dati_weather->head_weather = elemento_attuale;
+            if (elemento_attuale == NULL)
                 break;
+            
         }
     }
 
@@ -102,10 +106,9 @@ struct dati_weather *estrazione_dati_weather(struct dati_weather *puntatore_dati
 }
 
 
-struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *const puntatore_dati_weather)
+struct weather *nuovo_elemento_weather(char **fields, struct weather *elemento_attuale)
 {
-    struct weather *nuova = NULL;
-    nuova = malloc(sizeof(struct weather));
+    struct weather *nuova = malloc(sizeof(struct weather));
 
     //verifico riuscita allocazione
     if (nuova == NULL) {
@@ -128,9 +131,13 @@ struct weather *nuovo_elemento_weather(char **fields, struct dati_weather *const
     nuova->rugosita = atof(fields[4]);
     nuova->temperatura2 = atof(fields[5]);
     nuova->velocita_vento2 = atof(fields[6]);
+    nuova->next = NULL;
+
+    if (elemento_attuale == NULL)
+        elemento_attuale = nuova; // Assegno il valore a head_weather
+    else
+        elemento_attuale->next = nuova;
     
-    //salvo posizione elemento precedente
-    nuova->prev = puntatore_dati_weather->head_weather;
     return nuova;
 }
 
@@ -140,13 +147,14 @@ struct dati_weather *svuota_dati_weather(struct dati_weather *puntatore_dati_wea
     if(puntatore_dati_weather == NULL)
 		return NULL;
     struct weather *temporaneo_weather = puntatore_dati_weather->head_weather;
+    struct weather *successivo = NULL;
 
     if (temporaneo_weather != NULL) {	
         do {
-            temporaneo_weather = puntatore_dati_weather->head_weather->prev;
-            free(puntatore_dati_weather->head_weather->orario);
-            free(puntatore_dati_weather->head_weather);
-            puntatore_dati_weather->head_weather = temporaneo_weather;
+            successivo = temporaneo_weather->next;
+            free(temporaneo_weather->orario);
+            free(temporaneo_weather);
+            temporaneo_weather = successivo;
 
         } while (temporaneo_weather != NULL);
     }
@@ -163,8 +171,18 @@ struct weather *cerca_dati_weather(const char *const orario, const struct weathe
 	const struct weather *temporaneo_weather = head_weather;
         
 	while((temporaneo_weather != NULL) && (strcmp(temporaneo_weather->orario, orario) != 0))
-		temporaneo_weather = temporaneo_weather->prev;
+		temporaneo_weather = temporaneo_weather->next;
 
 	return (struct weather *) temporaneo_weather;
 }
 
+
+void stampa_lista_weather(struct weather *head_weather)
+{
+    struct weather *temporaneo_weather = head_weather;
+    do {
+        printf("\n*****************\n");
+        printf("%s\n", temporaneo_weather->orario);
+        temporaneo_weather = temporaneo_weather->next;
+    } while (temporaneo_weather != NULL);
+}

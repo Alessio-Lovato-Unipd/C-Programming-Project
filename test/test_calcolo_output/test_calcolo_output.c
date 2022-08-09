@@ -202,10 +202,10 @@ void test_calcolo_potenza()
 
     potenza = calcolo_potenza(CURVA_POTENZA, INTERPOLAZIONE_LINEARE_O, "E-101/3050", head, 99, array_vento_curves, h_parametri);
 	
-	TEST_ASSERT_EQUAL_FLOAT(1732412.2, potenza[0]);
-	TEST_ASSERT_EQUAL_FLOAT(1752941.6, potenza[1]);
-	TEST_ASSERT_EQUAL_FLOAT(2206846.5, potenza[2]);
-	TEST_ASSERT_EQUAL_FLOAT(1748581.6, potenza[3]);
+	TEST_ASSERT_EQUAL_FLOAT(1200856.7, potenza[0]);
+	TEST_ASSERT_EQUAL_FLOAT(1183901.6, potenza[1]);
+	TEST_ASSERT_EQUAL_FLOAT(778079.6, potenza[2]);
+	TEST_ASSERT_EQUAL_FLOAT(770999.9, potenza[3]);
 
     svuota_lista_turbine_data(head);
     svuota_dati_weather(h_meteo);
