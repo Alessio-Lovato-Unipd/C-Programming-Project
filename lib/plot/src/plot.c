@@ -118,14 +118,14 @@
 
 
 /************** PLOT  DELLE CURVE ***************/
-void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
+int plot_curva_potenza(float *array_vento, const struct turbina *turbina)
 {
-    if ((array_vento != NULL) && (turbina->power_curves != NULL)){
+    if ((array_vento != NULL) && (turbina->power_curves != NULL)) {
         gnuplot_ctrl *gp = NULL; 
         char *titolo = malloc(sizeof(char) * (strlen("Curva di Potenza ") + strlen(turbina->nome) + 1 ));
         if (titolo == NULL) {
             printf("Errore: malloc() ha fallito in plot_curva_potenza\n");
-            exit(EXIT_FAILURE);
+            return EXIT_FAILURE;
         }
 
         strcpy(titolo, "Curva di Potenza ");
@@ -148,18 +148,19 @@ void plot_curva_potenza(float *array_vento, const struct turbina *turbina)
         gnuplot_close(gp); 
 
         free(titolo);
+        return EXIT_SUCCESS;
     }
-    
+    return EXIT_FAILURE;
 }
 
-void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
+int plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
 {
-    if ((array_vento != NULL) && (turbina->power_coefficients != NULL)){
+    if ((array_vento != NULL) && (turbina->power_coefficients != NULL)) {
         gnuplot_ctrl *gp = NULL;  
         char *titolo = malloc(sizeof(char) * (strlen("Curva coefficienti di potenza ") + strlen(turbina->nome) + 1 ));
         if (titolo == NULL) {
             printf("Errore: malloc() ha fallito in plot_curva_coefficienti\n");
-            exit(EXIT_FAILURE);
+            return EXIT_FAILURE;
         }
 
         strcpy(titolo, "Curva coefficienti di potenza ");
@@ -182,8 +183,9 @@ void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
         gnuplot_close(gp);  
 
         free(titolo); 
+        return EXIT_SUCCESS;
     }
-    
+    return EXIT_FAILURE;
 }
 
 
@@ -191,40 +193,43 @@ void plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
 
 
 /*********************** FUNZIONE COSTRUITA SULLE LISTA CONCATENATE CREATE NELLE ALTRE LIBRERIE *******************/
-void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const float *y, int n_dati, const char *title)
+int gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time, const float *y, int n_dati, const char *title)
 {
     FILE *data_file;
 
     data_file = fopen(file_name, "w+");
-    if (data_file != NULL){
+    if (data_file != NULL) {
 
         int lunghezza_sringa = strlen("2010-12-31 23:00");
         char *temp = malloc(sizeof(char) * (lunghezza_sringa + 1));
         // scrivi il titolo come commento
-        if (title != NULL) {
+        if (title != NULL)
             fprintf(data_file, "# %s\n", title);
-        }
 
         //scrivi i dati
-        for (int i = 0; (i < n_dati) || time != NULL; i++){
-            for (int j = 0; j < lunghezza_sringa + 1; j++) {
+        for (int i = 0; (i < n_dati) || time != NULL; i++) {
+            for (int j = 0; j < lunghezza_sringa + 1; j++)
                 temp[j] = time->orario[j];
-            }
 
             fprintf(data_file, "%s, %f\n", time->orario, y[i]);
             time = time->next;
         }
         free(temp);
         fclose(data_file);
+        return EXIT_SUCCESS;
     }
+    return EXIT_FAILURE;
     
 }
 
 
-void plot_time_potenza(const struct weather *tempo, const float *potenza, int giorni)//quanti giorni voglio visualizzare?
+int plot_time_potenza(const struct weather *tempo, const float *potenza, int giorni)//quanti giorni voglio visualizzare?
 {
-    if ((giorni > 0) && (tempo != NULL) && (potenza != NULL)){
+    if ((giorni > 0) && (tempo != NULL) && (potenza != NULL)) {
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
+
+        if (lunghezza_vettore < (int) (sizeof(potenza)/sizeof(char))) // Il numero di elementi da stampare è minore di un giorno
+            lunghezza_vettore = (int) (sizeof(potenza)/sizeof(char));
 
         gnuplot_ctrl *gp = NULL;
         gp = gnuplot_init();
@@ -254,13 +259,16 @@ void plot_time_potenza(const struct weather *tempo, const float *potenza, int gi
 
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"time_potenza.png\"");
-
-        gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
+        
+        //genero file csv di uscita
+        if (gnuplot_write_xtime_y_csv("potenza.csv", tempo , potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]") == EXIT_FAILURE)
+            return EXIT_FAILURE;
         gnuplot_plot_atmpfile(gp, "potenza.csv", "Potenza elettrica generata dalla turbina nel tempo");
 
-        gnuplot_close(gp);  
+        gnuplot_close(gp); 
+        return EXIT_SUCCESS;
     }
-    
+    return EXIT_FAILURE;
 }
 
 void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni)
@@ -272,15 +280,18 @@ void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int g
 }
 
 
-void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni)
+int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni)
 {
     if ((giorni > 0) && (potenza != NULL)){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
+        if (lunghezza_vettore < (int) (sizeof(potenza)/sizeof(char))) // Il numero di elementi da stampare è minore di un giorno
+            lunghezza_vettore = (int) (sizeof(potenza)/sizeof(char));
+
         float x[lunghezza_vettore];
         char *titolo = malloc(sizeof(char) * (strlen("Potenza elettrica generata dalla turbina nel tempo") + strlen(nome_turbina) + 1));
         if (titolo == NULL) {
             printf("Errore: malloc() ha fallito in plot_potenza\n");
-            exit(EXIT_FAILURE);
+            return EXIT_FAILURE;
         }
 
         strcpy(titolo, "Potenza generata dalla turbina ");
@@ -306,13 +317,15 @@ void plot_potenza(const struct weather *head_tempo,const char *nome_turbina, flo
         gnuplot_cmd(gp, "set terminal png");
         gnuplot_cmd(gp, "set output \"potenza.png\"");
 
-        gnuplot_write_xtime_y_csv("potenza.csv", head_tempo, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]");//genero file csv di uscita
+        //genero file csv di uscita
+        if (gnuplot_write_xtime_y_csv("potenza.csv", head_tempo, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]") == EXIT_FAILURE)
+            return EXIT_FAILURE;
         gnuplot_plot_xy(gp, x, potenza, lunghezza_vettore, titolo);
-
         gnuplot_close(gp);  
 
         free(titolo);
+        return EXIT_SUCCESS;
     }
+    return EXIT_FAILURE;
 }
-
 

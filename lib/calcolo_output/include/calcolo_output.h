@@ -26,24 +26,24 @@
 	 * 		default: CURVA_POTENZA
 	 * metodo_interpolazione: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O
 	 * 		default: INTERPOLAZIONE_LINEARE_O
-	 * Restituisce -1 se ci sono errori nell'esecuzione
+	 * Restituisce NULL se ci sono errori nell'esecuzione
 	*/
 	float *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazione, const char *nome_turbina, struct turbina *head, float h_mozzo, const float *array_vento, struct parametro *in);
 
 
 	/*
-	 *fFunzione che richiamano l'interpolazione delle curve grezze estratte dai file csv
+	 * Funzione che richiama l'interpolazione delle curve grezze estratte dai file csv
 	 * e calcola l'output di potenza a partire da esse.
-	 * L'altezza del mozzo in queste funzioni serve solo ad identificare la turbina,
+	 * L'altezza del mozzo in questa funzione serve solo ad identificare la turbina,
 	 * non influisce nel calcolo dei parametri atmosferici.
 	*/
 	float calcolo_potenza_curve_di_potenza(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, const float *array_vento);
 
 
 	/*
-	 *fFunzione che richiamano l'interpolazione delle curve grezze estratte dai file csv
+	 * Funzione che richiama l'interpolazione delle curve grezze estratte dai file csv
 	 * e calcola l'output di potenza a partire da esse.
-	 * L'altezza del mozzo in queste funzioni serve solo ad identificare la turbina,
+	 * L'altezza del mozzo in questa funziona serve solo ad identificare la turbina,
 	 * non influisce nel calcolo dei parametri atmosferici.
 	*/
 	float calcolo_potenza_curve_coefficienti(tipo_calcolo_output metodo, const char *nome_turbina, struct turbina *head, float altezza_mozzo, float vel_vento, float densita_aria, const float *array_vento);
@@ -58,12 +58,16 @@
 	
 	/*
 	 * Funzione che effettua l'interpolazione dei valori nulli delle curve grezze estratte dai file csv
+	 * I metodi disponibili sono: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O
+	 * Default:  INTERPOLAZIONE_LINEARE_O
 	*/
 	void interpolazione_potenza_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt, const float *array_vento);
 	
 
 	/*
 	 * Funzione che effettua l'interpolazione dei valori nulli delle curve grezze estratte dai file csv
+	 * I metodi disponibili sono: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O
+	 * Default:  INTERPOLAZIONE_LINEARE_O
 	*/
 	void interpolazione_coefficienti_per_valori_mancanti(tipo_calcolo_output metodo, struct turbina *punt, const float *array_vento);
 	
