@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
         //float potenza_in_uscita=0;
         float *potenza_generata=NULL;
 
-        potenza_generata=malloc(sizeof(float) * (NUMERO_ORE_IN_UN_GIORNO));
+        potenza_generata=malloc(sizeof(float) * (NUMERO_ORE_IN_UN_GIORNO - 1));
         
         if (potenza_generata == NULL) {
             printf("Error: malloc() ha fallito con potenza_generata.\n");
@@ -189,9 +189,17 @@ int main(int argc, char *argv[])
 		
         if(strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves)
         {
+            potenza_generata= calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_curves, head_parametri);
+                if (potenza_generata == NULL) {
+			        svuota_dati_weather(dati);
+			        svuota_lista_turbine_data(head_turbina);
+			        free(metodo_calcolo_parametri);
+			        svuota_parametri(head_parametri);
+                    exit(EXIT_FAILURE);
+			    }
+
 			for(int i = 0; i < 24; i++){
 				//potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
-                potenza_generata= calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_curves, head_parametri);
 				printf("\tOrario misure: %s\n", temp_parametri->orario);
 				//printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
@@ -202,12 +210,21 @@ int main(int argc, char *argv[])
             plot_potenza(dati->head_weather, turbina_cercata->nome, potenza_generata, 1);
             printf("\nNOTA: curva_di_potenza.png disponibile in build/app\n");
             printf("NOTA: potenza.png disponibile in build/app\n\n\n");
+            free(potenza_generata);
 		}
         else if(strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient)
         {
+            potenza_generata= calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_coefficient, head_parametri);
+            if (potenza_generata == NULL) {
+			    svuota_dati_weather(dati);
+			    svuota_lista_turbine_data(head_turbina);
+		        free(metodo_calcolo_parametri);
+		        svuota_parametri(head_parametri);
+                exit(EXIT_FAILURE);
+                }
+
 			for(int i = 0; i < 24; i++){
 				//potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
-				potenza_generata= calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_coefficient, head_parametri);
                 printf("\tOrario misure: %s\n", temp_parametri->orario);
 				//printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
@@ -218,6 +235,7 @@ int main(int argc, char *argv[])
             plot_potenza(dati->head_weather, turbina_cercata->nome, potenza_generata, 1);
             printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n");
             printf("NOTA: potenza.png disponibile in build/app\n\n\n");
+            free(potenza_generata);
 		}
         else
         {
@@ -227,6 +245,7 @@ int main(int argc, char *argv[])
 			svuota_lista_turbine_data(head_turbina);
 			free(metodo_calcolo_parametri);
 			svuota_parametri(head_parametri);
+            free(potenza_generata);
             exit(EXIT_FAILURE);
         }
     }
