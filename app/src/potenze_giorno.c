@@ -164,17 +164,6 @@ int main(int argc, char *argv[])
         //float potenza_in_uscita=0;
         float *potenza_generata=NULL;
 
-        potenza_generata=malloc(sizeof(float) * (NUMERO_ORE_IN_UN_GIORNO - 1));
-        
-        if (potenza_generata == NULL) {
-            printf("Error: malloc() ha fallito con potenza_generata.\n");
-			svuota_dati_weather(dati);
-			svuota_lista_turbine_data(head_turbina);
-			free(metodo_calcolo_parametri);
-			svuota_parametri(head_parametri);
-            exit(EXIT_FAILURE);
-			}
-
 		temp_parametri = cerca_nodo_parametri(argv[9], head_parametri);
 		if(temp_parametri == NULL){
 			printf("Data e orario inseriti errati, fare riferimento al file weather.csv o verificare di aver utilizzato le virgolette\n");
@@ -182,6 +171,7 @@ int main(int argc, char *argv[])
 			svuota_lista_turbine_data(head_turbina);
 			free(metodo_calcolo_parametri);
 			svuota_parametri(head_parametri);
+            free(potenza_generata);
 			exit(EXIT_FAILURE);
 		}
 		printf("RISULTATI:\n");
@@ -254,6 +244,7 @@ int main(int argc, char *argv[])
     svuota_dati_weather(dati);
 	free(metodo_calcolo_parametri);
 	svuota_parametri(head_parametri);
+ 
 
     
 

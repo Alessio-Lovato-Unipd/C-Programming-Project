@@ -94,11 +94,25 @@ void test_calcolo_parametri()
 	puntatore_dati_weather = estrazione_dati_weather(puntatore_dati_weather, PERCORSO_WEATHER, &errore);
     head_uscita = calcolo_parametri(puntatore_dati_weather, &metodi_calcolo, 5, 20, head_uscita);
 
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 4.89, head_uscita->vento);
-    TEST_ASSERT_FLOAT_WITHIN(0.01, 1.31, head_uscita->densita_aria);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 6.15, head_uscita->vento);
+    TEST_ASSERT_FLOAT_WITHIN(0.01, 1.28, head_uscita->densita_aria);
 
     svuota_parametri(head_uscita);
 	svuota_dati_weather(puntatore_dati_weather);
+}
+
+void stampa(void)
+{
+    int errore = 0;
+	struct dati_weather *puntatore_dati_weather = NULL;
+    struct tipo_metodo metodi_calcolo = {INTERPOLAZIONE_LOGARITMICA, INTERPOLAZIONE_LINEARE_T, GAS_IDEALE};
+    struct parametro *head_uscita = NULL;
+	puntatore_dati_weather = estrazione_dati_weather(puntatore_dati_weather, PERCORSO_WEATHER, &errore);
+    head_uscita = calcolo_parametri(puntatore_dati_weather, &metodi_calcolo, 5, 20, head_uscita);
+    stampa_lista_weather(puntatore_dati_weather->head_weather);
+    svuota_dati_weather(puntatore_dati_weather);
+    stampa_lista_parametri(head_uscita);
+    svuota_parametri(head_uscita);
 }
 
 int main()
@@ -115,7 +129,7 @@ int main()
     RUN_TEST(test_calcolo_densita_gas_ideale);
     RUN_TEST(test_aggiungi_elemento);  
     RUN_TEST(test_calcolo_parametri);  
-       
+    RUN_TEST(stampa);
 
     return UNITY_END();
 }

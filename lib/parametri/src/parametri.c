@@ -8,7 +8,7 @@
 
 /****************** CALCOLO DEI PARAMETRI ******************/
 
-struct parametro *calcolo_parametri(const struct dati_weather *const dati, const struct tipo_metodo *const metodo, float altezza_ostacolo, float altezza_mozzo, struct parametro *const head)
+struct parametro *calcolo_parametri(const struct dati_weather *const dati, const struct tipo_metodo *const metodo, float altezza_ostacolo, float altezza_mozzo, struct parametro * head)
 {
     float vento, temperatura, densita;
     struct parametro *out = head;
@@ -30,7 +30,9 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
         out = aggiungi_elemento(in->orario, out, vento, densita);
         if (out == NULL)
             return NULL;
-		
+        if (head == NULL)
+            head = out;
+
 		}
     }
 
@@ -43,7 +45,7 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
         }
     }
 
-    return out;
+    return head;
 }
 
 
@@ -51,7 +53,7 @@ struct parametro *calcolo_parametri(const struct dati_weather *const dati, const
 
 /****************** GESTIONE STRUTTURA PARAMETRI ******************/
 
-struct parametro *aggiungi_elemento(const char *const orario, struct parametro *const elemento_attuale, float val_vento, float val_densita)
+struct parametro *aggiungi_elemento(const char *const orario, struct parametro *elemento_attuale, float val_vento, float val_densita)
 {
     struct parametro *nuovo_elemento;
 
@@ -74,7 +76,11 @@ struct parametro *aggiungi_elemento(const char *const orario, struct parametro *
     nuovo_elemento->densita_aria = val_densita;
 
     //salvo posizione 
-    nuovo_elemento->next = elemento_attuale; 
+    nuovo_elemento->next = NULL;
+    if (elemento_attuale == NULL)
+        elemento_attuale = nuovo_elemento;
+    else
+        elemento_attuale->next = nuovo_elemento;
 
     return nuovo_elemento;
 }
@@ -107,6 +113,19 @@ struct parametro *svuota_parametri(struct parametro *head)
 
 	return head;
 }
+
+
+void stampa_lista_parametri(struct parametro *head)
+{
+    struct parametro *temp_parametri = head;
+    while (temp_parametri != NULL) {
+        printf("\tOrario misure: %s\n", temp_parametri->orario);
+		printf("\tVelocità del vento: %f\n", temp_parametri->vento);
+		printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
+		temp_parametri = temp_parametri->next;
+    }
+}
+
 
 
 

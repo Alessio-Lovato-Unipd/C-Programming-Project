@@ -199,7 +199,7 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
     if (data_file != NULL){
 
         int lunghezza_sringa = strlen("2010-12-31 23:00");
-        char *temp = malloc(sizeof(char) * lunghezza_sringa);
+        char *temp = malloc(sizeof(char) * (lunghezza_sringa + 1));
         // scrivi il titolo come commento
         if (title != NULL) {
             fprintf(data_file, "# %s\n", title);
