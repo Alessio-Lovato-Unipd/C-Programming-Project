@@ -120,8 +120,18 @@ int main(int argc, char *argv[])
     }
     
     //ricerca della turbina richiesta
-	float altezza_mozzo = atof(argv[8]);
-    turbina_cercata = cerca_dati_turbina(argv[1], altezza_mozzo, head_turbina);
+    if (isanumber(argv[8]) && (atof(argv[8]) >= 0)) {
+        float altezza_mozzo = atof(argv[8]);
+        turbina_cercata = cerca_dati_turbina(argv[1], altezza_mozzo, head_turbina);
+        
+    }
+    else {
+        printf("\nL'argomento inserito in argv[8] non è corretto.\nInserire un valore numerico >= 0\n");
+		svuota_dati_weather(dati);
+		svuota_lista_turbine_data(head_turbina);
+		free(metodo_calcolo_parametri);
+        exit(EXIT_FAILURE);
+    }
 	struct parametro *temp_parametri = NULL;
     struct parametro *head_parametri = NULL;
 	
@@ -133,16 +143,25 @@ int main(int argc, char *argv[])
         printf("\nESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
 
         //calcolo dei parametri a partire dai dati meteorologici
-        float altezza_ostacolo=0;
-
-        altezza_ostacolo=atof(argv[7]);
-        head_parametri = calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
-        if (head_parametri == NULL) {
+        
+        if (isanumber(argv[7]) && (atof(argv[7]) >= 0)) {
+            float altezza_ostacolo = atof(argv[7]);
+            head_parametri = calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
+            if (head_parametri == NULL) {
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                free(metodo_calcolo_parametri);
+                exit(EXIT_FAILURE);
+            }
+        }
+        else {
+            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero dell'altezza dell'ostacolo >= 0\n");
             svuota_dati_weather(dati);
             svuota_lista_turbine_data(head_turbina);
             free(metodo_calcolo_parametri);
             exit(EXIT_FAILURE);
         }
+        
         //fine calcolo parametri
 
         //salvataggio di argv[6]
@@ -195,6 +214,7 @@ int main(int argc, char *argv[])
                 svuota_dati_weather(dati);
                 svuota_lista_turbine_data(head_turbina);
                 free(metodo_calcolo_parametri);
+                svuota_parametri(head_parametri);
                 free(potenza);
                 exit(EXIT_FAILURE);
             }
@@ -217,12 +237,25 @@ int main(int argc, char *argv[])
 			svuota_lista_turbine_data(head_turbina);
 			free(metodo_calcolo_parametri);
 			svuota_parametri(head_parametri);
+            free(potenza);
             exit(EXIT_FAILURE);
         }
 
-        int giorni = atoi(argv[9]);
-        plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni); 
-        printf("\nNOTA: potenza.png disponibile in build/app\n\n\n");
+        if(isanumber(argv[9]) && (atoi(argv[9]) > 0)) {
+            int giorni = atoi(argv[9]);
+            plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni); 
+            printf("\nNOTA: potenza.png disponibile in build/app\n\n\n");  
+        }
+        else {
+            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero di giorni > 0\n\n");
+            svuota_dati_weather(dati);
+			svuota_lista_turbine_data(head_turbina);
+			free(metodo_calcolo_parametri);
+			svuota_parametri(head_parametri);
+            free(potenza);
+            exit(EXIT_FAILURE);
+        }
+        
 
         free(potenza);
 
@@ -238,4 +271,16 @@ int main(int argc, char *argv[])
 	svuota_parametri(head_parametri);
 
     return 0;
+}
+
+
+
+bool isanumber(const char *str)
+{
+    for (int i = 0; str[i]!= '\0'; i++)
+    {
+        if (isdigit(str[i]) == 0)
+              return false;
+    }
+    return true;
 }
