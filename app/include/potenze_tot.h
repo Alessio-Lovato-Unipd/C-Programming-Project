@@ -5,6 +5,7 @@
     #include <math.h>
     #include <stdlib.h>
     #include <stdbool.h>
+    #include <ctype.h>
     #include "estrattore_csv.h"
     #include "formule.h"
     #include "parametri.h"
@@ -33,5 +34,6 @@
 
         Esempio: ./main E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1
     */
+   bool isanumber(const char *str);
 
 #endif
