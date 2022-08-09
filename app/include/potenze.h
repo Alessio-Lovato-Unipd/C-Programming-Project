@@ -1,10 +1,11 @@
-#ifndef POTENZE_GIORNO_H
+#ifndef POTENZE_H
 
-    #define POTENZE_GIORNO_H
+    #define POTENZE_H
     #include <stdio.h>
     #include <math.h>
     #include <stdlib.h>
     #include <stdbool.h>
+    #include <ctype.h>
     #include "estrattore_csv.h"
     #include "formule.h"
     #include "parametri.h"
@@ -30,9 +31,30 @@
         - argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output
         - argv[7] ---> valore di altezza_ostacolo, mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]
         - argv[8] ---> altezza del mozzo considerata
-		- argv[9] ---> data e orario di inizio analisi dati, inserire tra le virgolette ""
 
-        Esempio: ./main E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1
+        Se eseguibile potenza_tot:
+		    - argv[9] ---> numero giorni da visualizzare nel grafico di potenza generata
+
+        Se eseguibile potenza_giorno:
+		    - argv[9] ---> data e orario di inizio analisi dati, inserire tra le gli apici
+
+
+        -----ESEMPI-----
+        
+        potenza_tot: ./potenza_tot E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1 0 10
+        
+        potenza_giorno: ./potenza_tot E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1 0 '2010-01-01 22:00:00+01:00' 
+
     */
+
+
+
+
+    /*************  FUNZIONI  *************/
+
+    /*
+     * Funzione per verificare se un argomento passato è numerico
+    */
+    bool isanumber(const char *str);
 
 #endif

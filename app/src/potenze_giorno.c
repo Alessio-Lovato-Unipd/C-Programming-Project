@@ -1,4 +1,4 @@
-#include "potenze_giorno.h"
+#include "potenze.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
         printf("\t- argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output\n");
         printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n");
 		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n");
-		printf("\t- argv[9] ---> data e orario di inizio analisi dati, inserire tra le virgolette \n\n");
+		printf("\t- argv[9] ---> data e orario di inizio analisi dati, inserire tra gli apici \n\n");
 		
         return(EXIT_FAILURE);
     }   
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     metodo_calcolo_parametri = malloc(sizeof(struct tipo_metodo));
     if (metodo_calcolo_parametri == NULL) {
-        printf("Errore: malloc() ha fallito in metodo calcolo parametri)\n");
+        printf("Errore: malloc() ha fallito in metodo calcolo parametri\n");
 		svuota_dati_weather(dati);
 		svuota_lista_turbine_data(head_turbina);
         exit(EXIT_FAILURE);
@@ -80,7 +80,10 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->vento = HELLMAN;
     else {
         printf("\nL'argomento inserito in argv[2] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_V, INTERPOLAZIONE_LOGARITMICA, PROFILO_LOGARITMICO, HELLMAN\n\n");
-        goto FAILURE_PARAMETRI;
+        free(metodo_calcolo_parametri);
+        svuota_dati_weather(dati);
+        svuota_lista_turbine_data(head_turbina);
+        exit(EXIT_FAILURE);
     }
     
     //salvataggio di argv[3] nella variabile temperatura
@@ -90,7 +93,10 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->temperatura = GRADIENTE_LINEARE;
     else {
         printf("\nL'argomento inserito in argv[3] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_T, GRADIENTE_LINEARE\n\n");
-		goto FAILURE_PARAMETRI;
+		free(metodo_calcolo_parametri);
+        svuota_dati_weather(dati);
+        svuota_lista_turbine_data(head_turbina);
+        exit(EXIT_FAILURE);
     }
 
     //salvataggio di argv[4] nella variabile densita 
@@ -100,15 +106,25 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->densita = GAS_IDEALE;
     else {
         printf("\nL'argomento inserito in argv[4] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: BAROMETRICO, GAS_IDEALE\n\n");
-		goto FAILURE_PARAMETRI;
+		free(metodo_calcolo_parametri);
+        svuota_dati_weather(dati);
+        svuota_lista_turbine_data(head_turbina);
+        exit(EXIT_FAILURE);
     }
     
     //ricerca della turbina richiesta
-	float altezza_mozzo = atof(argv[8]);
-    turbina_cercata = cerca_dati_turbina(argv[1], altezza_mozzo, head_turbina);
+    if (isanumber(argv[8]) && (atof(argv[8]) >= 0)) {
+        float altezza_mozzo = atof(argv[8]);
+        turbina_cercata = cerca_dati_turbina(argv[1], altezza_mozzo, head_turbina);
+    } else {
+        printf("\nL'argomento inserito in argv[8] non è corretto.\nInserire un valore numerico >= 0\n");
+		svuota_dati_weather(dati);
+		svuota_lista_turbine_data(head_turbina);
+		free(metodo_calcolo_parametri);
+        exit(EXIT_FAILURE);
+    }
 	struct parametro *temp_parametri = NULL;
     struct parametro *head_parametri = NULL;
-    float *potenza_generata = NULL;
 	
     if (turbina_cercata == NULL) {
         printf("\nESITO RICERCA TURBINA: Modello turbina non trovato!\n\n");
@@ -116,16 +132,22 @@ int main(int argc, char *argv[])
         printf("\nESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
 
         //calcolo dei parametri a partire dai dati meteorologici
-        float altezza_ostacolo=0;
-
-        altezza_ostacolo=atof(argv[7]);
-        if (altezza_ostacolo < 0) {
-            printf("\nL'altezza dell'ostacolo inserita è negativa.\n");
-            goto FAILURE_PARAMETRI;
+        if (isanumber(argv[7]) && (atof(argv[7]) >= 0)) {
+            float altezza_ostacolo = atof(argv[7]);
+            head_parametri = calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
+            if (head_parametri == NULL) {
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                free(metodo_calcolo_parametri);
+                exit(EXIT_FAILURE);
+            }
+        } else {
+            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero dell'altezza dell'ostacolo >= 0\n");
+            svuota_dati_weather(dati);
+            svuota_lista_turbine_data(head_turbina);
+            free(metodo_calcolo_parametri);
+            exit(EXIT_FAILURE);
         }
-        head_parametri = calcolo_parametri(dati, metodo_calcolo_parametri, altezza_ostacolo, turbina_cercata->altezza_mozzo, head_parametri);
-        if (head_parametri == NULL)
-            goto FAILURE_PARAMETRI;
         //fine calcolo parametri
 
         //salvataggio di argv[6]
@@ -136,51 +158,79 @@ int main(int argc, char *argv[])
             var_argv6=INTERPOLAZIONE_LOGARITMICA_O;
         else {
             printf("\nL'argomento inserito in argv[6] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O\n\n");
-			goto FAILURE_METODO;
+			svuota_parametri(head_parametri);
+            free(metodo_calcolo_parametri);
+            svuota_dati_weather(dati);
+            svuota_lista_turbine_data(head_turbina);
+            exit(EXIT_FAILURE);
         }
 
         float potenza_in_uscita=0;
+        float *potenza = NULL;
 
 		temp_parametri = cerca_nodo_parametri(argv[9], head_parametri);
 		if (temp_parametri == NULL) {
 			printf("Data e orario inseriti errati, fare riferimento al file weather.csv o verificare di aver utilizzato gli apici come nell'esempio sottostante:\n");
 			printf("\'2010-06-05 06:00:00+01:00\'\n\n");
-            goto FAILURE_COMPLETO;
+            free(potenza);
+            svuota_parametri(head_parametri);
+            free(metodo_calcolo_parametri);
+            svuota_dati_weather(dati);
+            svuota_lista_turbine_data(head_turbina);
+            exit(EXIT_FAILURE);
 		}
 		printf("RISULTATI:\n");
 		printf("Potenze o velocità del vento pari a -1 indicano un errore in fase di interpolazione\n\n");
 		
         if (strcmp(argv[5], "CURVE_DI_POTENZA")==0 && turbina_cercata->bool_p_curves) {
-            potenza_generata = calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_curves, head_parametri);
-                if (potenza_generata == NULL)
-			        goto FAILURE_METODO;
+            potenza = calcolo_potenza(CURVA_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_curves, head_parametri);
+            if (potenza == NULL) {
+                svuota_parametri(head_parametri);
+                free(metodo_calcolo_parametri);
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                exit(EXIT_FAILURE);
+            }
 
-			for (int i = 0; (i < 24 && temp_parametri != NULL); i++) {
+			for (int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
 				potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
-				printf("\tOrario misure: %s\n", temp_parametri->orario);
+                printf("\tOrario misure: %s\n", temp_parametri->orario);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
 				printf("\tVelocità del vento: %f\n", temp_parametri->vento);
 				printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
 				temp_parametri = temp_parametri->next;
-
 			}
             if (plot_curva_potenza(array_vento_power_curves, turbina_cercata) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
-                goto FAILURE_COMPLETO;
-            } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza_generata, 1) == EXIT_FAILURE) {
+                free(potenza);
+                svuota_parametri(head_parametri);
+                free(metodo_calcolo_parametri);
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                exit(EXIT_FAILURE);
+            } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, 1) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare il grafico della potenza\n");
-                goto FAILURE_COMPLETO;
+                free(potenza);
+                svuota_parametri(head_parametri);
+                free(metodo_calcolo_parametri);
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                exit(EXIT_FAILURE);
             } else {
                 printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n");
                 printf("NOTA: potenza.png disponibile in build/app\n\n\n");
-                free(potenza_generata);
+                free(potenza);
             }
 		} else if (strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient) {
-            potenza_generata= calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, altezza_mozzo, array_vento_power_coefficient, head_parametri);
-            if (potenza_generata == NULL) 
-                goto FAILURE_METODO;
+            potenza= calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_coefficient, head_parametri);
+            if (potenza == NULL) 
+                svuota_parametri(head_parametri);
+		        free(metodo_calcolo_parametri);
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                exit(EXIT_FAILURE);
 
-			for( int i = 0; (i < 24 && temp_parametri != NULL); i++) {
+			for( int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
 				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
                 printf("\tOrario misure: %s\n", temp_parametri->orario);
 				printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
@@ -190,19 +240,34 @@ int main(int argc, char *argv[])
 			}
             if (plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
-                goto FAILURE_COMPLETO;
-            } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza_generata, 1) == EXIT_FAILURE) {
+                free(potenza);
+                svuota_parametri(head_parametri);
+                free(metodo_calcolo_parametri);
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                exit(EXIT_FAILURE);
+            } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, 1) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare il grafico della potenza\n");
-                goto FAILURE_COMPLETO;
+                free(potenza);
+                svuota_parametri(head_parametri);
+                free(metodo_calcolo_parametri);
+                svuota_dati_weather(dati);
+                svuota_lista_turbine_data(head_turbina);
+                exit(EXIT_FAILURE);
             } else {
                 printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n");
                 printf("NOTA: potenza.png disponibile in build/app\n\n\n");
-                free(potenza_generata);
+                free(potenza);
             }
-		} else {
+        } else {
             printf("\nL'argomento inserito in argv[5] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA\n");
             printf("Se l'errore persiste, controllare se la turbina cercata possiede le informazioni relative al tipo di curva voluta.\n");
-			goto FAILURE_COMPLETO;
+            free(potenza);
+            svuota_parametri(head_parametri);
+            free(metodo_calcolo_parametri);
+            svuota_dati_weather(dati);
+            svuota_lista_turbine_data(head_turbina);
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -212,15 +277,16 @@ int main(int argc, char *argv[])
 	svuota_parametri(head_parametri);
 
     return 0;
+}
 
-    FAILURE_COMPLETO:
-        free(potenza_generata);
-    FAILURE_METODO:
-        svuota_parametri(head_parametri);
-    FAILURE_PARAMETRI:
-		free(metodo_calcolo_parametri);
-        svuota_dati_weather(dati);
-        svuota_lista_turbine_data(head_turbina);
-    
-    exit(EXIT_FAILURE);
+
+
+bool isanumber(const char *str)
+{
+    for (int i = 0; str[i]!= '\0'; i++)
+    {
+        if (isdigit(str[i]) == 0)
+              return false;
+    }
+    return true;
 }
