@@ -23,7 +23,7 @@
 	 * Funzione per il calcolo della potenza istantaneo.
 	 * I Parametri selezionabili sono:
 	 * curva: CURVA_POTENZA, CURVA_COEFFICIENTI_POTENZA
-	 * 		default: ?
+	 * 		default: CURVA_POTENZA
 	 * metodo_interpolazione: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O
 	 * 		default: INTERPOLAZIONE_LINEARE_O
 	 * Restituisce -1 se ci sono errori nell'esecuzione

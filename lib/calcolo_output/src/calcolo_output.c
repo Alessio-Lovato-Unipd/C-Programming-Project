@@ -27,6 +27,13 @@ float *calcolo_potenza(tipo_curva curva, tipo_calcolo_output metodo_interpolazio
 			i++;
 		}
 		break;
+
+	default:
+		for (struct parametro *p = in; p != NULL; p = p->next) {
+			potenza[i] = calcolo_potenza_curve_di_potenza(metodo_interpolazione, nome_turbina, head, h_mozzo, p->vento, array_vento);
+			i ++;
+		}
+		break;
 	}
 
 	return potenza;

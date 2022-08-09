@@ -41,12 +41,14 @@
     /****** FORMULE CALCOLO VELOCITÁ VENTO *****/
 
     /*
-     *Calcolo della velocità del vento in presenza di un ostacolo
+     * Calcolo della velocità del vento all'altezza del mozzo
+     * considerando la rugosità superficiale e la presenza di un ostacolo
     */
     float profilo_logaritmico(float h_dati, float vel_vento, float z0, float h_ostacolo, float h_mozzo, int *const errore);
 
     /*
-     * Calcolo velocità vento
+     * Calcolo velocità vento all'altezza del mozzo
+     * considerando la rugosità superficiale
     */
     float hellman(float h_dati, float vel_vento, float z0,float h_mozzo, int *const errore);
 
@@ -70,12 +72,14 @@
     float p_x(float p1, float h_dati, float h_mozzo);
 
     /*
-     * Calcolo densità con metodo barometrico
+     * Calcolo densità dell'aria all'altezza del mozzo 
+     * con metodo barometrico
     */
     float barometrico(float h_dati, float p1, float T_mozzo, float h_mozzo, int *const errore);
 
     /*
-     *Calcolo densità con metodo del gas ideale
+     * Calcolo densità dell'aria all'altezza del mozzo 
+     * con metodo del gas ideale
     */
     float gas_ideale(float h_dati, float p1, float T_mozzo, float h_mozzo, int *const errore);
 	
@@ -84,7 +88,9 @@
 
 
     /*****  CALCOLO POTENZA *****/
- 
+    /*
+    * Calcola la potenza generata
+    */
 	float calcolo_potenza_da_coefficienti(float densita_aria, float diametro, float vel_vento, float coefficiente);
 
 #endif
