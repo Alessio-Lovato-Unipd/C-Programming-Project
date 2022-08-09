@@ -6,6 +6,8 @@ project( Librerie_gnuplot
 	 DESCRIPTION "Librereria per generazione dei grafici"
 	 )
 	 
+find_package(Gnuplot 5.2.8 REQUIRED)
+
 add_library(plot STATIC src/plot.c)
 
 target_link_libraries( plot

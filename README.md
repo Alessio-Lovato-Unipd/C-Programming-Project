@@ -1,6 +1,10 @@
 # SudoPassExamLII2122
 Repository per progetto turbine eoliche LII2122
 
+Per compilare il repository è necessario aver installato il pacchetto "gnuplot" alla versione 5.2.8
+
+
+TESTING:
 
 Per eseguire in maniera automatica i test è sufficiente, nella cartella principale, assicurarsi che il CMakeLists.txt sia impostato nel gruppo "test" 
 ed eseguire nella CLI questo comando:
