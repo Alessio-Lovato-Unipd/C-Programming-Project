@@ -15,6 +15,11 @@ target_link_libraries( plot
 	lib::calcolo_output
 )
 
+target_link_libraries( formule
+	PUBLIC
+	m #link alla libreria libm.so (math.h)
+)
+
 target_include_directories(plot PUBLIC include)
 
 add_library(lib::plot ALIAS plot)

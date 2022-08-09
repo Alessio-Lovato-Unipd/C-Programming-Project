@@ -2,10 +2,10 @@
 
 int main(int argc, char *argv[])
 {
-    struct turbina *head_turbina=NULL;
-    struct turbina *turbina_cercata=NULL;
+    struct turbina *head_turbina = NULL;
+    struct turbina *turbina_cercata = NULL;
     struct dati_weather *dati = NULL;
-    int errore=0;
+    int errore = 0;
     float array_vento_power_coefficient[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
     float array_vento_power_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
 
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        if (isanumber(argv[9]) && (atoi(argv[9]) > 0)) {
+        if (isanumber(argv[9]) && (atoi(argv[9]) > 0) && (atoi(argv[9]) < INT_MAX)) {
             int giorni = atoi(argv[9]);
             if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare il grafico della potenza\n");
@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
                 free(potenza);
             }
         } else {
-            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero di giorni > 0\n\n");
+            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero di giorni > 0 e < di %i\n\n", INT_MAX);
             free(potenza);
             svuota_parametri(head_parametri);
             free(metodo_calcolo_parametri);

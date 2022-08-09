@@ -3,6 +3,8 @@
 
     #include <stdlib.h>
     #include <stdio.h> 
+    #include <limits.h>
+    #include <math.h>
     #include "gnuplot_i.h"
     #include "estrattore_csv.h"
     #include "calcolo_output.h"
@@ -38,9 +40,10 @@
 
     /*
     * Crea il titolo del grafico inserendo l'orario e data di partenza dell'arco temporale
-    * considerato e dicendo il numero di giorni visualizzato
+    * considerato e dicendo il numero di giorni visualizzato.
+    * In caso di errore ritorna EXIT_FAILURE, altrimenti EXIT_SUCCESS
     */
-    void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni);
+    int gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni);
 
     /*
     * Genera grafico e file csv dell'andamento di potenza generata nell'arco temporale

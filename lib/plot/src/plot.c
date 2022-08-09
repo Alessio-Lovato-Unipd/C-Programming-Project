@@ -271,12 +271,16 @@ int plot_time_potenza(const struct weather *tempo, const float *potenza, int gio
     return EXIT_FAILURE;
 }
 
-void gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni)
+int gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int giorni)
 {
-    char temp[5];
+    char *temp = calloc(round(log10(INT_MAX)) + 2, sizeof(char)); // Metto 2 perchè round approssima alla parte intera e mi serve uno spazio per /0
+    if (temp == NULL)
+        return EXIT_FAILURE;
     sprintf(temp, "%d", giorni);
 
     gnuplot_cmd(h, "set title \"A partire da %s per %s giorni\"", head_tempo->orario, temp);
+    free(temp);
+    return EXIT_SUCCESS;
 }
 
 
@@ -309,7 +313,8 @@ int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, floa
         gnuplot_set_line(gp, "1", "orange", "1");
         gnuplot_set_point(gp, NULL, NULL);
 
-        gnuplot_set_title(gp, head_tempo, giorni);
+        if (gnuplot_set_title(gp, head_tempo, giorni) == EXIT_FAILURE)
+            return EXIT_FAILURE;
 
         gnuplot_set_xlabel(gp, "Tempo [h]");
         gnuplot_set_ylabel(gp, "Potenza [kW]");
