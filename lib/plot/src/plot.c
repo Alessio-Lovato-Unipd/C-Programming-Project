@@ -212,7 +212,7 @@ void gnuplot_write_xtime_y_csv(const char *file_name, const struct weather *time
             }
 
             fprintf(data_file, "%s, %f\n", time->orario, y[i]);
-            time = time->prev;
+            time = time->next;
         }
         free(temp);
         fclose(data_file);
