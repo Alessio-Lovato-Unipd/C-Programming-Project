@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
         } else {
-            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero dell'altezza dell'ostacolo >= 0\n");
+            printf("\nL'argomento in argv[7] non è corretto.\n Bisogna inserire un numero dell'altezza dell'ostacolo >= 0\n");
             svuota_dati_weather(dati);
             svuota_lista_turbine_data(head_turbina);
             free(metodo_calcolo_parametri);
@@ -243,7 +243,11 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        if (isanumber(argv[9]) && (atoi(argv[9]) > 0) && (atoi(argv[9]) < INT_MAX)) {
+        if (isanumber(argv[9]) && (atoi(argpotenza.csv     potenza.png     potenze_giorno  potenze_tot
+alessio@alessio:~/progetto_informatica/SudoPassExamLII2122/build/app$ code potenza.csv 
+alessio@alessio:~/progetto_informatica/SudoPassExamLII2122/build/app$ 
+
+v[9]) > 0) && (atoi(argv[9]) < INT_MAX)) {
             int giorni = atoi(argv[9]);
             if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare il grafico della potenza\n");

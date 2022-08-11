@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     printf("Metodo di interpolazione per il calcolo dell'output: %s\n", argv[6]);
     printf("Altezza ostacolo impostata a: %s metri\n", argv[7]);
 	printf("Altezza del mozzo: %s\n", argv[8]);
-	printf("Orario di partenza scelto: %s\n", argv[9]); //data scelta da header
+	printf("Orario di partenza scelto: %s\n", argv[9]);
 	
 
     //inizio generazione lista turbine tramite la lettura da file
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
         } else {
-            printf("\nL'argomento in argv[9] non è corretto.\n Bisogna inserire un numero dell'altezza dell'ostacolo >= 0\n");
+            printf("\nL'argomento in argv[7] non è corretto.\n Bisogna inserire un numero dell'altezza dell'ostacolo >= 0\n");
             svuota_dati_weather(dati);
             svuota_lista_turbine_data(head_turbina);
             free(metodo_calcolo_parametri);
@@ -223,12 +223,13 @@ int main(int argc, char *argv[])
             }
 		} else if (strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient) {
             potenza= calcolo_potenza(CURVA_COEFFICIENTI_POTENZA, var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, array_vento_power_coefficient, head_parametri);
-            if (potenza == NULL) 
+            if (potenza == NULL) {
                 svuota_parametri(head_parametri);
 		        free(metodo_calcolo_parametri);
                 svuota_dati_weather(dati);
                 svuota_lista_turbine_data(head_turbina);
                 exit(EXIT_FAILURE);
+            }
 
 			for( int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
 				potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, argv[1], turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
