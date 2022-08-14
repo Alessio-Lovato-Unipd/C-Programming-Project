@@ -468,11 +468,79 @@ void stampa(void)
 	    struct turbina *puntatore = NULL;
     int errore = 0;
     puntatore = estrazione_dati_turbine(puntatore, PERCORSO_TURBINE_DATA_CORRETTO, &errore);
-    stampa_lista_turbine(puntatore);
+    //stampa_lista_turbine(puntatore);
 	puntatore = svuota_lista_turbine_data(puntatore);
 }
 
 //non ho trovato nessuna turbina per il caso TF
+
+void verifica_estrazione_nomi_4_turbine(void)
+{
+	char stringa_argomento[] = "AD180/8000,AW82/1500,E-141/4200,E-82/2300";
+	int conteggio = conteggio_turbine(stringa_argomento);
+
+	char *array_nomi_turbine[conteggio+1];
+
+	estrazione_nome_turbine(stringa_argomento, array_nomi_turbine);
+	TEST_ASSERT_EQUAL_STRING("AD180/8000", array_nomi_turbine[0]);
+	TEST_ASSERT_EQUAL_STRING("AW82/1500", array_nomi_turbine[1]);
+	TEST_ASSERT_EQUAL_STRING("E-141/4200", array_nomi_turbine[2]);
+	TEST_ASSERT_EQUAL_STRING("E-82/2300", array_nomi_turbine[3]);
+}
+
+void verifica_estrazione_nomi_8_turbine(void)
+{
+	char stringa_argomento[] = "AD180/8000,AW82/1500,E-141/4200,E-82/2300,SWT82/2300,SWT154/7000,SWT107/3600,N117/3600";
+	int conteggio = conteggio_turbine(stringa_argomento);
+
+	char *array_nomi_turbine[conteggio+1];
+
+	estrazione_nome_turbine(stringa_argomento, array_nomi_turbine);
+	TEST_ASSERT_EQUAL_STRING("AD180/8000", array_nomi_turbine[0]);
+	TEST_ASSERT_EQUAL_STRING("AW82/1500", array_nomi_turbine[1]);
+	TEST_ASSERT_EQUAL_STRING("E-141/4200", array_nomi_turbine[2]);
+	TEST_ASSERT_EQUAL_STRING("E-82/2300", array_nomi_turbine[3]);
+	TEST_ASSERT_EQUAL_STRING("SWT82/2300", array_nomi_turbine[4]);
+	TEST_ASSERT_EQUAL_STRING("SWT154/7000", array_nomi_turbine[5]);
+	TEST_ASSERT_EQUAL_STRING("SWT107/3600", array_nomi_turbine[6]);
+	TEST_ASSERT_EQUAL_STRING("N117/3600", array_nomi_turbine[7]);
+}
+
+void verifica_estrazione_nomi_12_turbine(void)
+{
+	char stringa_argomento[] = "AD180/8000,AW82/1500,E-141/4200,E-82/2300,SWT82/2300,SWT154/7000,SWT107/3600,N117/3600,GE158/4800,GE137/3600,AD116/5000,VS87/1500";
+	int conteggio = conteggio_turbine(stringa_argomento);
+
+	char *array_nomi_turbine[conteggio+1];
+
+	estrazione_nome_turbine(stringa_argomento, array_nomi_turbine);
+	TEST_ASSERT_EQUAL_STRING("AD180/8000", array_nomi_turbine[0]);
+	TEST_ASSERT_EQUAL_STRING("AW82/1500", array_nomi_turbine[1]);
+	TEST_ASSERT_EQUAL_STRING("E-141/4200", array_nomi_turbine[2]);
+	TEST_ASSERT_EQUAL_STRING("E-82/2300", array_nomi_turbine[3]);
+	TEST_ASSERT_EQUAL_STRING("SWT82/2300", array_nomi_turbine[4]);
+	TEST_ASSERT_EQUAL_STRING("SWT154/7000", array_nomi_turbine[5]);
+	TEST_ASSERT_EQUAL_STRING("SWT107/3600", array_nomi_turbine[6]);
+	TEST_ASSERT_EQUAL_STRING("N117/3600", array_nomi_turbine[7]);
+	TEST_ASSERT_EQUAL_STRING("GE158/4800", array_nomi_turbine[8]);
+	TEST_ASSERT_EQUAL_STRING("GE137/3600", array_nomi_turbine[9]);
+	TEST_ASSERT_EQUAL_STRING("AD116/5000", array_nomi_turbine[10]);
+	TEST_ASSERT_EQUAL_STRING("VS87/1500", array_nomi_turbine[11]);
+}
+
+void verifica_estrazione_nomi_turbine_uguali(void)
+{
+	char stringa_argomento[] = "AD180/8000,AD180/8000,E-141/4200,E-82/2300";
+	int conteggio = conteggio_turbine(stringa_argomento);
+
+	char *array_nomi_turbine[conteggio+1];
+
+	estrazione_nome_turbine(stringa_argomento, array_nomi_turbine);
+	TEST_ASSERT_EQUAL_STRING("AD180/8000", array_nomi_turbine[0]);
+	TEST_ASSERT_EQUAL_STRING("AD180/8000", array_nomi_turbine[1]);
+	TEST_ASSERT_EQUAL_STRING("E-141/4200", array_nomi_turbine[2]);
+	TEST_ASSERT_EQUAL_STRING("E-82/2300", array_nomi_turbine[3]);
+}
 
 int main()
 {
@@ -497,6 +565,10 @@ int main()
 	RUN_TEST(verifica_ricerca_turbina_estremi);
 	RUN_TEST(verifica_ricerca_turbina_falso);
 	RUN_TEST(stampa);
+	RUN_TEST(verifica_estrazione_nomi_4_turbine);
+	RUN_TEST(verifica_estrazione_nomi_8_turbine);
+	RUN_TEST(verifica_estrazione_nomi_12_turbine);
+	RUN_TEST(verifica_estrazione_nomi_turbine_uguali);
 
     return UNITY_END();
 }

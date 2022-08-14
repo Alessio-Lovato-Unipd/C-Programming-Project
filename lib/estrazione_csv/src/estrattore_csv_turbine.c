@@ -337,3 +337,51 @@ void stampa_lista_turbine(struct turbina *head_turbina)
 		temp=scorri_lista_turbina(temp);
 	} while (temp != NULL);
 }
+
+/*****************************************************************************************************
+************************    GESTIONE PARCO EOLICO     **************************************
+******************************************************************************************************/
+
+int conteggio_turbine(char *stringa_nomi_turbine)
+{   	
+   	int occorrenza = 1;
+   	char *punt;
+
+   	punt=strchr(stringa_nomi_turbine, ',');
+   	occorrenza++;
+   	punt++;
+
+   	while(strchr(punt, SEPARATORE)!=NULL){
+      	punt=strchr(punt, ',');
+      	occorrenza++;
+      	punt++;
+   	}
+      
+   	//printf("occorrenza = %d\n", occorrenza); //scopo di test
+	return occorrenza;
+}
+
+void estrazione_nome_turbine(char *stringa_nomi_turbine, char **array_turbine)
+{
+   const char s[2] = ",";
+   char *token;
+
+   int occorrenza = conteggio_turbine(stringa_nomi_turbine);
+
+   char *array_nomi[occorrenza+1];
+   
+    //trovo la prima turbina
+   token = strtok(stringa_nomi_turbine, s);
+   
+    //ottengo le successive
+   int i = 0;
+   while( token != NULL ) {
+      array_nomi[i] = token;
+      i++;
+      token = strtok(NULL, s);
+   }
+   
+   for(int j=0;j<occorrenza;j++) {
+   		array_turbine[j]= array_nomi[j];
+   }
+}

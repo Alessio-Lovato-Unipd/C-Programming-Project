@@ -19,6 +19,8 @@
     #define VALORE_ARGOMENTI_INSERIBILI 10
     #define NUMERO_ORE_IN_UN_GIORNO 24
 
+    #define LUNGHEZZA_MASSIMA 12
+
     /*
     -----ARGOMENTI DA PASSARE AL PROGRAMMA MAIN-----
     Il programma main richiede 9 argomenti:

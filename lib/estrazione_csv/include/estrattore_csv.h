@@ -224,5 +224,12 @@
     void controllo_csv(const int *const errore);
 
 
+    //struct turbina *estrazione_nome_turbine(char *stringa_nomi_turbine, struct turbina *puntatore, const char *const percorso_file_turbine_data, const char *const percorso_file_power_coefficient_curves, const char *const percorso_file_power_curves, const char *altezza_mozzo, int errore);
+    int conteggio_turbine(char *stringa_nomi_turbine);
+
+    //void estrazione_nome_turbine(char *array_turbine, char *stringa_nomi_turbine);
+    void estrazione_nome_turbine(char *stringa_nomi_turbine, char **array_turbine);
+
+
 
 #endif
