@@ -351,13 +351,16 @@ int conteggio_turbine(char *stringa_nomi_turbine)
    	occorrenza++;
    	punt++;
 
+	if(strchr(stringa_nomi_turbine, ',')==NULL) {
+		return 0;
+	}
+
    	while(strchr(punt, SEPARATORE)!=NULL){
       	punt=strchr(punt, ',');
       	occorrenza++;
       	punt++;
    	}
-      
-   	//printf("occorrenza = %d\n", occorrenza); //scopo di test
+
 	return occorrenza;
 }
 

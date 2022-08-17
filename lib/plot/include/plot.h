@@ -56,6 +56,8 @@
     int plot_curva_potenza_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina);
 
     int plot_curva_coefficienti_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina);
+
+    int plot_potenza_parco_eolico(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni, int numero_turbina);
     
 #endif
 

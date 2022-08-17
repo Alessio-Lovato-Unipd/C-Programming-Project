@@ -37,9 +37,14 @@ int main(int argc, char *argv[])
 
     //estrazione dei nomi delle turbine da argomento
     int conteggio = conteggio_turbine(argv[1]);
+
     char *array_turbine[conteggio];
 
     estrazione_nome_turbine(argv[1], array_turbine);
+    if((conteggio == 0)) {
+        printf("Errore: numero turbine insufficiente per la creazione di un parco.\n\n");
+        return(EXIT_FAILURE);
+    }
     //fine estrazione nomi
 
     //inizio generazione lista turbine tramite la lettura da file
@@ -123,6 +128,7 @@ int main(int argc, char *argv[])
     struct parametro *head_parametri = NULL;
     float array_potenza_istantanea_totale[NUMERO_ORE_IN_UN_GIORNO] = {0};
     int count_turbine = 1;
+    char str[20];
 
     //salvataggio di argv[6]
     tipo_calcolo_output var_argv6=INTERPOLAZIONE_LINEARE_O;
@@ -140,7 +146,7 @@ int main(int argc, char *argv[])
     }
 
     for(int i=0;i<conteggio;i++) { //ciclo for, scorre tutte le turbine del parco eolico
-        char str[20];
+        //char str[20];
         
         strcpy(str, array_turbine[i]);
 
@@ -224,7 +230,7 @@ int main(int argc, char *argv[])
                     svuota_dati_weather(dati);
                     svuota_lista_turbine_data(head_turbina);
                     exit(EXIT_FAILURE);
-                } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, 1) == EXIT_FAILURE) {
+                } else if (plot_potenza_parco_eolico(dati->head_weather, turbina_cercata->nome, potenza, 1, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare il grafico della potenza\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -233,8 +239,8 @@ int main(int argc, char *argv[])
                     svuota_lista_turbine_data(head_turbina);
                     exit(EXIT_FAILURE);
                 } else {
-                    printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n");
-                    printf("NOTA: potenza.png disponibile in build/app\n\n\n");
+                    printf("\nNOTA: curva_di_potenza_%d.png disponibile in build/app\n", count_turbine);
+                    printf("NOTA: potenza_%d.png disponibile in build/app\n\n\n", count_turbine);
                     free(potenza);
                 }
             } else if (strcmp(argv[5], "CURVE_DI_COEFFICIENTI_POTENZA")==0 && turbina_cercata->bool_p_coefficient) {
@@ -273,9 +279,10 @@ int main(int argc, char *argv[])
                     svuota_lista_turbine_data(head_turbina);
                     exit(EXIT_FAILURE);
                 } else {
-                    printf("\nNOTA: curva_coefficienti_di_potenza.png disponibile in build/app\n");
-                    printf("NOTA: potenza.png disponibile in build/app\n\n\n");
+                    printf("\nNOTA: curva_coefficienti_di_potenza_%d.png disponibile in build/app\n", count_turbine);
+                    printf("NOTA: potenza_%d.png disponibile in build/app\n\n\n", count_turbine);
                     free(potenza);
+                    svuota_parametri(head_parametri);
                 }
             } else {
                 printf("\nL'argomento inserito in argv[5] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA\n");
@@ -287,18 +294,18 @@ int main(int argc, char *argv[])
                 svuota_lista_turbine_data(head_turbina);
                 exit(EXIT_FAILURE);
             }
-
+            
             count_turbine++;
             /*for (struct parametro *p = head_parametri; p != NULL; p = p->next) {
                 potenza_totale[i] = potenza_totale[i] + potenza[i];
                 i ++;
             }*/
-
         }
         
 
     } //fine del ciclo for
 
+    printf("POTENZA ISTANTANEA TOTALE DEL PARCO EOLICO PER OGNI ORA DEL GIORNO:\n\n");
     //ciclo for necessario a stampare a schermo la potenza totale del parco eolico
     for (int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
         printf("\tOrario misure: %s\n", temp_parametri->orario);

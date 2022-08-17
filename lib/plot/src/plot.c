@@ -405,3 +405,53 @@ int plot_curva_coefficienti_parco_eolico(float *array_vento, const struct turbin
     return EXIT_FAILURE;
 }
 
+int plot_potenza_parco_eolico(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni, int numero_turbina)
+{
+    if ((giorni > 0) && (potenza != NULL)){
+        int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
+        if (lunghezza_vettore < (int) (sizeof(potenza)/sizeof(char))) // Il numero di elementi da stampare è minore di un giorno
+            lunghezza_vettore = (int) (sizeof(potenza)/sizeof(char));
+
+        float x[lunghezza_vettore];
+        char *titolo = malloc(sizeof(char) * (strlen("Potenza elettrica generata dalla turbina nel tempo") + strlen(nome_turbina) + 1));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_potenza\n");
+            return EXIT_FAILURE;
+        }
+
+        strcpy(titolo, "Potenza generata dalla turbina ");
+        strcat(titolo, nome_turbina);
+        strcat(titolo, " nel tempo");
+
+        for (int i = 0; i < lunghezza_vettore; i++ ){
+            x[i] = i;
+        }
+
+        gnuplot_ctrl *gp = NULL;
+        gp = gnuplot_init();
+
+        gnuplot_setstyle(gp, "lines");
+        gnuplot_set_line(gp, "1", "orange", "1");
+        gnuplot_set_point(gp, NULL, NULL);
+
+        if (gnuplot_set_title(gp, head_tempo, giorni) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+
+        gnuplot_set_xlabel(gp, "Tempo [h]");
+        gnuplot_set_ylabel(gp, "Potenza [kW]");
+        
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"potenza_%d.png\"", numero_turbina);
+
+        //genero file csv di uscita
+        if (gnuplot_write_xtime_y_csv("potenza.csv", head_tempo, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]") == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        gnuplot_plot_xy(gp, x, potenza, lunghezza_vettore, titolo);
+        gnuplot_close(gp);  
+
+        free(titolo);
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
+}
+
