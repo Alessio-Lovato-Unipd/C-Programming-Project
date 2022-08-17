@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
                     array_potenza_istantanea_totale[i] = array_potenza_istantanea_totale[i] + potenza_istantanea_singola;
                     temp_parametri = temp_parametri->next;
                 }
-                if (plot_curva_potenza_parco_eolico(array_vento_power_curves, turbina_cercata, count_turbine) == EXIT_FAILURE) {
+                if (plot_curva_potenza(array_vento_power_curves, turbina_cercata, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
                     svuota_dati_weather(dati);
                     svuota_lista_turbine_data(head_turbina);
                     exit(EXIT_FAILURE);
-                } else if (plot_potenza_parco_eolico(dati->head_weather, turbina_cercata->nome, potenza, 1, count_turbine) == EXIT_FAILURE) {
+                } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, 1, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare il grafico della potenza\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
                     array_potenza_istantanea_totale[i] = array_potenza_istantanea_totale[i] + potenza_istantanea_singola;
                     temp_parametri = temp_parametri->next;
                 }
-                if (plot_curva_coefficienti_parco_eolico(array_vento_power_coefficient, turbina_cercata, count_turbine) == EXIT_FAILURE) {
+                if (plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
                     svuota_dati_weather(dati);
                     svuota_lista_turbine_data(head_turbina);
                     exit(EXIT_FAILURE);
-                } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, 1) == EXIT_FAILURE) {
+                } else if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, 1, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare il grafico della potenza\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -296,23 +296,23 @@ int main(int argc, char *argv[])
             }
             
             count_turbine++;
-            /*for (struct parametro *p = head_parametri; p != NULL; p = p->next) {
-                potenza_totale[i] = potenza_totale[i] + potenza[i];
-                i ++;
-            }*/
         }
-        
-
     } //fine del ciclo for
 
-    printf("POTENZA ISTANTANEA TOTALE DEL PARCO EOLICO PER OGNI ORA DEL GIORNO:\n\n");
     //ciclo for necessario a stampare a schermo la potenza totale del parco eolico
+    printf("POTENZA ISTANTANEA TOTALE DEL PARCO EOLICO PER OGNI ORA DEL GIORNO:\n\n");
     for (int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
         printf("\tOrario misure: %s\n", temp_parametri->orario);
         printf("\tPotenza in uscita: %f\n\n", array_potenza_istantanea_totale[i]);
         temp_parametri = temp_parametri->next;
     }
 
+    if(plot_potenza_parco_eolico(dati->head_weather, array_potenza_istantanea_totale, 1) == EXIT_FAILURE) {
+        printf("Non è stato possibile stampare il grafico della potenza per il parco eolico.\n");
+    }
+    else{
+        printf("NOTA: potenza.png relativa al parco eolico disponibile in build/app\n\n\n");
+    }
 
     svuota_lista_turbine_data(head_turbina);
     svuota_dati_weather(dati);

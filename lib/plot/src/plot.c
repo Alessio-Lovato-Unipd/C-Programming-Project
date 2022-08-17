@@ -118,7 +118,7 @@
 
 
 /************** PLOT  DELLE CURVE ***************/
-int plot_curva_potenza(float *array_vento, const struct turbina *turbina)
+int plot_curva_potenza(float *array_vento, const struct turbina *turbina, int numero_turbina)
 {
     if ((array_vento != NULL) && (turbina->power_curves != NULL)) {
         gnuplot_ctrl *gp = NULL; 
@@ -142,7 +142,7 @@ int plot_curva_potenza(float *array_vento, const struct turbina *turbina)
         gnuplot_cmd(gp, "set grid back nopolar");
 
         gnuplot_cmd(gp, "set terminal png");
-        gnuplot_cmd(gp, "set output \"curva_di_potenza.png\"");
+        gnuplot_cmd(gp, "set output \"curva_di_potenza_%d.png\"", numero_turbina);
         gnuplot_plot_xy(gp, array_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
 
         gnuplot_close(gp); 
@@ -153,7 +153,7 @@ int plot_curva_potenza(float *array_vento, const struct turbina *turbina)
     return EXIT_FAILURE;
 }
 
-int plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
+int plot_curva_coefficienti(float *array_vento, const struct turbina *turbina, int numero_turbina)
 {
     if ((array_vento != NULL) && (turbina->power_coefficients != NULL)) {
         gnuplot_ctrl *gp = NULL;  
@@ -176,7 +176,7 @@ int plot_curva_coefficienti(float *array_vento, const struct turbina *turbina)
         
         gnuplot_cmd(gp, "set grid back nopolar");//set griglia
         gnuplot_cmd(gp, "set terminal png");
-        gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza.png\"");
+        gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza_%d.png\"", numero_turbina);
 
         gnuplot_plot_xy(gp, array_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
 
@@ -284,128 +284,7 @@ int gnuplot_set_title(gnuplot_ctrl * h, const struct weather *head_tempo, int gi
 }
 
 
-int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni)
-{
-    if ((giorni > 0) && (potenza != NULL)){
-        int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
-        if (lunghezza_vettore < (int) (sizeof(potenza)/sizeof(char))) // Il numero di elementi da stampare è minore di un giorno
-            lunghezza_vettore = (int) (sizeof(potenza)/sizeof(char));
-
-        float x[lunghezza_vettore];
-        char *titolo = malloc(sizeof(char) * (strlen("Potenza elettrica generata dalla turbina nel tempo") + strlen(nome_turbina) + 1));
-        if (titolo == NULL) {
-            printf("Errore: malloc() ha fallito in plot_potenza\n");
-            return EXIT_FAILURE;
-        }
-
-        strcpy(titolo, "Potenza generata dalla turbina ");
-        strcat(titolo, nome_turbina);
-        strcat(titolo, " nel tempo");
-
-        for (int i = 0; i < lunghezza_vettore; i++ ){
-            x[i] = i;
-        }
-
-        gnuplot_ctrl *gp = NULL;
-        gp = gnuplot_init();
-
-        gnuplot_setstyle(gp, "lines");
-        gnuplot_set_line(gp, "1", "orange", "1");
-        gnuplot_set_point(gp, NULL, NULL);
-
-        if (gnuplot_set_title(gp, head_tempo, giorni) == EXIT_FAILURE)
-            return EXIT_FAILURE;
-
-        gnuplot_set_xlabel(gp, "Tempo [h]");
-        gnuplot_set_ylabel(gp, "Potenza [kW]");
-        
-        gnuplot_cmd(gp, "set terminal png");
-        gnuplot_cmd(gp, "set output \"potenza.png\"");
-
-        //genero file csv di uscita
-        if (gnuplot_write_xtime_y_csv("potenza.csv", head_tempo, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]") == EXIT_FAILURE)
-            return EXIT_FAILURE;
-        gnuplot_plot_xy(gp, x, potenza, lunghezza_vettore, titolo);
-        gnuplot_close(gp);  
-
-        free(titolo);
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-/******************* GESTIONE PARCO EOLICO **************/
-int plot_curva_potenza_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina)
-{
-    if ((array_vento != NULL) && (turbina->power_curves != NULL)) {
-        gnuplot_ctrl *gp = NULL; 
-        char *titolo = malloc(sizeof(char) * (strlen("Curva di Potenza ") + strlen(turbina->nome) + 1 ));
-        if (titolo == NULL) {
-            printf("Errore: malloc() ha fallito in plot_curva_potenza\n");
-            return EXIT_FAILURE;
-        }
-
-        strcpy(titolo, "Curva di Potenza ");
-        strcat(titolo, turbina->nome);
-
-        gp = gnuplot_init(); 
-        gnuplot_setstyle(gp, "linespoints");
-        gnuplot_set_line(gp, "1", "dark-cyan", "2");
-        gnuplot_set_point(gp, "7", NULL);
-
-        gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
-        gnuplot_set_ylabel(gp, "Potenza [kW]");
-        //comandi diretti a gnuplot
-        gnuplot_cmd(gp, "set grid back nopolar");
-
-        gnuplot_cmd(gp, "set terminal png");
-        gnuplot_cmd(gp, "set output \"curva_di_potenza_%d.png\"", numero_turbina);
-        gnuplot_plot_xy(gp, array_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
-
-        gnuplot_close(gp); 
-
-        free(titolo);
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-int plot_curva_coefficienti_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina)
-{
-    if ((array_vento != NULL) && (turbina->power_coefficients != NULL)) {
-        gnuplot_ctrl *gp = NULL;  
-        char *titolo = malloc(sizeof(char) * (strlen("Curva coefficienti di potenza ") + strlen(turbina->nome) + 1 ));
-        if (titolo == NULL) {
-            printf("Errore: malloc() ha fallito in plot_curva_coefficienti\n");
-            return EXIT_FAILURE;
-        }
-
-        strcpy(titolo, "Curva coefficienti di potenza ");
-        strcat(titolo, turbina->nome);
-
-        gp = gnuplot_init();
-
-        gnuplot_setstyle(gp, "linespoints");
-        gnuplot_set_line(gp, "3", "red", "1");
-        gnuplot_set_point(gp, "1", NULL);
-        gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
-        gnuplot_set_ylabel(gp, "Coefficienti di potenza");
-        
-        gnuplot_cmd(gp, "set grid back nopolar");//set griglia
-        gnuplot_cmd(gp, "set terminal png");
-        gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza_%d.png\"", numero_turbina);
-
-        gnuplot_plot_xy(gp, array_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
-
-        gnuplot_close(gp);  
-
-        free(titolo); 
-        return EXIT_SUCCESS;
-    }
-    return EXIT_FAILURE;
-}
-
-int plot_potenza_parco_eolico(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni, int numero_turbina)
+int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni, int numero_turbina)
 {
     if ((giorni > 0) && (potenza != NULL)){
         int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
@@ -446,6 +325,53 @@ int plot_potenza_parco_eolico(const struct weather *head_tempo,const char *nome_
         //genero file csv di uscita
         if (gnuplot_write_xtime_y_csv("potenza.csv", head_tempo, potenza, lunghezza_vettore, "Potenza elettrica generata dalla turbina nel tempo\n #tempo, potenza[kW]") == EXIT_FAILURE)
             return EXIT_FAILURE;
+        gnuplot_plot_xy(gp, x, potenza, lunghezza_vettore, titolo);
+        gnuplot_close(gp);  
+
+        free(titolo);
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
+}
+
+/******************* GESTIONE PARCO EOLICO **************/
+
+int plot_potenza_parco_eolico(const struct weather *head_tempo, float *potenza, int giorni)
+{
+    if ((giorni > 0) && (potenza != NULL)){
+        int lunghezza_vettore = giorni * 24;//campiono un elemento ogni ora
+        if (lunghezza_vettore < (int) (sizeof(potenza)/sizeof(char))) // Il numero di elementi da stampare è minore di un giorno
+            lunghezza_vettore = (int) (sizeof(potenza)/sizeof(char));
+
+        float x[lunghezza_vettore];
+        char *titolo = malloc(sizeof(char) * (strlen("Potenza elettrica generata dal parco eolico nel tempo ") + 1));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_potenza\n");
+            return EXIT_FAILURE;
+        }
+
+        strcpy(titolo, "Potenza generata dal parco eolico nel tempo ");
+
+        for (int i = 0; i < lunghezza_vettore; i++ ){
+            x[i] = i;
+        }
+
+        gnuplot_ctrl *gp = NULL;
+        gp = gnuplot_init();
+
+        gnuplot_setstyle(gp, "lines");
+        gnuplot_set_line(gp, "1", "orange", "1");
+        gnuplot_set_point(gp, NULL, NULL);
+
+        if (gnuplot_set_title(gp, head_tempo, giorni) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+
+        gnuplot_set_xlabel(gp, "Tempo [h]");
+        gnuplot_set_ylabel(gp, "Potenza [kW]");
+        
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"potenza.png\"");
+
         gnuplot_plot_xy(gp, x, potenza, lunghezza_vettore, titolo);
         gnuplot_close(gp);  
 

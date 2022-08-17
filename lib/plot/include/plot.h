@@ -11,17 +11,17 @@
 
     /*
     * Genera il grafico della curva di potenza della turbina data
-    * e lo alva in .png
+    * e lo salva in .png
     * In caso di errore ritorna EXIT_FAILURE, altrimenti EXIT_SUCCESS
     */
-    int plot_curva_potenza(float *array_vento, const struct turbina *turbina);
+    int plot_curva_potenza(float *array_vento, const struct turbina *turbina, int numero_turbina);
 
     /*
     * Genera grafico della curva coefficienti di potenza 
     * della turbina data e lo salva in .png
     * In caso di errore ritorna EXIT_FAILURE, altrimenti EXIT_SUCCESS
     */
-    int plot_curva_coefficienti(float *array_vento, const struct turbina *turbina);
+    int plot_curva_coefficienti(float *array_vento, const struct turbina *turbina, int numero_turbina);
 
     /*
     * Genera file csv a due colonne con tempo e potenza istantanea corrispondente
@@ -51,13 +51,15 @@
     * Nell'asse x sono riportate il numero di ore considerate a partire dall'inizio 
     * In caso di errore ritorna EXIT_FAILURE, altrimenti EXIT_SUCCESS
     */
-    int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni);
+    int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni, int numero_turbina);
 
-    int plot_curva_potenza_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina);
-
-    int plot_curva_coefficienti_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina);
-
-    int plot_potenza_parco_eolico(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni, int numero_turbina);
+    /*
+    * Genera grafico dell'andamento di potenza generata dal parco eolico nell'arco temporale
+    * di giorni impostati.
+    * Nell'asse x sono riportate il numero di ore considerate a partire dall'inizio 
+    * In caso di errore ritorna EXIT_FAILURE, altrimenti EXIT_SUCCESS
+    */
+    int plot_potenza_parco_eolico(const struct weather *head_tempo, float *potenza, int giorni);
     
 #endif
 

@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 				temp_parametri = temp_parametri->next;
 			}
             
-            if (plot_curva_potenza(array_vento_power_curves, turbina_cercata) == EXIT_FAILURE) {
+            if (plot_curva_potenza(array_vento_power_curves, turbina_cercata, 0) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare la curva di potenza\n");
                 free(potenza);
                 svuota_parametri(head_parametri);
@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
 				printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
 				temp_parametri = temp_parametri->next;
 			}
-            if (plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata) == EXIT_FAILURE) {
+            if (plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata, 0) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
                 free(potenza);
                 svuota_parametri(head_parametri);
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
 
         if ((isanumber(argv[9]) > 0) && (atoi(argv[9]) < INT_MAX)) {
             int giorni = atoi(argv[9]);
-            if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni) == EXIT_FAILURE) {
+            if (plot_potenza(dati->head_weather, turbina_cercata->nome, potenza, giorni, 0) == EXIT_FAILURE) {
                 printf("\nNon è stato possibile stampare il grafico della potenza\n");
                 free(potenza);
                 svuota_parametri(head_parametri);

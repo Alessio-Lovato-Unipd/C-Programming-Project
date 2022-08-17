@@ -224,10 +224,21 @@
     void controllo_csv(const int *const errore);
 
 
-    //struct turbina *estrazione_nome_turbine(char *stringa_nomi_turbine, struct turbina *puntatore, const char *const percorso_file_turbine_data, const char *const percorso_file_power_coefficient_curves, const char *const percorso_file_power_curves, const char *altezza_mozzo, int errore);
+
+
+
+    /***********************   GESTIONE DATI PARCO EOLICO   ***********************/
+    
+
+    /*
+     * Funzione per il conteggio delle turbine inserite come argomento dall'utente.
+    */
     int conteggio_turbine(char *stringa_nomi_turbine);
 
-    //void estrazione_nome_turbine(char *array_turbine, char *stringa_nomi_turbine);
+    /*
+     * Funzione per il salvataggio dei nomi delle turbine all'interno dell'array "array_turbine".
+     * "stringa_nomi_turbine" corrisponde all'argomento in questione (argv[1] nel nostro caso).
+    */
     void estrazione_nome_turbine(char *stringa_nomi_turbine, char **array_turbine);
 
 
