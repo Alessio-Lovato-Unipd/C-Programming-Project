@@ -35,3 +35,18 @@ target_link_libraries( potenze_giorno
 	lib::plot
 )
 
+add_executable(potenze_parco_eolico src/potenze_parco_eolico.c)
+
+target_include_directories(potenze_parco_eolico PRIVATE include) 
+
+target_link_libraries( potenze_parco_eolico
+	PRIVATE 
+	lib::csv
+	lib::gnuplot_i
+	lib::estrazione_csv
+	lib::formule
+	lib::parametri
+	lib::calcolo_output
+	lib::plot
+)
+

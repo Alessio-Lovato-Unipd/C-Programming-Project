@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     if (argc != VALORE_ARGOMENTI_INSERIBILI) {
         printf("\nErrore nell'inserimento degli argomenti. La sintassi corretta è:\n");
-        printf("\t- argv[1] ---> nome turbina desiderata\n");
+        printf("\t- argv[1] ---> nomi turbine desiderate, da inserire tra virgolette e divise da ',' senza spazi\n");
         printf("\t- argv[2] ---> {INTERPOLAZIONE_LINEARE_V, INTERPOLAZIONE_LOGARITMICA, PROFILO_LOGARITMICO, HELLMAN}, per il calcolo della velocità del vento\n");
         printf("\t- argv[3] ---> {INTERPOLAZIONE_LINEARE_T, GRADIENTE_LINEARE}, per il calcolo della temperatura\n");
         printf("\t- argv[4] ---> {BAROMETRICO, GAS_IDEALE}, per il calcolo della densità dell'aria\n");
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     }   
 
     //stampa a schermo degli argomenti inseriti dall'utente
-    printf("\n\nTurbine scelta: %s\n\n", argv[1]);
+    printf("\n\nTurbine scelte: %s\n\n", argv[1]);
     printf("Output di potenza ottenuto come: %s\n\n", argv[5]);
     printf("Metodo per il calcolo del vento impostato su %s\n", argv[2]);
     printf("Metodo per il calcolo della temperatura impostato su %s\n", argv[3]);
@@ -33,20 +33,14 @@ int main(int argc, char *argv[])
     printf("Metodo di interpolazione per il calcolo dell'output: %s\n", argv[6]);
     printf("Altezza ostacolo impostata a: %s metri\n", argv[7]);
     printf("Altezza del mozzo: %s\n", argv[8]);
-    printf("Orario di partenza scelto: %s\n", argv[9]);
+    printf("Orario di partenza scelto: %s\n\n", argv[9]);
 
     //estrazione dei nomi delle turbine da argomento
     int conteggio = conteggio_turbine(argv[1]);
     char *array_turbine[conteggio];
 
     estrazione_nome_turbine(argv[1], array_turbine);
-
-    for(int i=0;i<conteggio;i++) { //a scopo di test
-        printf("test: %s\n", array_turbine[i]);
-    }
     //fine estrazione nomi
-
-   printf("Conteggio: %d\n", conteggio);
 
     //inizio generazione lista turbine tramite la lettura da file
     head_turbina = estrazione_dati_turbine(head_turbina, PERCORSO_TURBINE_DATA, &errore);
@@ -64,8 +58,6 @@ int main(int argc, char *argv[])
         return(EXIT_FAILURE);
     }
     //fine generazione lista
-    printf("fatto");
-    //stampa_lista_turbine(head_turbina);
 
     //salvataggio degli argomenti necessari alla determinazione del metodo per calcolare la velocità del vento, la temperatura e la densità dell'aria
     struct tipo_metodo *metodo_calcolo_parametri = NULL;
@@ -125,6 +117,12 @@ int main(int argc, char *argv[])
         svuota_lista_turbine_data(head_turbina);
         exit(EXIT_FAILURE);
     }
+    
+    //ricerca della turbina richiesta
+    struct parametro *temp_parametri = NULL;
+    struct parametro *head_parametri = NULL;
+    float array_potenza_istantanea_totale[NUMERO_ORE_IN_UN_GIORNO] = {0};
+    int count_turbine = 1;
 
     //salvataggio di argv[6]
     tipo_calcolo_output var_argv6=INTERPOLAZIONE_LINEARE_O;
@@ -134,20 +132,12 @@ int main(int argc, char *argv[])
         var_argv6=INTERPOLAZIONE_LOGARITMICA_O;
     else {
         printf("\nL'argomento inserito in argv[6] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O\n\n");
-        //svuota_parametri(head_parametri);
+        svuota_parametri(head_parametri);
         free(metodo_calcolo_parametri);
         svuota_dati_weather(dati);
         svuota_lista_turbine_data(head_turbina);
         exit(EXIT_FAILURE);
     }
-
-    printf("\tfatto\n");
-    
-    //ricerca della turbina richiesta
-    struct parametro *temp_parametri = NULL;
-    struct parametro *head_parametri = NULL;
-    float array_potenza_istantanea_totale[NUMERO_ORE_IN_UN_GIORNO] = {0};
-    int count_turbine = 1;
 
     for(int i=0;i<conteggio;i++) { //ciclo for, scorre tutte le turbine del parco eolico
         char str[20];
@@ -165,11 +155,11 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
     
-        printf("Turbina cercata: %s\n", turbina_cercata->nome);
+        printf("%d° turbina cercata: %s\n", count_turbine, turbina_cercata->nome);
         if (turbina_cercata == NULL) {
-            printf("\nESITO RICERCA TURBINA: Modello turbina non trovato!\n\n");
+            printf("ESITO RICERCA TURBINA: Modello turbina non trovato!\n\n");
         } else {
-            printf("\nESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
+            printf("ESITO RICERCA TURBINA: Modello turbina trovato!\n\n");
 
             //calcolo dei parametri a partire dai dati meteorologici
             if (isanumber(argv[7]) && (atof(argv[7]) >= 0)) {
