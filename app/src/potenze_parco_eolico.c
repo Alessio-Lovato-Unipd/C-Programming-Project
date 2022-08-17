@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
         printf("\t- argv[5] ---> {CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA}, per la scelta se usare le curve di coefficienti di potenza oppure le curve di potenza\n");
         printf("\t- argv[6] ---> {INTERPOLAZIONE_LINEARE_O, INTERPOLAZIONE_LOGARITMICA_O}, per la scelta del tipo di interpolazione da utilizzare per il calcolo dell'output\n");
         printf("\t- argv[7] ---> valore di altezza_ostacolo (in metri), mettere 0 se si pensa di non utilizzare PROFILO_LOGARITMICO in argv[2]\n");
-		printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n");
-		printf("\t- argv[9] ---> data e orario di inizio analisi dati, inserire tra gli apici \n\n");
-		
+        printf("\t- argv[8] ---> altezza del mozzo considerata, inserire 0 per selezione automatica\n");
+        printf("\t- argv[9] ---> data e orario di inizio analisi dati, inserire tra gli apici \n\n");
+        
         return(EXIT_FAILURE);
     }   
 
@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
     metodo_calcolo_parametri = malloc(sizeof(struct tipo_metodo));
     if (metodo_calcolo_parametri == NULL) {
         printf("Errore: malloc() ha fallito in metodo calcolo parametri\n");
-		svuota_dati_weather(dati);
-		svuota_lista_turbine_data(head_turbina);
+        svuota_dati_weather(dati);
+        svuota_lista_turbine_data(head_turbina);
         exit(EXIT_FAILURE);
     }
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->temperatura = GRADIENTE_LINEARE;
     else {
         printf("\nL'argomento inserito in argv[3] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: INTERPOLAZIONE_LINEARE_T, GRADIENTE_LINEARE\n\n");
-		free(metodo_calcolo_parametri);
+        free(metodo_calcolo_parametri);
         svuota_dati_weather(dati);
         svuota_lista_turbine_data(head_turbina);
         exit(EXIT_FAILURE);
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
         metodo_calcolo_parametri->densita = GAS_IDEALE;
     else {
         printf("\nL'argomento inserito in argv[4] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: BAROMETRICO, GAS_IDEALE\n\n");
-		free(metodo_calcolo_parametri);
+        free(metodo_calcolo_parametri);
         svuota_dati_weather(dati);
         svuota_lista_turbine_data(head_turbina);
         exit(EXIT_FAILURE);
@@ -142,14 +142,16 @@ int main(int argc, char *argv[])
     }
 
     printf("\tfatto\n");
-	
+    
     //ricerca della turbina richiesta
     struct parametro *temp_parametri = NULL;
     struct parametro *head_parametri = NULL;
+    float array_potenza_istantanea_totale[NUMERO_ORE_IN_UN_GIORNO] = {0};
+    int count_turbine = 1;
 
-    for(int i=0;i<conteggio;i++) {
+    for(int i=0;i<conteggio;i++) { //ciclo for, scorre tutte le turbine del parco eolico
         char str[20];
-
+        
         strcpy(str, array_turbine[i]);
 
         if (isanumber(argv[8]) && (atof(argv[8]) >= 0)) {
@@ -188,7 +190,7 @@ int main(int argc, char *argv[])
             }
             //fine calcolo parametri
 
-            float potenza_in_uscita=0;
+            float potenza_istantanea_singola=0;
             float *potenza = NULL;
 
             temp_parametri = cerca_nodo_parametri(argv[9], head_parametri);
@@ -213,17 +215,18 @@ int main(int argc, char *argv[])
                     svuota_dati_weather(dati);
                     svuota_lista_turbine_data(head_turbina);
                     exit(EXIT_FAILURE);
-            }
+                }
 
                 for (int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
-                    potenza_in_uscita=calcolo_potenza_curve_di_potenza(var_argv6, str, turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
+                    potenza_istantanea_singola=calcolo_potenza_curve_di_potenza(var_argv6, str, turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, array_vento_power_curves);
                     printf("\tOrario misure: %s\n", temp_parametri->orario);
-                    printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+                    printf("\tPotenza in uscita: %f\n", potenza_istantanea_singola);
                     printf("\tVelocità del vento: %f\n", temp_parametri->vento);
-                    printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
+                    printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria);
+                    array_potenza_istantanea_totale[i] = array_potenza_istantanea_totale[i] + potenza_istantanea_singola;
                     temp_parametri = temp_parametri->next;
                 }
-                if (plot_curva_potenza(array_vento_power_curves, turbina_cercata) == EXIT_FAILURE) {
+                if (plot_curva_potenza_parco_eolico(array_vento_power_curves, turbina_cercata, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -255,14 +258,15 @@ int main(int argc, char *argv[])
                 }
 
                 for( int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
-                    potenza_in_uscita=calcolo_potenza_curve_coefficienti(var_argv6, str, turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
+                    potenza_istantanea_singola=calcolo_potenza_curve_coefficienti(var_argv6, str, turbina_cercata, turbina_cercata->altezza_mozzo, temp_parametri->vento, temp_parametri->densita_aria, array_vento_power_coefficient);
                     printf("\tOrario misure: %s\n", temp_parametri->orario);
-                    printf("\tPotenza in uscita: %f\n", potenza_in_uscita);
+                    printf("\tPotenza in uscita: %f\n", potenza_istantanea_singola);
                     printf("\tVelocità del vento: %f\n", temp_parametri->vento);
                     printf("\tDensità dell'aria: %f\n\n", temp_parametri->densita_aria); 
+                    array_potenza_istantanea_totale[i] = array_potenza_istantanea_totale[i] + potenza_istantanea_singola;
                     temp_parametri = temp_parametri->next;
                 }
-                if (plot_curva_coefficienti(array_vento_power_coefficient, turbina_cercata) == EXIT_FAILURE) {
+                if (plot_curva_coefficienti_parco_eolico(array_vento_power_coefficient, turbina_cercata, count_turbine) == EXIT_FAILURE) {
                     printf("\nNon è stato possibile stampare la curva dei coefficienti\n");
                     free(potenza);
                     svuota_parametri(head_parametri);
@@ -293,7 +297,23 @@ int main(int argc, char *argv[])
                 svuota_lista_turbine_data(head_turbina);
                 exit(EXIT_FAILURE);
             }
+
+            count_turbine++;
+            /*for (struct parametro *p = head_parametri; p != NULL; p = p->next) {
+                potenza_totale[i] = potenza_totale[i] + potenza[i];
+                i ++;
+            }*/
+
         }
+        
+
+    } //fine del ciclo for
+
+    //ciclo for necessario a stampare a schermo la potenza totale del parco eolico
+    for (int i = 0; (i < NUMERO_ORE_IN_UN_GIORNO && temp_parametri != NULL); i++) {
+        printf("\tOrario misure: %s\n", temp_parametri->orario);
+        printf("\tPotenza in uscita: %f\n\n", array_potenza_istantanea_totale[i]);
+        temp_parametri = temp_parametri->next;
     }
 
 

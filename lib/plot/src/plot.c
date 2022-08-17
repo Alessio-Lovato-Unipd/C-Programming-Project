@@ -334,3 +334,74 @@ int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, floa
     return EXIT_FAILURE;
 }
 
+/******************* GESTIONE PARCO EOLICO **************/
+int plot_curva_potenza_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina)
+{
+    if ((array_vento != NULL) && (turbina->power_curves != NULL)) {
+        gnuplot_ctrl *gp = NULL; 
+        char *titolo = malloc(sizeof(char) * (strlen("Curva di Potenza ") + strlen(turbina->nome) + 1 ));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_curva_potenza\n");
+            return EXIT_FAILURE;
+        }
+
+        strcpy(titolo, "Curva di Potenza ");
+        strcat(titolo, turbina->nome);
+
+        gp = gnuplot_init(); 
+        gnuplot_setstyle(gp, "linespoints");
+        gnuplot_set_line(gp, "1", "dark-cyan", "2");
+        gnuplot_set_point(gp, "7", NULL);
+
+        gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
+        gnuplot_set_ylabel(gp, "Potenza [kW]");
+        //comandi diretti a gnuplot
+        gnuplot_cmd(gp, "set grid back nopolar");
+
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"curva_di_potenza_%d.png\"", numero_turbina);
+        gnuplot_plot_xy(gp, array_vento, turbina->power_curves, LUNGHEZZA_VETTORE_POWER_CURVES, titolo);
+
+        gnuplot_close(gp); 
+
+        free(titolo);
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
+}
+
+int plot_curva_coefficienti_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina)
+{
+    if ((array_vento != NULL) && (turbina->power_coefficients != NULL)) {
+        gnuplot_ctrl *gp = NULL;  
+        char *titolo = malloc(sizeof(char) * (strlen("Curva coefficienti di potenza ") + strlen(turbina->nome) + 1 ));
+        if (titolo == NULL) {
+            printf("Errore: malloc() ha fallito in plot_curva_coefficienti\n");
+            return EXIT_FAILURE;
+        }
+
+        strcpy(titolo, "Curva coefficienti di potenza ");
+        strcat(titolo, turbina->nome);
+
+        gp = gnuplot_init();
+
+        gnuplot_setstyle(gp, "linespoints");
+        gnuplot_set_line(gp, "3", "red", "1");
+        gnuplot_set_point(gp, "1", NULL);
+        gnuplot_set_xlabel(gp, "Velocità del vento [m/s]");
+        gnuplot_set_ylabel(gp, "Coefficienti di potenza");
+        
+        gnuplot_cmd(gp, "set grid back nopolar");//set griglia
+        gnuplot_cmd(gp, "set terminal png");
+        gnuplot_cmd(gp, "set output \"curva_coefficienti_di_potenza_%d.png\"", numero_turbina);
+
+        gnuplot_plot_xy(gp, array_vento, turbina->power_coefficients, LUNGHEZZA_VETTORE_POWER_COEFFICIENT, titolo);
+
+        gnuplot_close(gp);  
+
+        free(titolo); 
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
+}
+

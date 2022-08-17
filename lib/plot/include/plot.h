@@ -52,6 +52,10 @@
     * In caso di errore ritorna EXIT_FAILURE, altrimenti EXIT_SUCCESS
     */
     int plot_potenza(const struct weather *head_tempo,const char *nome_turbina, float *potenza, int giorni);
+
+    int plot_curva_potenza_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina);
+
+    int plot_curva_coefficienti_parco_eolico(float *array_vento, const struct turbina *turbina, int numero_turbina);
     
 #endif
 
