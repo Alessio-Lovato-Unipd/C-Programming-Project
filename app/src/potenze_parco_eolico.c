@@ -2,10 +2,10 @@
 
 int main(int argc, char *argv[])
 {
-    struct turbina *head_turbina=NULL;
-    struct turbina *turbina_cercata=NULL;
+    struct turbina *head_turbina = NULL;
+    struct turbina *turbina_cercata = NULL;
     struct dati_weather *dati = NULL;
-    int errore=0;
+    int errore = 0;
     float array_vento_power_coefficient[LUNGHEZZA_VETTORE_POWER_COEFFICIENT + 1] = {0};
     float array_vento_power_curves[LUNGHEZZA_VETTORE_POWER_CURVES + 1] = {0};
 
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     char *array_turbine[conteggio];
 
     estrazione_nome_turbine(argv[1], array_turbine);
-    if((conteggio == 0)) {
+    if(conteggio == 0) {
         printf("Errore: numero turbine insufficiente per la creazione di un parco.\n\n");
         return(EXIT_FAILURE);
     }
@@ -145,8 +145,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    for(int i=0;i<conteggio;i++) { //ciclo for, scorre tutte le turbine del parco eolico
-        //char str[20];
+    for(int i = 0; i < conteggio; i++) { //ciclo for, scorre tutte le turbine del parco eolico
         
         strcpy(str, array_turbine[i]);
 
@@ -186,7 +185,7 @@ int main(int argc, char *argv[])
             }
             //fine calcolo parametri
 
-            float potenza_istantanea_singola=0;
+            float potenza_istantanea_singola = 0;
             float *potenza = NULL;
 
             temp_parametri = cerca_nodo_parametri(argv[9], head_parametri);
@@ -282,7 +281,6 @@ int main(int argc, char *argv[])
                     printf("\nNOTA: curva_coefficienti_di_potenza_%d.png disponibile in build/app\n", count_turbine);
                     printf("NOTA: potenza_%d.png disponibile in build/app\n\n\n", count_turbine);
                     free(potenza);
-                    svuota_parametri(head_parametri);
                 }
             } else {
                 printf("\nL'argomento inserito in argv[5] non è corretto.\nIn questo campo è possibile inserire una delle seguenti voci: CURVE_DI_POTENZA, CURVE_DI_COEFFICIENTI_POTENZA\n");
@@ -307,6 +305,10 @@ int main(int argc, char *argv[])
         temp_parametri = temp_parametri->next;
     }
 
+    float potenza_massima_parco = 0;
+    potenza_massima_parco = ricerca_valore_massimo_potenza(array_potenza_istantanea_totale);
+    printf("La potenza massima erogata dal parco eolico è pari a: %f\n\n", potenza_massima_parco);
+
     if(plot_potenza_parco_eolico(dati->head_weather, array_potenza_istantanea_totale, 1) == EXIT_FAILURE) {
         printf("Non è stato possibile stampare il grafico della potenza per il parco eolico.\n");
     }
@@ -322,6 +324,22 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
+float ricerca_valore_massimo_potenza(float *array_turbine)
+{
+    float *temp = array_turbine;
+    float max;
+
+    max = temp[0];
+
+    for(int i = 0; i < NUMERO_ORE_IN_UN_GIORNO; i++) {
+        if(temp[i] > max) {
+            max = temp[i];
+        }
+    }
+
+    return max;
+}
 
 
 bool isanumber(const char *str)

@@ -24,6 +24,7 @@
     Il programma main richiede 9 argomenti:
         - argv[0] ---> nome programma
         - argv[1] ---> nome turbina desiderata
+                    nel caso di potenze_parco_eolico.c: inserire quante turbine si vuole, devono essere comprese tra le virgolette e divise da ',' senza spazi
         - argv[2] ---> {INTERPOLAZIONE_LINEARE_V, INTERPOLAZIONE_LOGARITMICA, PROFILO_LOGARITMICO, HELLMAN}, per il calcolo della velocità del vento
         - argv[3] ---> {INTERPOLAZIONE_LINEARE_T, GRADIENTE_LINEARE}, per il calcolo della temperatura
         - argv[4] ---> {BAROMETRICO, GAS_IDEALE}, per il calcolo della densità dell'aria
@@ -45,6 +46,8 @@
         
         potenza_giorno: ./potenza_tot E-126/7500 INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1 0 '2010-01-01 22:00:00+01:00' 
 
+        potenze_parco_eolico: ./potenze_parco_eolico "E-126/4200,S114/3400" INTERPOLAZIONE_LINEARE_V INTERPOLAZIONE_LINEARE_T BAROMETRICO CURVE_DI_POTENZA INTERPOLAZIONE_LINEARE_O 1 0 "2010-01-01 08:00:00+01:00"
+ 
     */
 
 
@@ -56,5 +59,10 @@
      * Funzione per verificare se un argomento passato è numerico
     */
     bool isanumber(const char *str);
+
+    /*
+     * Funzione per trovare il valore massimo di un array.
+    */
+    float ricerca_valore_massimo_potenza(float *array_turbine);
 
 #endif
